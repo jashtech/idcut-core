@@ -1,0 +1,19 @@
+{
+    "name": "tomek/kickass",
+    "description": "Kickass",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Tomasz Wesołowski",
+            "email": "twesolowski@jash.pl"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "league/oauth2-client": "0.7.*@dev",
+		"phpseclib/phpseclib": "0.3.*@dev"
+    },
+    "autoload": {
+        "psr-4": {"Kickass\\": "src/"}
+    }
+}
