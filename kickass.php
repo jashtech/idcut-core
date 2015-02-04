@@ -26,7 +26,8 @@ class Kickass extends Module {
     public function install()
     {
         if (!parent::install() ||
-                !Configuration::updateValue('PS_KICKASS_SCOPES', 'id;name')
+                !Configuration::updateValue('PS_KICKASS_SCOPES', 'id;name') || 
+                !$this->installTab()
         )
         {
             return false;
@@ -40,21 +41,77 @@ class Kickass extends Module {
                 !Configuration::deleteByName('PS_KICKASS_CLIENT_ID') ||
                 !Configuration::deleteByName('PS_KICKASS_CLIENT_SECRET') ||
                 !Configuration::deleteByName('PS_KICKASS_REDIRECT_URL') ||
-                !Configuration::deleteByName('PS_KICKASS_SCOPES')
+                !Configuration::deleteByName('PS_KICKASS_SCOPES') || 
+                !$this->uninstallTab()
         )
         {
             return false;
         }
         return true;
     }
+    
+    public function installTab()
+    {
+            $tab = new Tab();
+            $tab->active = 1;
+            $tab->class_name = 'AdminKickass';
+            $tab->name = array();
+            foreach (Language::getLanguages(true) as $lang)
+                    $tab->name[$lang['id_lang']] = 'Deal settings';
+            $tab->id_parent = 0;
+            $tab->module = $this->name;
+            return $tab->add();
+    }
 
+    public function uninstallTab()
+    {
+            $id_tab = (int)Tab::getIdFromClassName('AdminKickass');
+            if ($id_tab)
+            {
+                    $tab = new Tab($id_tab);
+                    return $tab->delete();
+            }
+            else
+                    return false;
+    }
+    
+    public function getContent2()
+    {
+            if (Tools::isSubmit('submitModule'))
+            {
+
+                /* Update Client ID */
+                $clientId = Tools::getValue('PS_KICKASS_CLIENT_ID');
+                if (isset($clientId))
+                {
+                    $this->core->config()->update("PS_KICKASS_CLIENT_ID", $clientId);
+                }
+
+                /* Update Client Secret */
+                $clientSecret = trim(Tools::getValue('PS_KICKASS_CLIENT_SECRET'));
+                if (!empty($clientSecret))
+                {
+                    $this->core->config()->setEncrypted("PS_KICKASS_CLIENT_SECRET", $clientSecret);
+                }
+
+                /* Update redirect URL */
+                $redirectUrl = Tools::getValue('PS_KICKASS_REDIRECT_URL');
+                if (isset($redirectUrl))
+                {
+                    $this->core->config()->update("PS_KICKASS_REDIRECT_URL", $redirectUrl);
+                }
+                $updated_info = 1;
+            }
+            Tools::redirectAdmin($this->context->link->getAdminLink('AdminKickass').'&updated_info='.(isset($updated_info)?$updated_info:0));
+    }
+    
     public function getContent()
     {
         $html = '';
 
         if (Tools::isSubmit('submitModule'))
         {
-
+            $this->getContent2();
             /* Update Client ID */
             $clientId = Tools::getValue('PS_KICKASS_CLIENT_ID');
             if (isset($clientId))
