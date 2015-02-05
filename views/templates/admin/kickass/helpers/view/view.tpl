@@ -2,9 +2,9 @@
 <div>
     <h1>{$example}</h1>
     {if $info}
-    <p>
-        {l s="I was updated" mod='kickass'}
-    </p>
+        <p>
+            {l s="I was updated" mod='kickass'}
+        </p>
     {/if}
-    
+
 </div>
