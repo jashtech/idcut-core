@@ -41,7 +41,7 @@ class Kickass extends Module
     {
         if (!parent::install() ||
             !Configuration::updateValue('PS_KICKASS_SCOPES', 'id;name') ||
-            !$this->installTab() ||
+            !$this->installTabs() ||
             !$this->createOrderState() ||
             !$this->registerHook('payment') || !$this->registerHook('displayPaymentEU')
             || !$this->registerHook('paymentReturn')
@@ -58,24 +58,51 @@ class Kickass extends Module
             !Configuration::deleteByName('PS_KICKASS_CLIENT_SECRET') ||
             !Configuration::deleteByName('PS_KICKASS_REDIRECT_URL') ||
             !Configuration::deleteByName('PS_KICKASS_SCOPES') ||
-            !$this->uninstallTab()
+            !$this->uninstallTabs()
         ) {
             return false;
         }
         return true;
     }
 
-    public function installTab()
+    public function installTabs()
+    {
+        $id_root_tab = $this->installTab('AdminKickass', 'Kickass', 0);
+        $ret         = (int) $id_root_tab > 0 ? true : false;
+        if ($ret) {
+            Configuration::updateValue('PS_KICKASS_ROOT_TAB', $id_root_tab);
+            $ret &= $this->installTab('AdminKickass', 'Deal Definition',
+                    $id_root_tab) > 0 ? true : false;
+            $ret &= $this->installTab('AdminKickass', 'Deals',
+                $id_root_tab) > 0 ? true : false;
+            $ret &= $this->installTab('AdminKickass', 'Status',
+                $id_root_tab) > 0 ? true : false;
+        }
+
+        return $tab->add();
+    }
+
+    public function installTab($class_name, $tab_name, $parent = 0)
     {
         $tab                         = new Tab();
         $tab->active                 = 1;
-        $tab->class_name             = 'AdminKickass';
+        $tab->class_name             = $class_name;
         $tab->name                   = array();
         foreach (Language::getLanguages(true) as $lang)
-            $tab->name[$lang['id_lang']] = 'Deal settings';
-        $tab->id_parent              = 0;
+            $tab->name[$lang['id_lang']] = $tab_name;
+        $tab->id_parent              = $parent;
         $tab->module                 = $this->name;
-        return $tab->add();
+        $tab->add();
+        return (int) $tab->id;
+    }
+
+    public function uninstallTabs()
+    {
+        $id_tab = (int) Tab::getIdFromClassName('AdminKickass');
+        if ($id_tab) {
+            $tab = new Tab($id_tab);
+            return $tab->delete();
+        } else return false;
     }
 
     public function uninstallTab()
