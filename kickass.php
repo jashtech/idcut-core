@@ -217,6 +217,8 @@ class Kickass extends Module {
         $this->core->config()->setEncrypted("PS_KICKASS_OAUTH_STATE", $provider->state);
         $html .= '<a target="_blank" href="' . $href . '" >Connect</a>';
         $html .= $this->core->config()->getEncrypted("PS_KICKASS_API_TOKEN");;
+        $html .= '<p>'.$this->core->getApiClient()->getVersion().'</p>';
+        $html .= '<p>'.$this->core->getApiClient()->test().'</p>';
         return $html;
     }
     
