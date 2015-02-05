@@ -10,6 +10,7 @@
     ],
     "require": {
         "php": ">=5.4.0",
+		"guzzlehttp/guzzle": "~5.0",
         "league/oauth2-client": "0.7.*@dev",
 		"phpseclib/phpseclib": "0.3.*@dev"
     },
