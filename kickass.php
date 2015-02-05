@@ -42,7 +42,9 @@ class Kickass extends Module
         if (!parent::install() ||
             !Configuration::updateValue('PS_KICKASS_SCOPES', 'id;name') ||
             !$this->installTab() ||
-            !$this->registerHook('payment') || !$this->registerHook('displayPaymentEU') //|| !$this->registerHook('paymentReturn')
+            !$this->createOrderState() ||
+            !$this->registerHook('payment') || !$this->registerHook('displayPaymentEU')
+            || !$this->registerHook('paymentReturn')
         ) {
             return false;
         }
@@ -83,6 +85,38 @@ class Kickass extends Module
             $tab = new Tab($id_tab);
             return $tab->delete();
         } else return false;
+    }
+
+    /**
+     * Create a new order state
+     */
+    public function createOrderState()
+    {
+        if (!Configuration::get('PS_OS_KICKASS')) {
+            $order_state       = new OrderState();
+            $order_state->name = array();
+
+            foreach (Language::getLanguages() as $language) {
+                $order_state->name[$language['id_lang']] = 'Waiting for payment Kickass';
+            }
+
+            $order_state->send_email = false;
+            $order_state->color      = '#4169E1';
+            $order_state->hidden     = false;
+            $order_state->delivery   = false;
+            $order_state->logable    = true;
+            $order_state->invoice    = false;
+
+            if ($order_state->add()) {
+                $source      = dirname(__FILE__).'/logo.gif';
+                $destination = dirname(__FILE__).'/../../img/os/'.(int) $order_state->id.'.gif';
+                copy($source, $destination);
+            } else {
+                return false;
+            }
+            Configuration::updateValue('PS_OS_KICKASS', (int) $order_state->id);
+        }
+        return true;
     }
 
     public function getContent2()
@@ -244,28 +278,27 @@ class Kickass extends Module
         );
     }
 
-//    public function hookPaymentReturn($params)
-//    {
-//            if (!$this->active)
-//                    return;
-//
-//            $state = $params['objOrder']->getCurrentState();
-//            if (in_array($state, array(Configuration::get('PS_OS_CHEQUE'), Configuration::get('PS_OS_OUTOFSTOCK'), Configuration::get('PS_OS_OUTOFSTOCK_UNPAID'))))
-//            {
-//                    $this->smarty->assign(array(
-//                            'total_to_pay' => Tools::displayPrice($params['total_to_pay'], $params['currencyObj'], false),
-//                            'chequeName' => $this->chequeName,
-//                            'chequeAddress' => Tools::nl2br($this->address),
-//                            'status' => 'ok',
-//                            'id_order' => $params['objOrder']->id
-//                    ));
-//                    if (isset($params['objOrder']->reference) && !empty($params['objOrder']->reference))
-//                            $this->smarty->assign('reference', $params['objOrder']->reference);
-//            }
-//            else
-//                    $this->smarty->assign('status', 'failed');
-//            return $this->display(__FILE__, 'payment_return.tpl');
-//    }
+    public function hookPaymentReturn($params)
+    {
+        if (!$this->active) return;
+
+        $state = $params['objOrder']->getCurrentState();
+        if (in_array($state,
+                array(Configuration::get('PS_OS_KICKASS'), Configuration::get('PS_OS_OUTOFSTOCK'),
+                Configuration::get('PS_OS_OUTOFSTOCK_UNPAID')))) {
+            $this->smarty->assign(array(
+                'total_to_pay' => Tools::displayPrice(
+                    $params['total_to_pay'], $params['currencyObj'], false
+                ),
+                'status' => 'ok',
+                'id_order' => $params['objOrder']->id
+            ));
+            if (isset($params['objOrder']->reference) && !empty($params['objOrder']->reference))
+                    $this->smarty->assign('reference',
+                    $params['objOrder']->reference);
+        } else $this->smarty->assign('status', 'failed');
+        return $this->display(__FILE__, 'payment_return.tpl');
+    }
 
     public function checkCurrency($cart)
     {
