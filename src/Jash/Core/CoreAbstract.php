@@ -1,5 +1,4 @@
 <?php
-
 namespace Kickass\Jash\Core;
 
 abstract class CoreAbstract implements CoreInterface {
@@ -7,6 +6,7 @@ abstract class CoreAbstract implements CoreInterface {
     private $OAuthProviderBuilder;
     private $config;
     private $cipher;
+    private $apiClient;
 
     public function getOAuthProviderBuilder()
     {
@@ -41,6 +41,14 @@ abstract class CoreAbstract implements CoreInterface {
     public function setCipher(\Kickass\Jash\Cipher\CipherInterface $cipher)
     {
         $this->cipher = $cipher;
+    }
+    
+    public function setApiClient(\Kickass\Jash\APIClient\KickassInterface $apiClient){
+        $this->apiClient = $apiClient;
+    }
+    
+    public function getApiClient(){
+        return $this->apiClient;
     }
 
 }

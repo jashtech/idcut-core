@@ -4,5 +4,5 @@ namespace Kickass\Jash\APIClient;
 
 interface KickassInterface {
     public function getVersion();
-    public function setVersion($version);
+    public function setAccessToken($token);
 }
