@@ -9,7 +9,7 @@ class Kickass extends Module
     {
         $this->name             = 'kickass';
         $this->author           = 'Tomasz Wesołowski <twesolowski@jash.pl>';
-        $this->tab              = 'front_office_features';
+        $this->tab              = 'payments_gateways';
         $this->version          = '1.0';
         $this->controllers      = array('auth', 'payment', 'validation');
         $this->is_eu_compatible = 1;
@@ -24,9 +24,9 @@ class Kickass extends Module
         $this->description            = $this->l('Prestashop - kickass module.');
         $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
 
-        $this->core = require_once 'bootstrap/prestashop.php';
+        $this->core = require 'bootstrap/prestashop.php';
 
-//        $c_tmp = $this->getConfigFieldsValues();
+        $c_tmp = $this->getConfigFieldsValues();
         $i = 1;
         if ((!isset($c_tmp['PS_KICKASS_CLIENT_ID']) || !isset($c_tmp['PS_KICKASS_REDIRECT_URL'])
             || empty($c_tmp['PS_KICKASS_CLIENT_ID']) || empty($c_tmp['PS_KICKASS_REDIRECT_URL'])))
@@ -41,8 +41,10 @@ class Kickass extends Module
     {
         if (!parent::install() ||
             !Configuration::updateValue('PS_KICKASS_SCOPES', 'id;name') ||
-            !$this->installTab() ||
-            !$this->registerHook('payment') || !$this->registerHook('displayPaymentEU') //|| !$this->registerHook('paymentReturn')
+            !$this->installTabs() ||
+            !$this->createOrderState() ||
+            !$this->registerHook('payment') || !$this->registerHook('displayPaymentEU')
+            || !$this->registerHook('paymentReturn')
         ) {
             return false;
         }
@@ -51,38 +53,89 @@ class Kickass extends Module
 
     public function uninstall()
     {
-        if (!parent::uninstall() ||
+        if (
+            !parent::uninstall() ||
             !Configuration::deleteByName('PS_KICKASS_CLIENT_ID') ||
             !Configuration::deleteByName('PS_KICKASS_CLIENT_SECRET') ||
             !Configuration::deleteByName('PS_KICKASS_REDIRECT_URL') ||
             !Configuration::deleteByName('PS_KICKASS_SCOPES') ||
-            !$this->uninstallTab()
+            !$this->uninstallTabs()
         ) {
             return false;
         }
         return true;
     }
 
-    public function installTab()
+    public function installTabs()
+    {
+        $id_root_tab = $this->installTab('AdminKickass', 'Kickass', 0);
+        $ret         = (int) $id_root_tab > 0 ? true : false;
+        if ($ret) {
+            $ret &= $this->installTab('AdminKickass', 'Deal Definition',
+                    $id_root_tab) > 0 ? true : false;
+            $ret &= $this->installTab('AdminKickass', 'Deals',
+                $id_root_tab) > 0 ? true : false;
+            $ret &= $this->installTab('AdminKickass', 'Status',
+                $id_root_tab) > 0 ? true : false;
+        }
+
+        return $ret;
+    }
+
+    public function installTab($class_name, $tab_name, $parent = 0)
     {
         $tab                         = new Tab();
         $tab->active                 = 1;
-        $tab->class_name             = 'AdminKickass';
+        $tab->class_name             = $class_name;
         $tab->name                   = array();
         foreach (Language::getLanguages(true) as $lang)
-            $tab->name[$lang['id_lang']] = 'Deal settings';
-        $tab->id_parent              = 0;
+            $tab->name[$lang['id_lang']] = $tab_name;
+        $tab->id_parent              = $parent;
         $tab->module                 = $this->name;
-        return $tab->add();
+        $tab->add();
+        return (int) $tab->id;
     }
 
-    public function uninstallTab()
+    public function uninstallTabs()
     {
-        $id_tab = (int) Tab::getIdFromClassName('AdminKickass');
-        if ($id_tab) {
-            $tab = new Tab($id_tab);
-            return $tab->delete();
-        } else return false;
+        $ret = true;
+        $tabs = TabCore::getCollectionFromModule($this->name);
+        foreach($tabs->getAll()->getResults() as $tab){
+            $ret &= $tab->delete();
+    }
+        return $ret;
+    }
+
+    /**
+     * Create a new order state
+     */
+    public function createOrderState()
+    {
+        if (!Configuration::get('PS_OS_KICKASS')) {
+            $order_state       = new OrderState();
+            $order_state->name = array();
+
+            foreach (Language::getLanguages() as $language) {
+                $order_state->name[$language['id_lang']] = 'Waiting for payment Kickass';
+            }
+
+            $order_state->send_email = false;
+            $order_state->color      = '#4169E1';
+            $order_state->hidden     = false;
+            $order_state->delivery   = false;
+            $order_state->logable    = true;
+            $order_state->invoice    = false;
+
+            if ($order_state->add()) {
+                $source      = dirname(__FILE__).'/logo.gif';
+                $destination = dirname(__FILE__).'/../../img/os/'.(int) $order_state->id.'.gif';
+                copy($source, $destination);
+            } else {
+                return false;
+            }
+            Configuration::updateValue('PS_OS_KICKASS', (int) $order_state->id);
+        }
+        return true;
     }
 
     public function getContent2()
@@ -244,28 +297,27 @@ class Kickass extends Module
         );
     }
 
-//    public function hookPaymentReturn($params)
-//    {
-//            if (!$this->active)
-//                    return;
-//
-//            $state = $params['objOrder']->getCurrentState();
-//            if (in_array($state, array(Configuration::get('PS_OS_CHEQUE'), Configuration::get('PS_OS_OUTOFSTOCK'), Configuration::get('PS_OS_OUTOFSTOCK_UNPAID'))))
-//            {
-//                    $this->smarty->assign(array(
-//                            'total_to_pay' => Tools::displayPrice($params['total_to_pay'], $params['currencyObj'], false),
-//                            'chequeName' => $this->chequeName,
-//                            'chequeAddress' => Tools::nl2br($this->address),
-//                            'status' => 'ok',
-//                            'id_order' => $params['objOrder']->id
-//                    ));
-//                    if (isset($params['objOrder']->reference) && !empty($params['objOrder']->reference))
-//                            $this->smarty->assign('reference', $params['objOrder']->reference);
-//            }
-//            else
-//                    $this->smarty->assign('status', 'failed');
-//            return $this->display(__FILE__, 'payment_return.tpl');
-//    }
+    public function hookPaymentReturn($params)
+    {
+        if (!$this->active) return;
+
+        $state = $params['objOrder']->getCurrentState();
+        if (in_array($state,
+                array(Configuration::get('PS_OS_KICKASS'), Configuration::get('PS_OS_OUTOFSTOCK'),
+                Configuration::get('PS_OS_OUTOFSTOCK_UNPAID')))) {
+            $this->smarty->assign(array(
+                'total_to_pay' => Tools::displayPrice(
+                    $params['total_to_pay'], $params['currencyObj'], false
+                ),
+                'status' => 'ok',
+                'id_order' => $params['objOrder']->id
+            ));
+            if (isset($params['objOrder']->reference) && !empty($params['objOrder']->reference))
+                    $this->smarty->assign('reference',
+                    $params['objOrder']->reference);
+        } else $this->smarty->assign('status', 'failed');
+        return $this->display(__FILE__, 'payment_return.tpl');
+    }
 
     public function checkCurrency($cart)
     {
