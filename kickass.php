@@ -1,6 +1,6 @@
 <?php
 
-class Kickass extends Module
+class Kickass extends PaymentModule
 {
     private $loader = null;
     private $core;
