@@ -27,7 +27,7 @@ class Kickass extends PaymentModule
         $this->core = require 'bootstrap/prestashop.php';
 
         $c_tmp = $this->getConfigFieldsValues();
-        $i = 1;
+        $i     = 1;
         if ((!isset($c_tmp['PS_KICKASS_CLIENT_ID']) || !isset($c_tmp['PS_KICKASS_REDIRECT_URL'])
             || empty($c_tmp['PS_KICKASS_CLIENT_ID']) || empty($c_tmp['PS_KICKASS_REDIRECT_URL'])))
                 $this->warning .= '<br>'.$i++.'. '.$this->l('The client ID and Redirect url fields must be configured before using this module.');
@@ -68,15 +68,16 @@ class Kickass extends PaymentModule
 
     public function installTabs()
     {
-        $id_root_tab = $this->installTab('AdminKickassDealDefinition', 'Kickass', 0);
+        $id_root_tab = $this->installTab('AdminKickassDealDefinition',
+            'Kickass', 0);
         $ret         = (int) $id_root_tab > 0 ? true : false;
         if ($ret) {
-            $ret &= $this->installTab('AdminKickassDealDefinition', 'Deal Definition',
-                    $id_root_tab) > 0 ? true : false;
-            $ret &= $this->installTab('AdminKickassDeals', 'Deals',
-                $id_root_tab) > 0 ? true : false;
+            $ret &= $this->installTab('AdminKickassDealDefinition',
+                    'Deal Definition', $id_root_tab) > 0 ? true : false;
+            $ret &= $this->installTab('AdminKickassDeals', 'Deals', $id_root_tab)
+                > 0 ? true : false;
             $ret &= $this->installTab('AdminKickassStatus', 'Status',
-                $id_root_tab) > 0 ? true : false;
+                    $id_root_tab) > 0 ? true : false;
         }
 
         return $ret;
@@ -98,11 +99,11 @@ class Kickass extends PaymentModule
 
     public function uninstallTabs()
     {
-        $ret = true;
+        $ret  = true;
         $tabs = TabCore::getCollectionFromModule($this->name);
-        foreach($tabs->getAll()->getResults() as $tab){
+        foreach ($tabs->getAll()->getResults() as $tab) {
             $ret &= $tab->delete();
-    }
+        }
         return $ret;
     }
 

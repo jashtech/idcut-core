@@ -24,13 +24,11 @@ class AdminKickassDealsController extends ModuleAdminController
         $this->toolbar_title[] = $this->l('Kickass Deals');
     }
 
-
     public function renderView()
     {
-        $view = $this->module->core->getView();
+        $view          = $this->module->core->getView();
         $view->setTemplateFile("adminDeals.php");
         $view->zmienna = "Deals";
         return $view->render();
-        
     }
 }

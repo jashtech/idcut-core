@@ -24,13 +24,11 @@ class AdminKickassStatusController extends ModuleAdminController
         $this->toolbar_title[] = $this->l('Kickass Status');
     }
 
-
     public function renderView()
     {
-        $view = $this->module->core->getView();
+        $view          = $this->module->core->getView();
         $view->setTemplateFile("adminStatus.php");
         $view->zmienna = "Status";
         return $view->render();
-        
     }
 }
