@@ -3,7 +3,7 @@
 class Kickass extends PaymentModule
 {
     private $loader = null;
-    private $core;
+    public $core;
 
     public function __construct()
     {

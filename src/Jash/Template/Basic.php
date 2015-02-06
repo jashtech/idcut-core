@@ -11,9 +11,9 @@ class Basic implements TemplateInterface
     private $templateFile;
     private $templateDir = '';
 
-    public function __construct($templteFile)
+    public function __construct()
     {
-        $this->templateFile = $templteFile;
+
     }
 
     public function __get($name)
@@ -26,16 +26,32 @@ class Basic implements TemplateInterface
         $this->vars[$name] = $value;
     }
 
+    public function setTemplateFile($templateFile)
+    {
+        $this->templateFile = $templateFile;
+    }
+
+    public function setTemplateDir($templateDir){
+        if(!file_exists($templateDir)){
+            mkdir($templateDir, 0777, true);
+        }
+        $this->templateDir = $templateDir;
+    }
+
+    private function templatePath(){
+        return $this->templateDir.DIRECTORY_SEPARATOR.$this->templateFile;
+    }
+
     public function render()
     {
 
-        if (file_exists($this->templateFile)) {
+        if (file_exists($this->templatePath())) {
             extract($this->vars);
             ob_start();
-            include($this->templateFile);
+            include($this->templatePath());
             return ob_get_clean();
         } else {
-            throw new Exception("Can't find template file: ".$this->templateFile);
+            throw new \Exception("Can't find template file: " . $this->templatePath());
         }
     }
 

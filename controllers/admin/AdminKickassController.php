@@ -32,14 +32,10 @@ class AdminKickassController extends ModuleAdminController
 
     public function renderView()
     {
-        $info                = Tools::getValue('updated_info', 0);
-        $this->tpl_view_vars = array(
-            'example' => 'example var',
-            'info' => $info,
-        );
-
-        if (version_compare(_PS_VERSION_, '1.5.6.0', '>'))
-                $this->base_tpl_view = 'view.tpl';
-        return parent::renderView();
+        $view = $this->module->core->getView();
+        $view->setTemplateFile("admin.php");
+        $view->zmienna = "wartość";
+        return $view->render();
+        
     }
 }

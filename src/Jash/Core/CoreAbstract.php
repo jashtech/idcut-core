@@ -7,6 +7,7 @@ abstract class CoreAbstract implements CoreInterface {
     private $config;
     private $cipher;
     private $apiClient;
+    private $view;
 
     public function getOAuthProviderBuilder()
     {
@@ -50,5 +51,18 @@ abstract class CoreAbstract implements CoreInterface {
     public function getApiClient(){
         return $this->apiClient;
     }
+
+    public function setView(\Kickass\Jash\Template\TemplateInterface $view){
+        $this->view = $view;
+    }
+
+    public function getView(){
+        return $this->view;
+    }
+
+    public function view(){
+        return $this->getView();
+    }
+
 
 }
