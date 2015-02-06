@@ -11,4 +11,4 @@ class Kickass extends KickassAbstract implements KickassInterface
     protected $version = 1;
     protected $serviceUrl = "http://api.kickass.jash.fr";
 
-}
+    }

@@ -4,7 +4,5 @@ namespace Kickass\Jash\Template;
 
 interface TemplateInterface
 {
-    public function render($templateFile = null){
-        
-    }
+    public function render($templateFile);
 }
