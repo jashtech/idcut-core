@@ -9,9 +9,11 @@ class Basic implements TemplateInterface
 
     private $vars = array();
     private $templateFile;
+    private $templateDir = '';
 
-    public function __construct(){
-        
+    public function __construct($templteFile)
+    {
+        $this->templateFile = $templteFile;
     }
 
     public function __get($name)
