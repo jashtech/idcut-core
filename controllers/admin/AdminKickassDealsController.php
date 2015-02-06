@@ -28,7 +28,7 @@ class AdminKickassDealsController extends ModuleAdminController
     public function renderView()
     {
         $view = $this->module->core->getView();
-        $view->setTemplateFile("admin.php");
+        $view->setTemplateFile("adminDeals.php");
         $view->zmienna = "Deals";
         return $view->render();
         

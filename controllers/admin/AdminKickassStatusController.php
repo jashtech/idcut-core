@@ -28,7 +28,7 @@ class AdminKickassStatusController extends ModuleAdminController
     public function renderView()
     {
         $view = $this->module->core->getView();
-        $view->setTemplateFile("admin.php");
+        $view->setTemplateFile("adminStatus.php");
         $view->zmienna = "Status";
         return $view->render();
         
