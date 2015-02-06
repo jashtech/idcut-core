@@ -1,6 +1,6 @@
 <?php
 
-class AdminKickassController extends ModuleAdminController
+class AdminKickassStatusController extends ModuleAdminController
 {
 
     public function __construct()
@@ -8,7 +8,7 @@ class AdminKickassController extends ModuleAdminController
         $this->bootstrap = true;
         $this->display   = 'view';
 
-        $this->meta_title = $this->l('Your deal settings');
+        $this->meta_title = $this->l('Your Kickass Status');
         parent::__construct();
         if (!$this->module->active)
                 Tools::redirectAdmin($this->context->link->getAdminLink('AdminHome'));
@@ -21,20 +21,15 @@ class AdminKickassController extends ModuleAdminController
 
     public function initToolBarTitle()
     {
-        $this->toolbar_title[] = $this->l('Deal settings');
+        $this->toolbar_title[] = $this->l('Kickass Status');
     }
 
-    public function initPageHeaderToolbar()
-    {
-        parent::initPageHeaderToolbar();
-        unset($this->toolbar_btn['back']);
-    }
 
     public function renderView()
     {
         $view = $this->module->core->getView();
         $view->setTemplateFile("admin.php");
-        $view->zmienna = "wartość";
+        $view->zmienna = "Status";
         return $view->render();
         
     }

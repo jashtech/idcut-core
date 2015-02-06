@@ -68,14 +68,14 @@ class Kickass extends PaymentModule
 
     public function installTabs()
     {
-        $id_root_tab = $this->installTab('AdminKickass', 'Kickass', 0);
+        $id_root_tab = $this->installTab('AdminKickassDealDefinition', 'Kickass', 0);
         $ret         = (int) $id_root_tab > 0 ? true : false;
         if ($ret) {
-            $ret &= $this->installTab('AdminKickass', 'Deal Definition',
+            $ret &= $this->installTab('AdminKickassDealDefinition', 'Deal Definition',
                     $id_root_tab) > 0 ? true : false;
-            $ret &= $this->installTab('AdminKickass', 'Deals',
+            $ret &= $this->installTab('AdminKickassDeals', 'Deals',
                 $id_root_tab) > 0 ? true : false;
-            $ret &= $this->installTab('AdminKickass', 'Status',
+            $ret &= $this->installTab('AdminKickassStatus', 'Status',
                 $id_root_tab) > 0 ? true : false;
         }
 
