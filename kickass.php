@@ -79,7 +79,7 @@ class Kickass extends Module
                 $id_root_tab) > 0 ? true : false;
         }
 
-        return $tab->add();
+        return $ret;
     }
 
     public function installTab($class_name, $tab_name, $parent = 0)
