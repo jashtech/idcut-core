@@ -28,10 +28,15 @@ class Basic implements TemplateInterface
 
     public function render()
     {
-        extract($this->vars);
-        ob_start();
-        include($this->templateFile);
-        return ob_get_clean();
+
+        if (file_exists($this->templateFile)) {
+            extract($this->vars);
+            ob_start();
+            include($this->templateFile);
+            return ob_get_clean();
+        } else {
+            throw new Exception("Can't find template file: ".$this->templateFile);
+        }
     }
 
 }
