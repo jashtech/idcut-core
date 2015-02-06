@@ -53,7 +53,8 @@ class Kickass extends Module
 
     public function uninstall()
     {
-        if (!parent::uninstall() ||
+        if (
+            !parent::uninstall() ||
             !Configuration::deleteByName('PS_KICKASS_CLIENT_ID') ||
             !Configuration::deleteByName('PS_KICKASS_CLIENT_SECRET') ||
             !Configuration::deleteByName('PS_KICKASS_REDIRECT_URL') ||
@@ -70,7 +71,6 @@ class Kickass extends Module
         $id_root_tab = $this->installTab('AdminKickass', 'Kickass', 0);
         $ret         = (int) $id_root_tab > 0 ? true : false;
         if ($ret) {
-            Configuration::updateValue('PS_KICKASS_ROOT_TAB', $id_root_tab);
             $ret &= $this->installTab('AdminKickass', 'Deal Definition',
                     $id_root_tab) > 0 ? true : false;
             $ret &= $this->installTab('AdminKickass', 'Deals',
@@ -98,20 +98,12 @@ class Kickass extends Module
 
     public function uninstallTabs()
     {
-        $id_tab = (int) Tab::getIdFromClassName('AdminKickass');
-        if ($id_tab) {
-            $tab = new Tab($id_tab);
-            return $tab->delete();
-        } else return false;
-    }
-
-    public function uninstallTab()
-    {
-        $id_tab = (int) Tab::getIdFromClassName('AdminKickass');
-        if ($id_tab) {
-            $tab = new Tab($id_tab);
-            return $tab->delete();
-        } else return false;
+        $ret = true;
+        $tabs = TabCore::getCollectionFromModule($this->name);
+        foreach($tabs->getAll()->getResults() as $tab){
+            $ret &= $tab->delete();
+        }
+        return $ret;
     }
 
     /**
