@@ -43,6 +43,11 @@ abstract class CoreAbstract implements CoreInterface {
     {
         $this->cipher = $cipher;
     }
+
+    public function getCipher()
+    {
+        return $this->cipher;
+    }
     
     public function setApiClient(\Kickass\Jash\APIClient\KickassInterface $apiClient){
         $this->apiClient = $apiClient;

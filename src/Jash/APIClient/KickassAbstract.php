@@ -41,12 +41,11 @@ abstract class KickassAbstract implements KickassInterface
     public function test()
     {
         try {
-            $response = $this->httpClient->get('/ping');
-            return var_export($this->httpClient->getBaseUrl(), 1);
+            return $response = $this->httpClient->get('/ping');
         } catch (RequestException $e) {
             echo $e->getRequest() . "\n";
             if ($e->hasResponse()) {
-                echo $e->getResponse() . "\n";
+                return $e->getResponse() . "\n";
             }
         }
     }

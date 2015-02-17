@@ -12,6 +12,9 @@ class AdminKickassStatusController extends ModuleAdminController
         parent::__construct();
         if (!$this->module->active)
                 Tools::redirectAdmin($this->context->link->getAdminLink('AdminHome'));
+
+        $this->core = require dirname(__FILE__) . '/../../bootstrap/prestashop.php';
+
     }
 
     public function setMedia()
@@ -28,7 +31,17 @@ class AdminKickassStatusController extends ModuleAdminController
     {
         $view          = $this->module->core->getView();
         $view->setTemplateFile("adminStatus.php");
-        $view->zmienna = "Status";
+
+        $view->coreClass = get_class ($this->core);
+        $view->configClass = get_class ($this->core->getConfig());
+        $view->apiClientClass = get_class($this->core->getApiClient());
+        $view->cipherClass = get_class($this->core->getCipher());
+        $view->authenticated = "maybe";
+        $view->accessToken = $this->core->config()->getEncrypted("PS_KICKASS_API_TOKEN");
+        $view->apiClientVersion = $this->core->getApiClient()->getVersion();
+        $view->serviceUrl = $this->core->getApiClient()->getServiceUrl();
+        $view->cipherTest = $this->core->getCipher()->test(md5(rand())) ? "OK" : "FAIL";
+        $view->testResponse = var_export($this->core->getApiClient()->test(),1);
         return $view->render();
     }
 }
