@@ -267,8 +267,7 @@ class Kickass extends PaymentModule
         $this->core->config()->setEncrypted("PS_KICKASS_OAUTH_STATE",
             $provider->state);
         $html .= '<a target="_blank" href="'.$href.'" >Connect</a>';
-        $html .= $this->core->config()->getEncrypted("PS_KICKASS_API_TOKEN");
-        ;
+        
         return $html;
     }
 

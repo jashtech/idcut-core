@@ -19,6 +19,9 @@
     <dt>API Access Token</dt>
     <dd><?php echo $accessToken; ?></dd>
 
+    <dt>API Access Token Info</dt>
+    <dd><pre><?php echo $accessTokenInfo; ?></pre></dd>
+
     <dt>Service URL</dt>
     <dd><?php echo $serviceUrl; ?></dd>
 

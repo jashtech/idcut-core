@@ -38,6 +38,18 @@ abstract class KickassAbstract implements KickassInterface
         ));
     }
 
+    public function getTokenInfo()
+    {
+        try {
+            return $response = $this->httpClient->get('http://kickass.jash.fr/oauth/token/info');
+        } catch (RequestException $e) {
+            echo $e->getRequest() . "\n";
+            if ($e->hasResponse()) {
+                return $e->getResponse() . "\n";
+            }
+        }
+    }
+
     public function test()
     {
         try {
