@@ -18,7 +18,7 @@ if (!$code) {
     if ($token) {
         $core->config()->setEncrypted("PS_KICKASS_API_TOKEN", $token);
         $result = "Token saved";
-       $tokenInfo = var_export($core->getApiClient()->setAccessToken($token)->getTokenInfo()->json(), 1);
+        //$tokenInfo = var_export($core->getApiClient()->setAccessToken($token)->getTokenInfo()->json(), 1);
     }
 }
 
@@ -32,6 +32,5 @@ if (!$code) {
     </head>
     <body>
         <h2><?php echo $result; ?></h2>
-        <pre><?php echo $tokenInfo; ?></pre>
     </body>
 </html>
