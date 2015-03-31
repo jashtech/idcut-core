@@ -38,11 +38,23 @@ class AdminKickassStatusController extends ModuleAdminController
         $view->cipherClass = get_class($this->core->getCipher());
         $view->authenticated = "maybe";
         $view->accessToken = $this->core->config()->getEncrypted("PS_KICKASS_API_TOKEN");
-        $view->accessTokenInfo = var_export($this->core->getApiClient()->getTokenInfo()->json() , 1);
+
+        $tokenInfo = $this->core->getApiClient()->getTokenInfo();
+        if($tokenInfo instanceof  GuzzleHttp\Message\Response){
+            $view->accessTokenInfo = var_export($tokenInfo->json(), true);
+        }
+
+        
         $view->apiClientVersion = $this->core->getApiClient()->getVersion();
         $view->serviceUrl = $this->core->getApiClient()->getServiceUrl();
         $view->cipherTest = $this->core->getCipher()->test(md5(rand())) ? "OK" : "FAIL";
-        $view->testResponse = var_export($this->core->getApiClient()->test(),1);
+
+        $testResponse = $this->core->getApiClient()->test();
+        if($testResponse instanceof GuzzleHttp\Message\Response){
+            $view->testResponse = var_export($testResponse , true);
+        }
+
+        
         return $view->render();
     }
 }
