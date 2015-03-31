@@ -17,7 +17,12 @@ $core->setOAuthProviderBuilder(new \Kickass\Jash\OAuth2\Client\Provider\KickassB
 
 $apiClient = new \Kickass\Jash\APIClient\V1\Kickass();
 $apiClient->setAccessToken($config->getEncrypted("PS_KICKASS_API_TOKEN"));
-$apiClient->setHttpClient(new \Kickass\Jash\Http\Client(['base_url' => $apiClient->getServiceUrl()]));
+$apiClient->setHttpClient(new \Kickass\Jash\Http\Client([
+        'base_url' => $apiClient->getServiceUrl(),
+        'defaults' => [
+            'verify' => false
+            ]
+        ]));
 
 $view = new \Kickass\Jash\Template\Basic();
 $view->setTemplateDir(dirname(__FILE__) . '/../theme/prestashop/basic');
