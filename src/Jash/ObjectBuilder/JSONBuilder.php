@@ -5,7 +5,4 @@ class JSONBuilder{
     private $dealDefinition;
 
 
-
-    public function
-
 }

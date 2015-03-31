@@ -10,7 +10,7 @@ class DealDefinition{
     public function singleFromJSON($json){
         
     }
-
+    /** @TODO JSON Schema validation  */
     public function fromJSON($json){
         
     }
