@@ -15,10 +15,14 @@ if (!$code) {
         'code' => $code
     ]);
 
-    $core->config()->setEncrypted("PS_KICKASS_API_TOKEN", $token);
+    if ($token) {
+        $core->config()->setEncrypted("PS_KICKASS_API_TOKEN", $token);
+        $result = "Token saved";
+       $tokenInfo = var_export($core->getApiClient()->setAccessToken($token)->getTokenInfo()->json(), 1);
+    }
 }
 
-$core->config()->deleteByName("PS_KICKASS_OAUTH_STATE");
+//$core->config()->deleteByName("PS_KICKASS_OAUTH_STATE");
 ?><!DOCTYPE html>
 <html lang="en">
     <head>
@@ -27,6 +31,7 @@ $core->config()->deleteByName("PS_KICKASS_OAUTH_STATE");
 
     </head>
     <body>
-
+        <h2><?php echo $result; ?></h2>
+        <pre><?php echo $tokenInfo; ?></pre>
     </body>
 </html>

@@ -12,33 +12,22 @@ class Kickass extends AbstractProvider {
 
     public function urlAuthorize()
     {
-        return 'http://kickass.jash.fr/oauth/authorize';
+        return 'https://kickass.jash.fr/oauth/authorize';
     }
 
     public function urlAccessToken()
     {
-        return 'http://kickass.jash.fr/oauth/token';
+        return 'https://kickass.jash.fr/oauth/token';
     }
 
     public function urlUserDetails(\League\OAuth2\Client\Token\AccessToken $token)
     {
-        return 'https://api.instagram.com/v1/users/self?access_token=' . $token;
+        return '';
     }
 
     public function userDetails($response, \League\OAuth2\Client\Token\AccessToken $token)
     {
         $user = new User();
-
-        $description = (isset($response->data->bio)) ? $response->data->bio : null;
-
-        $user->exchangeArray([
-            'uid' => $response->data->id,
-            'nickname' => $response->data->username,
-            'name' => $response->data->full_name,
-            'description' => $description,
-            'imageUrl' => $response->data->profile_picture,
-        ]);
-
         return $user;
     }
 
