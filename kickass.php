@@ -134,32 +134,6 @@ class Kickass extends PaymentModule
         return true;
     }
 
-    public function getContent2()
-    {
-        if (Tools::isSubmit('submitModule')) {
-
-            /* Update Client ID */
-            $clientId = Tools::getValue('PS_KICKASS_CLIENT_ID');
-            if (isset($clientId)) {
-                $this->core->config()->update("PS_KICKASS_CLIENT_ID", $clientId);
-            }
-
-            /* Update Client Secret */
-            $clientSecret = trim(Tools::getValue('PS_KICKASS_CLIENT_SECRET'));
-            if (!empty($clientSecret)) {
-                $this->core->config()->setEncrypted("PS_KICKASS_CLIENT_SECRET", $clientSecret);
-            }
-
-            /* Update redirect URL */
-            $redirectUrl = Tools::getValue('PS_KICKASS_REDIRECT_URL');
-            if (isset($redirectUrl)) {
-                $this->core->config()->update("PS_KICKASS_REDIRECT_URL", $redirectUrl);
-            }
-            $updated_info = 1;
-        }
-        Tools::redirectAdmin($this->context->link->getAdminLink('AdminKickass') . '&updated_info=' . (isset($updated_info) ? $updated_info : 0));
-    }
-
     public function getContent()
     {
         $html = '';
@@ -174,7 +148,7 @@ class Kickass extends PaymentModule
 
             /* Update Client Secret */
             $clientSecret = trim(Tools::getValue('PS_KICKASS_CLIENT_SECRET'));
-            if (!empty($clientSecret)) {
+            if (isset($clientSecret)) {
                 $this->core->config()->setEncrypted("PS_KICKASS_CLIENT_SECRET", $clientSecret);
             }
 
