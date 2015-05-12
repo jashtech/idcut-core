@@ -1,7 +1,10 @@
 <?php
+
 namespace Kickass\Jash\DealDefinition;
 
-class DealDefinition{
+class DealDefinition
+{
+
     private $id;
     private $start_date;
     private $end_date;
@@ -11,4 +14,5 @@ class DealDefinition{
     private $min_order_value;
     private $range_type;
     private $ranges = [];
+
 }
