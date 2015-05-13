@@ -5,7 +5,7 @@
 	<version><![CDATA[1.0]]></version>
 	<description><![CDATA[Prestashop - kickass module.]]></description>
 	<author><![CDATA[Tomasz Wesołowski &lt;twesolowski@jash.pl&gt;]]></author>
-	<tab><![CDATA[front_office_features]]></tab>
+	<tab><![CDATA[payments_gateways]]></tab>
 	<is_configurable>1</is_configurable>
 	<need_instance>1</need_instance>
 	<limited_countries></limited_countries>
