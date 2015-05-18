@@ -252,6 +252,10 @@ class Kickass extends PaymentModule
         if (!$this->checkCurrency($params['cart']))
             return;
 
+        if(!$this->checkDealConditions($params['cart'])){
+            return;
+        }
+
         $this->smarty->assign(array(
             'this_path' => $this->_path,
             'this_path_kickass' => $this->_path,
@@ -266,6 +270,10 @@ class Kickass extends PaymentModule
             return;
         if (!$this->checkCurrency($params['cart']))
             return;
+
+        if(!$this->checkDealConditions($params['cart'])){
+            return;
+        }
 
         return array(
             'cta_text' => $this->l('Pay by Kickass'),
@@ -306,6 +314,11 @@ class Kickass extends PaymentModule
                 if ($currency_order->id == $currency_module['id_currency'])
                     return true;
         return false;
+    }
+
+    public function checkDealConditions($cart)
+    {
+        return true;
     }
 
     public function getConfigFieldsValues()
