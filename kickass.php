@@ -2,7 +2,7 @@
 
 if (!defined('_PS_VERSION_'))
     exit;
-
+require_once(dirname(__FILE__) . '/classes/KickassTransaction.php');
 class Kickass extends PaymentModule
 {
 
@@ -46,6 +46,7 @@ class Kickass extends PaymentModule
                 !Configuration::updateValue('PS_KICKASS_SCOPES', 'id;name') ||
                 !$this->installTabs() ||
                 !$this->createOrderState() ||
+                !$this->installDB() ||
                 !$this->registerHook('payment') || !$this->registerHook('displayPaymentEU') || !$this->registerHook('paymentReturn')
         ) {
             return false;
@@ -66,6 +67,19 @@ class Kickass extends PaymentModule
             return false;
         }
         return true;
+    }
+
+    protected function installDB(){
+        return Db::getInstance()->Execute(
+                'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'kickasstransaction` (
+                    `id_kickasstransaction` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+                    `id_order` INT( 10 ) UNSIGNED DEFAULT NULL,
+                    `transaction_id` varchar(254) NOT NULL,
+                    `status` TINYINT(4) UNSIGNED DEFAULT 0,
+                    `date_edit` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    PRIMARY KEY (`id_kickasstransaction`)
+                ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;'
+            );
     }
 
     public function installTabs()
@@ -289,7 +303,7 @@ class Kickass extends PaymentModule
 
         $state = $params['objOrder']->getCurrentState();
         if (in_array($state, array(Configuration::get('PS_OS_KICKASS'), Configuration::get('PS_OS_OUTOFSTOCK'),
-                    Configuration::get('PS_OS_OUTOFSTOCK_UNPAID')))) {
+                    Configuration::get('PS_OS_OUTOFSTOCK_UNPAID'), Configuration::get('PS_OS_PAYMENT')))) {
             $this->smarty->assign(array(
                 'total_to_pay' => Tools::displayPrice(
                         $params['total_to_pay'], $params['currencyObj'], false
