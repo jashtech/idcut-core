@@ -7,7 +7,7 @@ class KickassValidationModuleFrontController extends ModuleFrontController
         /*
          * GET http://api.kickass.jash.fr/deal_definitions/<uuid>
          * 
-         * example for d9d03443-befe-480d-866e-03154e1f7670
+         * example for deal d9d03443-befe-480d-866e-03154e1f7670
          */
         //        $response = $this->module->core->getApiClient()->getCurrentDealDefinition();
         //        if($response instanceof GuzzleHttp\Message\Response){
@@ -28,7 +28,8 @@ class KickassValidationModuleFrontController extends ModuleFrontController
                 }
             }
          *
-         * example for 'd77c3e82-3421-43f5-8924-70950a794c80'
+         * example for deal d9d03443-befe-480d-866e-03154e1f7670
+         * returned transaction_id 492131f6-7556-4735-a5c3-89e5c115cbf4
          */
         //        $response = $this->module->core->getApiClient()->createTransaction();
         //        if($response instanceof GuzzleHttp\Message\Response){
@@ -36,7 +37,8 @@ class KickassValidationModuleFrontController extends ModuleFrontController
         //        }
 
         $request_link = $deal->link.'/transactions';
-        $transaction_id = $this->getTransaction($request_link);
+
+        $transaction_id = $this->getTransactionId($request_link);
 
         $transaction = KickassTransaction::getByTransactionId($transaction_id);
         if(!isset($transaction->id)){
@@ -49,13 +51,19 @@ class KickassValidationModuleFrontController extends ModuleFrontController
         return $transaction;
     }
 
-    protected function getTransaction($request_link)
+    protected function getTransactionId($request_link)
     {
-        return 'd77c3e82-3421-43f5-8924-70950a794c80';
+        /* Example
+         * for '492131f6-7556-4735-a5c3-89e5c115cbf4'
+         */
+        return '492131f6-7556-4735-a5c3-89e5c115cbf4';
     }
 
     protected function redirectTransaction(KickassTransaction $transaction)
     {
+        /* Example
+         * https://kickass.jash.fr/en/transactions/492131f6-7556-4735-a5c3-89e5c115cbf4/start
+         */
         Tools::redirect('https://kickass.jash.fr/en/transactions/'.$transaction->transaction_id.'/start');
     }
 
