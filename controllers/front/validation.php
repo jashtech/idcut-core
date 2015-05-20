@@ -57,7 +57,7 @@ class KickassValidationModuleFrontController extends ModuleFrontController
         /* Example
          * for '492131f6-7556-4735-a5c3-89e5c115cbf4'
          */
-        return '01231504-38fb-43a1-9901-21526f681151';
+        return '492131f6-7556-4735-a5c3-89e5c115cbf4';
     }
 
     protected function redirectTransaction(KickassTransaction $transaction)

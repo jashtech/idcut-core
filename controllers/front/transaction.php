@@ -75,7 +75,7 @@ class KickassTransactionModuleFrontController extends ModuleFrontController
         $KickassTransaction->message = $this->getMessage();
         $KickassTransaction->date_edit = date('Y-m-d H:i:s');
         $KickassTransaction->save();
-d($KickassTransaction);
+
         Tools::redirect('index.php?controller=order-confirmation&id_cart='.(int) $KickassTransaction->order->id_cart.'&id_module='.(int) $this->module->id.'&id_order='.$KickassTransaction->order->id.'&key='.$customer->secure_key);
     }
 

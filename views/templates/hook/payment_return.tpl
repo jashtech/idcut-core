@@ -13,6 +13,19 @@
         <br /><br />{l s='For any questions or for further information, please contact our' mod='kickass'} <a href="{$link->getPageLink('contact', true)|escape:'html'}">{l s='customer service department.' mod='kickass'}</a>.
     </p>
 {else}
+    {if isset($transaction->error_code) && !empty($transaction->error_code)}
+        <div class="alert alert-danger">
+            <p>
+                 {$transaction->error_code}
+            </p>
+        </div>
+    {elseif isset($transaction->message) && !empty($transaction->message)}
+        <div class="alert alert-danger">
+            <p>
+                 {$transaction->message|escape:'html'}
+            </p>
+        </div>
+    {/if}
     <p class="warning">
         {l s='We have noticed that there is a problem with your order. If you think this is an error, you can contact our' mod='kickass'} 
         <a href="{$link->getPageLink('contact', true)|escape:'html'}">{l s='customer service department.' mod='kickass'}</a>.

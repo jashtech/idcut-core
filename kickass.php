@@ -346,8 +346,13 @@ class Kickass extends PaymentModule
             ));
             if (isset($params['objOrder']->reference) && !empty($params['objOrder']->reference))
                 $this->smarty->assign('reference', $params['objOrder']->reference);
-        } else
-            $this->smarty->assign('status', 'failed');
+        } else {
+            $transaction = KickassTransaction::getByOrderId($params['objOrder']->id);
+            $this->smarty->assign(array(
+                'status' => 'failed',
+                'transaction' => $transaction
+            ));
+        }
         return $this->display(__FILE__, 'payment_return.tpl');
     }
 
