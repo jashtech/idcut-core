@@ -62,7 +62,8 @@ class Kickass extends PaymentModule
                 !Configuration::deleteByName('PS_KICKASS_CLIENT_SECRET') ||
                 !Configuration::deleteByName('PS_KICKASS_REDIRECT_URL') ||
                 !Configuration::deleteByName('PS_KICKASS_SCOPES') ||
-                !$this->uninstallTabs()
+                !$this->uninstallTabs() ||
+                !$this->uninstallDB()
         ) {
             return false;
         }
@@ -76,7 +77,9 @@ class Kickass extends PaymentModule
                     `id_order` INT( 10 ) UNSIGNED DEFAULT NULL,
                     `transaction_id` varchar(254) NOT NULL,
                     `status` TINYINT(4) UNSIGNED DEFAULT 0,
-                    `date_edit` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    `error_code` INT( 10 ) UNSIGNED DEFAULT NULL,
+                    `message` text DEFAULT NULL,
+                    `date_edit` DATETIME DEFAULT NULL,
                     PRIMARY KEY (`id_kickasstransaction`)
                 ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;'
             );
@@ -107,6 +110,12 @@ class Kickass extends PaymentModule
         $tab->module = $this->name;
         $tab->add();
         return (int) $tab->id;
+    }
+
+    protected function uninstallDB(){
+        return Db::getInstance()->Execute(
+                'DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'kickasstransaction`;'
+            );
     }
 
     public function uninstallTabs()
@@ -147,6 +156,30 @@ class Kickass extends PaymentModule
                 return false;
             }
             Configuration::updateValue('PS_OS_KICKASS', (int) $order_state->id);
+        }
+        if (!Configuration::get('PS_OS_KICKASS_PENDING')) {
+            $order_state = new OrderState();
+            $order_state->name = array();
+
+            foreach (Language::getLanguages() as $language) {
+                $order_state->name[$language['id_lang']] = 'Processing Kickass payment';
+            }
+
+            $order_state->send_email = false;
+            $order_state->color = '#DDEEFF';
+            $order_state->hidden = false;
+            $order_state->delivery = false;
+            $order_state->logable = true;
+            $order_state->invoice = false;
+
+            if ($order_state->add()) {
+                $source = dirname(__FILE__) . '/logo.gif';
+                $destination = dirname(__FILE__) . '/../../img/os/' . (int) $order_state->id . '.gif';
+                copy($source, $destination);
+            } else {
+                return false;
+            }
+            Configuration::updateValue('PS_OS_KICKASS_PENDING', (int) $order_state->id);
         }
         return true;
     }
@@ -302,7 +335,7 @@ class Kickass extends PaymentModule
             return;
 
         $state = $params['objOrder']->getCurrentState();
-        if (in_array($state, array(Configuration::get('PS_OS_KICKASS'), Configuration::get('PS_OS_OUTOFSTOCK'),
+        if (in_array($state, array(Configuration::get('PS_OS_KICKASS'), Configuration::get('PS_OS_KICKASS_PENDING'), Configuration::get('PS_OS_OUTOFSTOCK'),
                     Configuration::get('PS_OS_OUTOFSTOCK_UNPAID'), Configuration::get('PS_OS_PAYMENT')))) {
             $this->smarty->assign(array(
                 'total_to_pay' => Tools::displayPrice(
