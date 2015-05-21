@@ -2,7 +2,7 @@
 
 class KickassValidationModuleFrontController extends ModuleFrontController
 {
-    protected function getCurrentDeal()
+    protected function getCurrentDealDefinition()
     {
         /*
          * GET http://api.kickass.jash.fr/deal_definitions/<uuid>
@@ -97,7 +97,7 @@ class KickassValidationModuleFrontController extends ModuleFrontController
         $total    = (float) $cart->getOrderTotal(true, Cart::BOTH);
 
         $mailVars = array();
-        $deal = $this->getCurrentDeal();
+        $deal = $this->getCurrentDealDefinition();
         
         $this->module->validateOrder((int) $cart->id,
             Configuration::get('PS_OS_KICKASS'), $total,
