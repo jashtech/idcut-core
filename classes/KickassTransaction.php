@@ -1,6 +1,6 @@
 <?php
 
-class KickassTransaction extends ObjectModelCore
+class KickassTransaction extends ObjectModel
 {
     /** @var integer */
     public $id;
@@ -24,8 +24,8 @@ class KickassTransaction extends ObjectModelCore
      * @see ObjectModel::$definition
      */
     public static $definition = array(
-        'table' => 'kickasstransaction',
-        'primary' => 'id_kickasstransaction',
+        'table' => 'kickass_transaction',
+        'primary' => 'id_kickass_transaction',
         'multilang' => false,
         'fields' => array(
             'id_order' => array('type' => self::TYPE_INT, 'validate' => 'isUnsignedInt',
@@ -53,7 +53,7 @@ class KickassTransaction extends ObjectModelCore
     public static function getByTransactionId($transaction_id)
     {
         if(Validate::isReference($transaction_id)){
-            $id = Db::getInstance()->getValue('SELECT `id_kickasstransaction` as id FROM `'._DB_PREFIX_.'kickasstransaction` WHERE transaction_id="'. $transaction_id.'"');
+            $id = Db::getInstance()->getValue('SELECT `id_kickass_transaction` as id FROM `'._DB_PREFIX_.'kickass_transaction` WHERE transaction_id="'. $transaction_id.'"');
         }else{
             $id = null;
         }
@@ -64,7 +64,7 @@ class KickassTransaction extends ObjectModelCore
     public static function getByOrderId($id_order)
     {
         if(Validate::isUnsignedId($id_order)){
-            $id = Db::getInstance()->getValue('SELECT `id_kickasstransaction` as id FROM `'._DB_PREFIX_.'kickasstransaction` WHERE id_order="'. $id_order.'"');
+            $id = Db::getInstance()->getValue('SELECT `id_kickass_transaction` as id FROM `'._DB_PREFIX_.'kickass_transaction` WHERE id_order="'. $id_order.'"');
         }else{
             $id = null;
         }

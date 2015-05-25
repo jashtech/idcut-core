@@ -3,6 +3,9 @@
 if (!defined('_PS_VERSION_'))
     exit;
 require_once(dirname(__FILE__) . '/classes/KickassTransaction.php');
+require_once(dirname(__FILE__) . '/classes/KickassDealDefinition.php');
+require_once(dirname(__FILE__) . '/classes/KickassDeal.php');
+require_once(dirname(__FILE__) . '/classes/KickassRange.php');
 class Kickass extends PaymentModule
 {
 
@@ -72,15 +75,42 @@ class Kickass extends PaymentModule
 
     protected function installDB(){
         return Db::getInstance()->Execute(
-                'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'kickasstransaction` (
-                    `id_kickasstransaction` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+                'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'kickass_transaction` (
+                    `id_kickass_transaction` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
                     `id_order` INT( 10 ) UNSIGNED DEFAULT NULL,
                     `transaction_id` varchar(254) NOT NULL,
                     `status` TINYINT(4) UNSIGNED DEFAULT 0,
                     `error_code` INT( 10 ) UNSIGNED DEFAULT NULL,
                     `message` text DEFAULT NULL,
                     `date_edit` DATETIME DEFAULT NULL,
-                    PRIMARY KEY (`id_kickasstransaction`)
+                    PRIMARY KEY (`id_kickass_transaction`)
+                ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;
+                CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'kickass_deal_definition` (
+                    `id_kickass_deal_definition` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+                    `uuid` varchar(254) NOT NULL,
+                    `start_date` DATETIME NOT NULL,
+                    `end_date` DATETIME NOT NULL,
+                    `ttl` INT( 10 ) UNSIGNED NOT NULL,
+                    `locktime` INT( 10 ) UNSIGNED NOT NULL,
+                    `user_max` INT( 10 ) UNSIGNED NOT NULL,
+                    `min_order_value` INT( 10 ) UNSIGNED NOT NULL,
+                    `range_type` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
+                    PRIMARY KEY (`id_kickass_deal_definition`)
+                ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;
+                CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'kickass_deal` (
+                    `id_kickass_deal` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+                    `deal_id` varchar(254) NOT NULL,
+                    `id_kickass_deal_definition` INT( 10 ) UNSIGNED NOT NULL,
+                    `created_at` DATETIME NOT NULL,
+                    `hash_id` varchar(254) NOT NULL,
+                    PRIMARY KEY (`id_kickass_deal`)
+                ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;
+                CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'kickass_range` (
+                    `id_kickass_range` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+                    `id_kickass_deal_definition` INT( 10 ) UNSIGNED NOT NULL,
+                    `min_participants_number` INT( 10 ) UNSIGNED NOT NULL,
+                    `discount_size` INT( 10 ) UNSIGNED NOT NULL,
+                    PRIMARY KEY (`id_kickass_range`)
                 ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;'
             );
     }
@@ -91,7 +121,8 @@ class Kickass extends PaymentModule
         $ret = (int) $id_root_tab > 0 ? true : false;
         if ($ret) {
             $ret &= $this->installTab('AdminKickassDealDefinition', 'Deal Definition', $id_root_tab) > 0 ? true : false;
-            $ret &= $this->installTab('AdminKickassDeals', 'Deals', $id_root_tab) > 0 ? true : false;
+            $ret &= $this->installTab('AdminKickassDeal', 'Deals', $id_root_tab) > 0 ? true : false;
+            $ret &= $this->installTab('AdminKickassTransaction', 'Transactions', $id_root_tab) > 0 ? true : false;
             $ret &= $this->installTab('AdminKickassStatus', 'Status', $id_root_tab) > 0 ? true : false;
         }
 
@@ -114,7 +145,10 @@ class Kickass extends PaymentModule
 
     protected function uninstallDB(){
         return Db::getInstance()->Execute(
-                'DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'kickasstransaction`;'
+                'DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'kickass_transaction`;
+                DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'kickass_deal_definition`;
+                DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'kickass_deal`;
+                DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'kickass_range`;'
             );
     }
 
