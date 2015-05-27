@@ -58,7 +58,7 @@ class KickassTransactionModuleFrontController extends ModuleFrontController
 
     protected function getStatus()
     {
-        return Tools::getValue('status', 'error');
+        return Tools::getValue('status', 'pending');
     }
 
     protected function getErrorCode()

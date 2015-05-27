@@ -83,7 +83,7 @@ class KickassTransaction extends ObjectModel
         }
         else
         {
-            $this->status = KickassTransaction::$available_statuses['error'];
+            $this->status = KickassTransaction::$available_statuses['pending'];
         }
         return true;
     }

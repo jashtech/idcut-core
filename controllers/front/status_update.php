@@ -47,7 +47,7 @@ class KickassStatusUpdateModuleFrontController extends ModuleFrontController
                 $orderStatusUpdate = $this->setOrderStatus(Configuration::get('PS_OS_KICKASS_PENDING'), $KickassTransaction->order, null);
                 break;
             case 'created':
-                $orderStatusUpdate = $this->setOrderStatus(Configuration::get('PS_OS_CANCELED'), $KickassTransaction->order, null);
+                $orderStatusUpdate = $this->setOrderStatus(Configuration::get('PS_OS_KICKASS_PENDING'), $KickassTransaction->order, null);
                 break;
             case 'cancelled_by_user':
                 $orderStatusUpdate = $this->setOrderStatus(Configuration::get('PS_OS_CANCELED'), $KickassTransaction->order, null);
@@ -55,8 +55,11 @@ class KickassStatusUpdateModuleFrontController extends ModuleFrontController
             case 'cancelled_by_payment_gateway':
                 $orderStatusUpdate = $this->setOrderStatus(Configuration::get('PS_OS_CANCELED'), $KickassTransaction->order, null);
                 break;
-            default:
+            case 'error':
                 $orderStatusUpdate = $this->setOrderStatus(Configuration::get('PS_OS_ERROR'), $KickassTransaction->order, null);
+                break;
+            default:
+                $orderStatusUpdate = $this->setOrderStatus(Configuration::get('PS_OS_KICKASS_PENDING'), $KickassTransaction->order, null);
                 break;
         }
         $KickassTransaction->setStatus($status);
@@ -70,7 +73,7 @@ class KickassStatusUpdateModuleFrontController extends ModuleFrontController
 
     protected function getStatusForUpdate()
     {
-        return Tools::getValue('status', 'error');
+        return Tools::getValue('status', 'pending');
     }
 
     protected function getErrorCodeForUpdate()
