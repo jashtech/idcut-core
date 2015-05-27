@@ -12,9 +12,12 @@
 {if isset($nbProducts) && $nbProducts <= 0}
     <p class="warning">{l s='Your shopping cart is empty.' mod='kickass'}</p>
 {else}
-
+    {if isset($error_message) && !empty($error_message)}
+        <p class="warning">{$error_message|escape:'html'}</p>
+    {/if}
+    
     <h3>{l s='Kickass payment' mod='kickass'}</h3>
-    <form action="{$link->getModuleLink('kickass', 'validation', [], true)|escape:'html'}" method="post">
+    <form action="{$link->getModuleLink('kickass', 'payment', [], true)|escape:'html'}" method="post">
         <p>
             {l s='You have chosen to pay by kickass.' mod='kickass'}
             <br/><br />
@@ -44,10 +47,27 @@
             {/if}
         </p>
         <p>
+            - {l s='Please choose wisely' mod='kickass'}
+        </p>
+{*            {if $can_create_deal}*}
+        <p class="radio-inline">
+                <label>
+                        <input type="radio" name="deal_join" id="deal_new" value="0"{if isset($smarty.post.deal_join) && $smarty.post.deal_join == 0} checked="checked"{/if} />
+                        {l s='Create new deal' mod='kickass'}
+                </label>
+        </p>
+{*            {/if}*}
+        <p class="radio-inline">
+            <label>
+                    <input type="radio" name="deal_join" id="deal_join" value="1"{if isset($smarty.post.deal_join) && $smarty.post.deal_join == 1} checked="checked"{/if} />
+                    <input type="text" name="deal_token" placeholder="{l s='Join to existing deal' mod='kickass'}" value="{if isset($smarty.post.deal_token)}{$smarty.post.deal_token}{/if}">
+            </label>
+        </p>
+        <p>
             <b>{l s='Please confirm your order by clicking \'I confirm my order\'.' mod='kickass'}</b>
         </p>
         <p class="cart_navigation" id="cart_navigation">
-            <input type="submit" value="{l s='I confirm my order' mod='kickass'}" class="exclusive_large"/>
+            <input type="submit" name="confirm_order" value="{l s='I confirm my order' mod='kickass'}" class="exclusive_large"/>
             <a href="{$link->getPageLink('order', true, NULL, "step=3")|escape:'html'}" class="button_large">{l s='Other payment methods' mod='kickass'}</a>
         </p>
     </form>

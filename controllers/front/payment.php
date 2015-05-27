@@ -15,6 +15,16 @@ class KickassPaymentModuleFrontController extends ModuleFrontController
         $cart = $this->context->cart;
         if (!$this->module->checkCurrency($cart))
                 Tools::redirect('index.php?controller=order');
+        if (Tools::isSubmit('confirm_order')){
+                if($this->module->checkDealConditions($cart)){
+                    Tools::redirect($this->context->link->getModuleLink('kickass', 'validation', array(), true));
+                }
+                else{
+                    $this->context->smarty->assign(array(
+                        'error_message' => ToolsCore::displayError('Your cart is not fulfilling Deal conditions')
+                    ));
+                }
+        }
 
         $this->context->smarty->assign(array(
             'nbProducts' => $cart->nbProducts(),
