@@ -57,7 +57,12 @@ class KickassValidationModuleFrontController extends ModuleFrontController
         /* Example
          * for '492131f6-7556-4735-a5c3-89e5c115cbf4'
          */
-        return '492131f6-7556-4735-a5c3-89e5c115cbf4';
+        $config = explode(',',Configuration::get('PS_DEMO_KICKASS_TRAN'));
+        $tid = $config[0];
+        unset($config[0]);
+        $config = Configuration::updateValue('PS_DEMO_KICKASS_TRAN', implode(',',$config));
+
+        return $tid;
     }
 
     protected function redirectTransaction(KickassTransaction $transaction)

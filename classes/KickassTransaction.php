@@ -13,11 +13,14 @@ class KickassTransaction extends ObjectModel
     public $order;
 
     protected static $available_statuses = array(
-        'error' => 0,
-        'init' => 1,
-        'created' => 2,
-        'pending' => 3,
-        'completed' => 4,
+        'init' => 0,
+        'created' => 1,
+        'pending' => 2,
+        'completed' => 3,
+        'cancelled_by_user' => 4,
+        'cancelled_by_payment_gateway' => 5,
+        'waiting_payment_gateway' => 6,
+        'error' => 7,
     );
 
     /**
