@@ -20,8 +20,6 @@ class AdminKickassDealDefinitionController extends ModuleAdminController
         $this->fields_list = array(
             'id_kickass_deal_definition' => array('title' => $this->l('ID')),
             'uuid' => array('title' => $this->l('Deal Definition ID')),
-            'start_date' => array('title' => $this->l('Starts')),
-            'end_date' => array('title' => $this->l('Ends')),
             'ttl' => array('title' => $this->l('Time to join'), 'callback' => 'printTimeForHuman'),
             'locktime' => array('title' => $this->l('Time to return money'), 'callback' => 'printTimeForHuman'),
             'user_max' => array('title' => $this->l('User limit')),
