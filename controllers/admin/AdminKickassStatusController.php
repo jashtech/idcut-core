@@ -12,9 +12,6 @@ class AdminKickassStatusController extends ModuleAdminController
         parent::__construct();
         if (!$this->module->active)
                 Tools::redirectAdmin($this->context->link->getAdminLink('AdminHome'));
-
-        $this->core = require dirname(__FILE__) . '/../../bootstrap/prestashop.php';
-
     }
 
     public function setMedia()
@@ -32,24 +29,24 @@ class AdminKickassStatusController extends ModuleAdminController
         $view          = $this->module->core->getView();
         $view->setTemplateFile("adminStatus.php");
 
-        $view->coreClass = get_class ($this->core);
-        $view->configClass = get_class ($this->core->getConfig());
-        $view->apiClientClass = get_class($this->core->getApiClient());
-        $view->cipherClass = get_class($this->core->getCipher());
+        $view->coreClass = get_class ($this->module->core);
+        $view->configClass = get_class ($this->module->core->getConfig());
+        $view->apiClientClass = get_class($this->module->core->getApiClient());
+        $view->cipherClass = get_class($this->module->core->getCipher());
         $view->authenticated = "maybe";
-        $view->accessToken = $this->core->config()->getEncrypted("PS_KICKASS_API_TOKEN");
+        $view->accessToken = $this->module->core->config()->getEncrypted("PS_KICKASS_API_TOKEN");
 
-        $tokenInfo = $this->core->getApiClient()->getTokenInfo();
+        $tokenInfo = $this->module->core->getApiClient()->getTokenInfo();
         if($tokenInfo instanceof  GuzzleHttp\Message\Response){
             $view->accessTokenInfo = var_export($tokenInfo->json(), true);
         }
 
         
-        $view->apiClientVersion = $this->core->getApiClient()->getVersion();
-        $view->serviceUrl = $this->core->getApiClient()->getServiceUrl();
-        $view->cipherTest = $this->core->getCipher()->test(md5(rand())) ? "OK" : "FAIL";
+        $view->apiClientVersion = $this->module->core->getApiClient()->getVersion();
+        $view->serviceUrl = $this->module->core->getApiClient()->getServiceUrl();
+        $view->cipherTest = $this->module->core->getCipher()->test(md5(rand())) ? "OK" : "FAIL";
 
-        $testResponse = $this->core->getApiClient()->test();
+        $testResponse = $this->module->core->getApiClient()->test();
         if($testResponse instanceof GuzzleHttp\Message\Response){
             $view->testResponse = var_export($testResponse , true);
         }
