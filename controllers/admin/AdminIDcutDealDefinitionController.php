@@ -15,7 +15,7 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
         $this->context    = Context::getContext();
         $this->meta_title = $this->l('Your IDcut Deal Definition');
 
-        $this->_orderBy = 'start_date';
+        $this->_orderBy = 'id';
         $this->_orderWay = 'DESC';
 
         $this->fields_list = array(
