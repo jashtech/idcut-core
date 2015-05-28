@@ -305,16 +305,11 @@ class IDcut extends PaymentModule
         $html = '';
         $html .= $helper->generateForm(array($fieldsForm));
 
-
-
-
-
-
-
         $provider = $this->getProvider();
 
         $view = $this->core->getView();
         $view->setTemplateFile("connectButton.php");
+        $view->connected = (bool)$this->core->config()->getEncrypted("PS_IDCUT_API_TOKEN");
         $view->authorizationUrl = $provider->getAuthorizationUrl();
 
         $this->core->config()->setEncrypted("PS_IDCUT_OAUTH_STATE", $provider->state);
