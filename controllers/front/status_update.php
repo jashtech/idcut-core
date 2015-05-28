@@ -1,6 +1,6 @@
 <?php
 
-class KickassStatusUpdateModuleFrontController extends ModuleFrontController
+class KickassStatus_UpdateModuleFrontController extends ModuleFrontController
 {
     protected $action_function;
     protected $availableActions = array(
@@ -22,7 +22,7 @@ class KickassStatusUpdateModuleFrontController extends ModuleFrontController
         $transaction_id = $this->getTransactionId();
         $KickassTransaction = KickassTransaction::getByTransactionId($transaction_id);
         if(!Validate::isLoadedObject($KickassTransaction)){
-                echo $this->l('Transaction id is invalid');
+                echo 'Transaction id is invalid';
                 exit;
         }
         if (is_callable($this->{$this->action_function}($KickassTransaction))){
