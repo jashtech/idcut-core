@@ -1,6 +1,6 @@
 {
-    "name": "tomek/kickass",
-    "description": "Kickass",
+    "name": "tomek/idcut",
+    "description": "IDcut",
     "license": "MIT",
     "authors": [
         {
@@ -20,7 +20,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Kickass\\": "src/"
+            "IDcut\\": "src/"
         }
     }
 }
