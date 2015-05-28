@@ -8,12 +8,6 @@ class IDcutDealDefinition extends ObjectModel
     /** @var string xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx */
     public $uuid;
 
-    /** @var date 2015-02-04T00:00:00.000Z */
-    public $start_date;
-
-    /** @var date 2015-02-04T00:00:00.000Z */
-    public $end_date;
-
     /** @var int seconds */
     public $ttl;
 
@@ -45,10 +39,6 @@ class IDcutDealDefinition extends ObjectModel
         'fields' => array(
             'uuid' => array('type' => self::TYPE_STRING, 'validate' => 'isReference',
                 'required' => true, 'size' => 254, 'copy_post' => false),
-            'start_date' => array('type' => self::TYPE_DATE, 'validate' => 'isDate',
-                'required' => true),
-            'end_date' => array('type' => self::TYPE_DATE, 'validate' => 'isDate',
-                'required' => true),
             'ttl' => array('type' => self::TYPE_INT, 'validate' => 'isUnsignedInt',
                 'required' => true),
             'locktime' => array('type' => self::TYPE_INT, 'validate' => 'isUnsignedInt',

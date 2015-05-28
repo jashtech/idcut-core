@@ -88,8 +88,6 @@ class IDcut extends PaymentModule
                 CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'idcut_deal_definition` (
                     `id_idcut_deal_definition` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
                     `uuid` varchar(254) NOT NULL,
-                    `start_date` DATETIME NOT NULL,
-                    `end_date` DATETIME NOT NULL,
                     `ttl` INT( 10 ) UNSIGNED NOT NULL,
                     `locktime` INT( 10 ) UNSIGNED NOT NULL,
                     `user_max` INT( 10 ) UNSIGNED NOT NULL,

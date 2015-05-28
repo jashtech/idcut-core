@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <module>
-	<name>kickass</name>
-	<displayName><![CDATA[Kickass]]></displayName>
+	<name>idcut</name>
+	<displayName><![CDATA[IDcut]]></displayName>
 	<version><![CDATA[1.0]]></version>
-	<description><![CDATA[Prestashop - kickass module.]]></description>
+	<description><![CDATA[Prestashop - idcut module.]]></description>
 	<author><![CDATA[Tomasz Wesołowski &lt;twesolowski@jash.pl&gt;]]></author>
 	<tab><![CDATA[payments_gateways]]></tab>
 	<is_configurable>1</is_configurable>

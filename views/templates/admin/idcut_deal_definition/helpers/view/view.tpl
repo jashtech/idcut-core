@@ -33,14 +33,6 @@
                         <div class="col-lg-9"><p class="form-control-static">{$deal_definition->uuid}</p></div>
                 </div>
                 <div class="form-group">
-                        <label class="col-lg-3 control-label">{l s='Starts:'  mod='idcut'}</label>
-                        <div class="col-lg-9"><p class="form-control-static">{$deal_definition->start_date}</p></div>
-                </div>
-                <div class="form-group">
-                        <label class="col-lg-3 control-label">{l s='Ends:'  mod='idcut'}</label>
-                        <div class="col-lg-9"><p class="form-control-static">{$deal_definition->end_date}</p></div>
-                </div>
-                <div class="form-group">
                         <label class="col-lg-3 control-label">{l s='Time to join:'  mod='idcut'}</label>
                         <div class="col-lg-9"><p class="form-control-static">{$deal_definition->formatTtl()}</p></div>
                 </div>
