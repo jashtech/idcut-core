@@ -44,7 +44,7 @@ class KickassDealDefinition extends ObjectModel
         'multilang' => false,
         'fields' => array(
             'uuid' => array('type' => self::TYPE_STRING, 'validate' => 'isReference',
-                'required' => true, 'size' => 254),
+                'required' => true, 'size' => 254, 'copy_post' => false),
             'start_date' => array('type' => self::TYPE_DATE, 'validate' => 'isDate',
                 'required' => true),
             'end_date' => array('type' => self::TYPE_DATE, 'validate' => 'isDate',

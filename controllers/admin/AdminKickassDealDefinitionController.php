@@ -11,6 +11,7 @@ class AdminKickassDealDefinitionController extends ModuleAdminController
         $this->className  = 'KickassDealDefinition';
         $this->lang       = false;
         $this->addRowAction('view');
+        $this->addRowAction('edit');
         $this->context    = Context::getContext();
         $this->meta_title = $this->l('Your Kickass Deal Definition');
 
@@ -56,6 +57,75 @@ class AdminKickassDealDefinitionController extends ModuleAdminController
         );
         
         return parent::renderView();
+    }
+
+    public function postProcess()
+    {
+        /* Ranges save should be triggered here */
+        return parent::postProcess();
+    }
+
+    public function renderForm()
+    {
+            if (!($obj = $this->loadObject(true)))
+                    return;
+
+            $this->fields_form = array(
+                    'legend' => array(
+                            'title' => $this->l('Deal Definition'),
+                            'icon' => 'icon-cog'
+                    ),
+                    'input' => array(
+                            array(
+                                    'type' => 'text',
+                                    'label' => $this->l('Time to join'),
+                                    'name' => 'ttl',
+                                    'required' => true
+                            ),
+                            array(
+                                    'type' => 'text',
+                                    'label' => $this->l('Time to return money'),
+                                    'name' => 'locktime',
+                                    'required' => true
+                            ),
+                            array(
+                                    'type' => 'text',
+                                    'label' => $this->l('Maximum users'),
+                                    'name' => 'user_max',
+                                    'required' => true
+                            ),
+                            array(
+                                    'type' => 'text',
+                                    'label' => $this->l('Minimum order value'),
+                                    'name' => 'min_order_value',
+                                    'required' => true
+                            ),
+                            array(
+                                    'type' => 'range_type',
+                                    'label' => $this->l('Range type'),
+                                    'name' => 'range_type',
+                                    'required' => true,
+                                    'is_bool' => true,
+                                    'values' => array(
+                                            array(
+                                                    'id' => 'range_type_on',
+                                                    'value' => 1,
+                                                    'label' => $this->l('Amount')
+                                            ),
+                                            array(
+                                                    'id' => 'range_type_off',
+                                                    'value' => 0,
+                                                    'label' => $this->l('Percent')
+                                            )
+                                    ),
+                            ),
+                    ),
+                    'submit' => array(
+                            'title' => $this->l('Save'),
+                    )
+            );
+
+            return parent::renderForm();
     }
 
     public function printRangeType($t)
