@@ -407,5 +407,14 @@ class Kickass extends PaymentModule
             'PS_KICKASS_REDIRECT_URL' => $this->core->config()->get("PS_KICKASS_REDIRECT_URL")
         );
     }
+    public function getMyControllersUrls()
+    {
+        return array(
+            'base' => $this->context->link->getPageLink('index'),
+            'transaction' => $this->context->link->getPageLink('index').'?fc=module&module='.$this->name.'&controller=transaction', // Payment return
+            'status_update' => $this->context->link->getPageLink('index').'?fc=module&module='.$this->name.'&controller=status_update', // update status of order
+            'deal_with_it' => $this->context->link->getPageLink('index').'?fc=module&module='.$this->name.'&controller=deal_with_it', // save deal hash in session
+        );
+    }
 
 }
