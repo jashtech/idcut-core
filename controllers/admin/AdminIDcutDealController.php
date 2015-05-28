@@ -1,25 +1,25 @@
 <?php
 
-class AdminKickassDealController extends ModuleAdminController
+class AdminIDcutDealController extends ModuleAdminController
 {
 
     public function __construct()
     {
         $this->bootstrap  = true;
-        $this->table      = 'kickass_deal';
-        $this->className  = 'KickassDeal';
+        $this->table      = 'idcut_deal';
+        $this->className  = 'IDcutDeal';
         $this->lang       = false;
 //        $this->addRowAction('view');
         $this->context    = Context::getContext();
-        $this->meta_title = $this->l('Your Kickass Deals');
+        $this->meta_title = $this->l('Your IDcut Deals');
 
         $this->_orderBy = 'created_at';
         $this->_orderWay = 'DESC';
 
         $this->fields_list = array(
-            'id_kickass_deal' => array('title' => $this->l('ID')),
+            'id_idcut_deal' => array('title' => $this->l('ID')),
             'deal_id' => array('title' => $this->l('Deal ID')),
-            'id_kickass_deal_definition' => array('title' => $this->l('Definition ID')),
+            'id_idcut_deal_definition' => array('title' => $this->l('Definition ID')),
             'created_at' => array('title' => $this->l('Created at')),
             'hash_id' => array('title' => $this->l('Hash ID')),
         );
@@ -36,7 +36,7 @@ class AdminKickassDealController extends ModuleAdminController
 
     public function initToolBarTitle()
     {
-        $this->toolbar_title[] = $this->l('Kickass Deals');
+        $this->toolbar_title[] = $this->l('IDcut Deals');
     }
 
     public function initPageHeaderToolbar()

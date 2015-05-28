@@ -1,6 +1,6 @@
 <?php
 
-class KickassDeal_With_ItModuleFrontController extends ModuleFrontController
+class IDcutDeal_With_ItModuleFrontController extends ModuleFrontController
 {
 
     public function __construct()

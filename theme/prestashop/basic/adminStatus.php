@@ -1,4 +1,4 @@
-<h2>Kickass client status</h2>
+<h2>IDcut client status</h2>
 <dl>
 
     <dt>Core</dt>

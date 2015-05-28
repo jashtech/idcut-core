@@ -1,5 +1,5 @@
 <?php
-namespace Kickass\Jash\Http;
+namespace IDcut\Jash\Http;
 
 interface ClientInterface
 {

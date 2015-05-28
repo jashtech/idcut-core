@@ -1,6 +1,6 @@
 <?php
 
-class KickassTransactionModuleFrontController extends ModuleFrontController
+class IDcutTransactionModuleFrontController extends ModuleFrontController
 {
     protected $action_function;
     protected $availableActions = array(
@@ -19,41 +19,41 @@ class KickassTransactionModuleFrontController extends ModuleFrontController
     public function postProcess()
     {
         $transaction_id = $this->getTransactionId();
-        $KickassTransaction = KickassTransaction::getByTransactionId($transaction_id);
-        if(!Validate::isLoadedObject($KickassTransaction)){
+        $IDcutTransaction = IDcutTransaction::getByTransactionId($transaction_id);
+        if(!Validate::isLoadedObject($IDcutTransaction)){
             $this->action = 'error';
             $this->action_function = $this->availableActions[$this->action];
-            $KickassTransaction->transaction_id = $transaction_id;
+            $IDcutTransaction->transaction_id = $transaction_id;
         }
-        if (is_callable($this->{$this->action_function}($KickassTransaction))){
-            $this->{$this->action_function}($KickassTransaction);
+        if (is_callable($this->{$this->action_function}($IDcutTransaction))){
+            $this->{$this->action_function}($IDcutTransaction);
         }
     }
 
     //this change status for transaction and redirect to end order-confirmation page
-    public function processView(KickassTransaction $KickassTransaction)
+    public function processView(IDcutTransaction $IDcutTransaction)
     {
-        $customer = new Customer((int)$KickassTransaction->order->id_customer);
+        $customer = new Customer((int)$IDcutTransaction->order->id_customer);
         $status = $this->getStatus();
 
-        $KickassTransaction->setStatus($status);
-        $KickassTransaction->error_code = $this->getErrorCode();
-        $KickassTransaction->message = $this->getMessage();
-        $KickassTransaction->date_edit = date('Y-m-d H:i:s');
-        $KickassTransaction->save();
+        $IDcutTransaction->setStatus($status);
+        $IDcutTransaction->error_code = $this->getErrorCode();
+        $IDcutTransaction->message = $this->getMessage();
+        $IDcutTransaction->date_edit = date('Y-m-d H:i:s');
+        $IDcutTransaction->save();
 
-        Tools::redirect('index.php?controller=order-confirmation&id_cart='.(int) $KickassTransaction->order->id_cart.'&id_module='.(int) $this->module->id.'&id_order='.$KickassTransaction->order->id.'&key='.$customer->secure_key);
+        Tools::redirect('index.php?controller=order-confirmation&id_cart='.(int) $IDcutTransaction->order->id_cart.'&id_module='.(int) $this->module->id.'&id_order='.$IDcutTransaction->order->id.'&key='.$customer->secure_key);
     }
 
-    public function processError(KickassTransaction $KickassTransaction)
+    public function processError(IDcutTransaction $IDcutTransaction)
     {
         $customer = $this->context->customer;
-        $KickassTransaction->order->id_customer = $customer->id;
-        $KickassTransaction->id_order = 0;
-        $KickassTransaction->order->id = 0;
-        $KickassTransaction->order->id_cart = 0;
+        $IDcutTransaction->order->id_customer = $customer->id;
+        $IDcutTransaction->id_order = 0;
+        $IDcutTransaction->order->id = 0;
+        $IDcutTransaction->order->id_cart = 0;
 
-        $this->processView($KickassTransaction);
+        $this->processView($IDcutTransaction);
     }
 
     protected function getStatus()

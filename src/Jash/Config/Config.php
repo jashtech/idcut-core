@@ -1,6 +1,6 @@
 <?php
 
-namespace Kickass\Jash\Config;
+namespace IDcut\Jash\Config;
 
 class Config extends ConfigAbstract
 {

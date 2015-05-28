@@ -1,5 +1,5 @@
 <?php
-namespace Kickass\Jash\Core;
+namespace IDcut\Jash\Core;
 
 class Core extends CoreAbstract{
     

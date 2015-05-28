@@ -1,6 +1,6 @@
 <?php
 
-class KickassStatus_UpdateModuleFrontController extends ModuleFrontController
+class IDcutStatus_UpdateModuleFrontController extends ModuleFrontController
 {
     protected $action_function;
     protected $availableActions = array(
@@ -20,53 +20,53 @@ class KickassStatus_UpdateModuleFrontController extends ModuleFrontController
     public function postProcess()
     {
         $transaction_id = $this->getTransactionId();
-        $KickassTransaction = KickassTransaction::getByTransactionId($transaction_id);
-        if(!Validate::isLoadedObject($KickassTransaction)){
+        $IDcutTransaction = IDcutTransaction::getByTransactionId($transaction_id);
+        if(!Validate::isLoadedObject($IDcutTransaction)){
                 echo 'Transaction id is invalid';
                 exit;
         }
-        if (is_callable($this->{$this->action_function}($KickassTransaction))){
-            $this->{$this->action_function}($KickassTransaction);
+        if (is_callable($this->{$this->action_function}($IDcutTransaction))){
+            $this->{$this->action_function}($IDcutTransaction);
         }
 
     }
 
-    public function processUpdate(KickassTransaction $KickassTransaction)
+    public function processUpdate(IDcutTransaction $IDcutTransaction)
     {
-        $customer = new Customer((int)$KickassTransaction->order->id_customer);
+        $customer = new Customer((int)$IDcutTransaction->order->id_customer);
         $status = $this->getStatusForUpdate();
 
         switch($status){
             case 'completed':
-                $orderStatusUpdate = $this->setOrderStatus(Configuration::get('PS_OS_PAYMENT'), $KickassTransaction->order, null);
+                $orderStatusUpdate = $this->setOrderStatus(Configuration::get('PS_OS_PAYMENT'), $IDcutTransaction->order, null);
                 break;
             case 'pending':
-                $orderStatusUpdate = $this->setOrderStatus(Configuration::get('PS_OS_KICKASS_PENDING'), $KickassTransaction->order, null);
+                $orderStatusUpdate = $this->setOrderStatus(Configuration::get('PS_OS_IDCUT_PENDING'), $IDcutTransaction->order, null);
                 break;
             case 'waiting_payment_gateway':
-                $orderStatusUpdate = $this->setOrderStatus(Configuration::get('PS_OS_KICKASS_PENDING'), $KickassTransaction->order, null);
+                $orderStatusUpdate = $this->setOrderStatus(Configuration::get('PS_OS_IDCUT_PENDING'), $IDcutTransaction->order, null);
                 break;
             case 'created':
-                $orderStatusUpdate = $this->setOrderStatus(Configuration::get('PS_OS_KICKASS_PENDING'), $KickassTransaction->order, null);
+                $orderStatusUpdate = $this->setOrderStatus(Configuration::get('PS_OS_IDCUT_PENDING'), $IDcutTransaction->order, null);
                 break;
             case 'cancelled_by_user':
-                $orderStatusUpdate = $this->setOrderStatus(Configuration::get('PS_OS_CANCELED'), $KickassTransaction->order, null);
+                $orderStatusUpdate = $this->setOrderStatus(Configuration::get('PS_OS_CANCELED'), $IDcutTransaction->order, null);
                 break;
             case 'cancelled_by_payment_gateway':
-                $orderStatusUpdate = $this->setOrderStatus(Configuration::get('PS_OS_CANCELED'), $KickassTransaction->order, null);
+                $orderStatusUpdate = $this->setOrderStatus(Configuration::get('PS_OS_CANCELED'), $IDcutTransaction->order, null);
                 break;
             case 'error':
-                $orderStatusUpdate = $this->setOrderStatus(Configuration::get('PS_OS_ERROR'), $KickassTransaction->order, null);
+                $orderStatusUpdate = $this->setOrderStatus(Configuration::get('PS_OS_ERROR'), $IDcutTransaction->order, null);
                 break;
             default:
-                $orderStatusUpdate = $this->setOrderStatus(Configuration::get('PS_OS_KICKASS_PENDING'), $KickassTransaction->order, null);
+                $orderStatusUpdate = $this->setOrderStatus(Configuration::get('PS_OS_IDCUT_PENDING'), $IDcutTransaction->order, null);
                 break;
         }
-        $KickassTransaction->setStatus($status);
-        $KickassTransaction->error_code = $this->getErrorCodeForUpdate();
-        $KickassTransaction->message = $this->getMessageForUpdate();
-        $KickassTransaction->date_edit = date('Y-m-d H:i:s');
-        $KickassTransaction->save();
+        $IDcutTransaction->setStatus($status);
+        $IDcutTransaction->error_code = $this->getErrorCodeForUpdate();
+        $IDcutTransaction->message = $this->getMessageForUpdate();
+        $IDcutTransaction->date_edit = date('Y-m-d H:i:s');
+        $IDcutTransaction->save();
         echo 'transaction updated';
         exit;
     }

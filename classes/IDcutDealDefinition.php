@@ -1,6 +1,6 @@
 <?php
 
-class KickassDealDefinition extends ObjectModel
+class IDcutDealDefinition extends ObjectModel
 {
     /** @var integer */
     public $id;
@@ -29,7 +29,7 @@ class KickassDealDefinition extends ObjectModel
     /** @var bool false-percent true-amount */
     public $range_type;
 
-    /** @var array array of KickassRange objects */
+    /** @var array array of IDcutRange objects */
     public $ranges;
 
     /** @var string url constructed with $uuid */
@@ -39,8 +39,8 @@ class KickassDealDefinition extends ObjectModel
      * @see ObjectModel::$definition
      */
     public static $definition = array(
-        'table' => 'kickass_deal_definition',
-        'primary' => 'id_kickass_deal_definition',
+        'table' => 'idcut_deal_definition',
+        'primary' => 'id_idcut_deal_definition',
         'multilang' => false,
         'fields' => array(
             'uuid' => array('type' => self::TYPE_STRING, 'validate' => 'isReference',
@@ -67,7 +67,7 @@ class KickassDealDefinition extends ObjectModel
         parent::__construct($id, $id_lang, $id_shop);
 
         if (Validate::isLoadedObject($this)) {
-            $this->ranges = KickassRange::getRangesByKickassDealDefinition($this->id);
+            $this->ranges = IDcutRange::getRangesByIDcutDealDefinition($this->id);
             $this->setLink();
         }
     }
@@ -75,12 +75,12 @@ class KickassDealDefinition extends ObjectModel
     public static function getByUuid($uuid)
     {
         if (Validate::isReference($uuid)) {
-            $id = Db::getInstance()->getValue('SELECT `id_kickass_deal_definition` as id FROM `'._DB_PREFIX_.'kickass_deal_definition` WHERE uuid="'.$uuid.'"');
+            $id = Db::getInstance()->getValue('SELECT `id_idcut_deal_definition` as id FROM `'._DB_PREFIX_.'idcut_deal_definition` WHERE uuid="'.$uuid.'"');
         } else {
             $id = null;
         }
 
-        return new KickassDealDefinition($id);
+        return new IDcutDealDefinition($id);
     }
 
     public function getLink()

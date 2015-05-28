@@ -1,8 +1,8 @@
 <?php
 
-namespace Kickass\Jash\Template;
+namespace IDcut\Jash\Template;
 
-use \Kickass\Jash\Template\TemplateInterface as TemplateInterface;
+use \IDcut\Jash\Template\TemplateInterface as TemplateInterface;
 
 class Basic implements TemplateInterface
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Kickass\Jash\Cipher;
+namespace IDcut\Jash\Cipher;
 
 class Rijndael extends \Crypt_Rijndael implements CipherInterface
 {

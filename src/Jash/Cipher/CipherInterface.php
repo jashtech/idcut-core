@@ -1,6 +1,6 @@
 <?php
 
-namespace Kickass\Jash\Cipher;
+namespace IDcut\Jash\Cipher;
 
 interface CipherInterface {
     public function setKey($key);

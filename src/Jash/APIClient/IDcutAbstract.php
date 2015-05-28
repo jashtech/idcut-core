@@ -1,11 +1,11 @@
 <?php
 
-namespace Kickass\Jash\APIClient;
+namespace IDcut\Jash\APIClient;
 
 use GuzzleHttp\ClientInterface as HttpClientInterface;
 use GuzzleHttp\Exception\RequestException as RequestException;
 
-abstract class KickassAbstract implements KickassInterface
+abstract class IDcutAbstract implements IDcutInterface
 {
 
     protected $version;

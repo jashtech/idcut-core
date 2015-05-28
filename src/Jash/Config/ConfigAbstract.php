@@ -1,6 +1,6 @@
 <?php
 
-namespace Kickass\Jash\Config;
+namespace IDcut\Jash\Config;
 
 abstract class ConfigAbstract implements ConfigInterface 
 {
@@ -20,7 +20,7 @@ abstract class ConfigAbstract implements ConfigInterface
         
     }
 
-    public function setCipher(\Kickass\Jash\Cipher\CipherInterface $cipher)
+    public function setCipher(\IDcut\Jash\Cipher\CipherInterface $cipher)
     {
         $this->cipher = $cipher;
         return $this;

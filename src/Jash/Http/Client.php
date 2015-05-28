@@ -1,9 +1,9 @@
 <?php
-namespace Kickass\Jash\Http;
+namespace IDcut\Jash\Http;
 
 use GuzzleHttp\Client as HttpClient;
 
-class Client extends HttpClient implements \Kickass\Jash\Http\ClientInterface
+class Client extends HttpClient implements \IDcut\Jash\Http\ClientInterface
 {
     
 }

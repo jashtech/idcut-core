@@ -1,6 +1,6 @@
 <?php
 
-class AdminKickassStatusController extends ModuleAdminController
+class AdminIDcutStatusController extends ModuleAdminController
 {
 
     public function __construct()
@@ -8,7 +8,7 @@ class AdminKickassStatusController extends ModuleAdminController
         $this->bootstrap = true;
         $this->display   = 'view';
 
-        $this->meta_title = $this->l('Your Kickass Status');
+        $this->meta_title = $this->l('Your IDcut Status');
         parent::__construct();
         if (!$this->module->active)
                 Tools::redirectAdmin($this->context->link->getAdminLink('AdminHome'));
@@ -21,7 +21,7 @@ class AdminKickassStatusController extends ModuleAdminController
 
     public function initToolBarTitle()
     {
-        $this->toolbar_title[] = $this->l('Kickass Status');
+        $this->toolbar_title[] = $this->l('IDcut Status');
     }
 
     public function renderView()
@@ -34,7 +34,7 @@ class AdminKickassStatusController extends ModuleAdminController
         $view->apiClientClass = get_class($this->module->core->getApiClient());
         $view->cipherClass = get_class($this->module->core->getCipher());
         $view->authenticated = "maybe";
-        $view->accessToken = $this->module->core->config()->getEncrypted("PS_KICKASS_API_TOKEN");
+        $view->accessToken = $this->module->core->config()->getEncrypted("PS_IDCUT_API_TOKEN");
 
         $tokenInfo = $this->module->core->getApiClient()->getTokenInfo();
         if($tokenInfo instanceof  GuzzleHttp\Message\Response){

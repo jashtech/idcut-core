@@ -1,6 +1,6 @@
 <?php
 
-namespace Kickass\Jash\Object;
+namespace IDcut\Jash\Object;
 
 interface ObjectInterface
 {

@@ -1,11 +1,11 @@
 <?php
 
-class KickassValidationModuleFrontController extends ModuleFrontController
+class IDcutValidationModuleFrontController extends ModuleFrontController
 {
     protected function getCurrentDealDefinition()
     {
         /*
-         * GET http://api.kickass.jash.fr/deal_definitions/<uuid>
+         * GET http://api.idcut.jash.fr/deal_definitions/<uuid>
          * 
          * example for deal d9d03443-befe-480d-866e-03154e1f7670
          */
@@ -13,7 +13,7 @@ class KickassValidationModuleFrontController extends ModuleFrontController
         //        if($response instanceof GuzzleHttp\Message\Response){
         //            $r = var_export($response , true);
         //        }
-        $json_response ='{"id":"d9d03443-befe-480d-866e-03154e1f7670","start_date":"2015-02-04T00:00:00.000Z","end_date":"2015-09-20T00:00:00.000Z","ttl":242332,"locktime":4234354,"user_max":5,"min_order_value":636,"range_type":"percent","ranges":[{"min_participants_number":4,"discount_size":5}],"link":"https://api.kickass.jash.fr/deal_definitions/d9d03443-befe-480d-866e-03154e1f7670"}';
+        $json_response ='{"id":"d9d03443-befe-480d-866e-03154e1f7670","start_date":"2015-02-04T00:00:00.000Z","end_date":"2015-09-20T00:00:00.000Z","ttl":242332,"locktime":4234354,"user_max":5,"min_order_value":636,"range_type":"percent","ranges":[{"min_participants_number":4,"discount_size":5}],"link":"https://api.idcut.jash.fr/deal_definitions/d9d03443-befe-480d-866e-03154e1f7670"}';
         return json_decode($json_response);
     }
     
@@ -40,7 +40,7 @@ class KickassValidationModuleFrontController extends ModuleFrontController
 
         $transaction_id = $this->getTransactionId($request_link);
 
-        $transaction = KickassTransaction::getByTransactionId($transaction_id);
+        $transaction = IDcutTransaction::getByTransactionId($transaction_id);
         if(!isset($transaction->id)){
             $transaction->transaction_id = $transaction_id;
             $transaction->id_order = $this->module->currentOrder;
@@ -57,15 +57,15 @@ class KickassValidationModuleFrontController extends ModuleFrontController
         /* Example
          * for '492131f6-7556-4735-a5c3-89e5c115cbf4'
          */
-        $config = explode(',',Configuration::get('PS_DEMO_KICKASS_TRAN'));
+        $config = explode(',',Configuration::get('PS_DEMO_IDCUT_TRAN'));
         $tid = $config[0];
         unset($config[0]);
-        $config = Configuration::updateValue('PS_DEMO_KICKASS_TRAN', implode(',',$config));
+        $config = Configuration::updateValue('PS_DEMO_IDCUT_TRAN', implode(',',$config));
 
         return $tid;
     }
 
-    protected function redirectTransaction(KickassTransaction $transaction)
+    protected function redirectTransaction(IDcutTransaction $transaction)
     {
         /* Example
          * https://kickass.jash.fr/en/transactions/492131f6-7556-4735-a5c3-89e5c115cbf4/start
@@ -84,7 +84,7 @@ class KickassValidationModuleFrontController extends ModuleFrontController
         // Check that this payment option is still available in case the customer changed his address just before the end of the checkout process
         $authorized = false;
         foreach (Module::getPaymentModules() as $module)
-            if ($module['name'] == 'kickass') {
+            if ($module['name'] == 'idcut') {
                 $authorized = true;
                 break;
             }
@@ -105,7 +105,7 @@ class KickassValidationModuleFrontController extends ModuleFrontController
         $deal = $this->getCurrentDealDefinition();
         
         $this->module->validateOrder((int) $cart->id,
-            Configuration::get('PS_OS_KICKASS'), $total,
+            Configuration::get('PS_OS_IDCUT'), $total,
             $this->module->displayName, NULL, $mailVars, (int) $currency->id,
             false, $customer->secure_key);
         

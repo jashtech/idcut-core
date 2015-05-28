@@ -1,23 +1,23 @@
 <?php
 
-class AdminKickassTransactionController extends ModuleAdminController
+class AdminIDcutTransactionController extends ModuleAdminController
 {
 
     public function __construct()
     {
         $this->bootstrap  = true;
-        $this->table      = 'kickass_transaction';
-        $this->className  = 'KickassTransaction';
+        $this->table      = 'idcut_transaction';
+        $this->className  = 'IDcutTransaction';
         $this->lang       = false;
         $this->addRowAction('view');
         $this->context    = Context::getContext();
-        $this->meta_title = $this->l('Your Kickass Transaction');
+        $this->meta_title = $this->l('Your IDcut Transaction');
 
         $this->_orderBy = 'date_edit';
         $this->_orderWay = 'DESC';
 
         $this->fields_list = array(
-            'id_kickass_transaction' => array('title' => $this->l('ID')),
+            'id_idcut_transaction' => array('title' => $this->l('ID')),
             'id_order' => array('title' => $this->l('Order ID')),
             'transaction_id' => array('title' => $this->l('Transaction ID')),
             'status' => array('title' => $this->l('Status')),
@@ -37,7 +37,7 @@ class AdminKickassTransactionController extends ModuleAdminController
 
     public function initToolBarTitle()
     {
-        $this->toolbar_title[] = $this->l('Kickass Transactions');
+        $this->toolbar_title[] = $this->l('IDcut Transactions');
     }
 
     public function initPageHeaderToolbar()

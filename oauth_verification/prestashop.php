@@ -4,7 +4,7 @@ $core = require_once dirname(__FILE__) . '/../bootstrap/prestashop.php';
 
 $code = Tools::getValue("code");
 $state = Tools::getValue("state");
-$savedState = $core->config()->getEncrypted("PS_KICKASS_OAUTH_STATE");
+$savedState = $core->config()->getEncrypted("PS_IDCUT_OAUTH_STATE");
 
 if (!$code) {
     exit('Invalid code');
@@ -16,13 +16,13 @@ if (!$code) {
     ]);
 
     if ($token) {
-        $core->config()->setEncrypted("PS_KICKASS_API_TOKEN", $token);
+        $core->config()->setEncrypted("PS_IDCUT_API_TOKEN", $token);
         $result = "Token saved";
         //$tokenInfo = var_export($core->getApiClient()->setAccessToken($token)->getTokenInfo()->json(), 1);
     }
 }
 
-//$core->config()->deleteByName("PS_KICKASS_OAUTH_STATE");
+//$core->config()->deleteByName("PS_IDCUT_OAUTH_STATE");
 ?><!DOCTYPE html>
 <html lang="en">
     <head>

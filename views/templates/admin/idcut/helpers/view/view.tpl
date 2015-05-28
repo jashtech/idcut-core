@@ -3,7 +3,7 @@
     <h1>{$example}</h1>
     {if $info}
         <p>
-            {l s="I was updated" mod='kickass'}
+            {l s="I was updated" mod='idcut'}
         </p>
     {/if}
 

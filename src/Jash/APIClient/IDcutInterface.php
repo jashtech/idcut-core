@@ -1,10 +1,10 @@
 <?php
 
-namespace Kickass\Jash\APIClient;
+namespace IDcut\Jash\APIClient;
 
 use GuzzleHttp\ClientInterface as HttpClientInterface;
 
-interface KickassInterface
+interface IDcutInterface
 {
 
     public function getVersion();

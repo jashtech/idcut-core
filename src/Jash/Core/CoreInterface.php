@@ -1,25 +1,25 @@
 <?php
 
-namespace Kickass\Jash\Core;
+namespace IDcut\Jash\Core;
 
 interface CoreInterface
 {
 
-    public function setOAuthProviderBuilder(\Kickass\Jash\OAuth2\Client\Provider\KickassBuilder $oAuthProviderBuilde);
+    public function setOAuthProviderBuilder(\IDcut\Jash\OAuth2\Client\Provider\IDcutBuilder $oAuthProviderBuilde);
 
     public function getOAuthProviderBuilder();
 
-    public function setConfig(\Kickass\Jash\Config\ConfigInterface $config);
+    public function setConfig(\IDcut\Jash\Config\ConfigInterface $config);
 
     public function getConfig();
 
     public function config();
 
-    public function setApiClient(\Kickass\Jash\APIClient\KickassInterface $apiClient);
+    public function setApiClient(\IDcut\Jash\APIClient\IDcutInterface $apiClient);
 
     public function getApiClient();
 
-    public function setView(\Kickass\Jash\Template\TemplateInterface $view);
+    public function setView(\IDcut\Jash\Template\TemplateInterface $view);
 
     public function getView();
 

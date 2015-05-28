@@ -1,8 +1,8 @@
 <?php
 
-namespace Kickass\Jash\Prestashop;
+namespace IDcut\Jash\Prestashop;
 
-class Config extends \Kickass\Jash\Config\ConfigAbstract{
+class Config extends \IDcut\Jash\Config\ConfigAbstract{
     
     public function get($key){
         return \Configuration::get($key);

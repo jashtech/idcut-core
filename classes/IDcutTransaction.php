@@ -1,6 +1,6 @@
 <?php
 
-class KickassTransaction extends ObjectModel
+class IDcutTransaction extends ObjectModel
 {
     /** @var integer */
     public $id;
@@ -27,8 +27,8 @@ class KickassTransaction extends ObjectModel
      * @see ObjectModel::$definition
      */
     public static $definition = array(
-        'table' => 'kickass_transaction',
-        'primary' => 'id_kickass_transaction',
+        'table' => 'idcut_transaction',
+        'primary' => 'id_idcut_transaction',
         'multilang' => false,
         'fields' => array(
             'id_order' => array('type' => self::TYPE_INT, 'validate' => 'isUnsignedInt',
@@ -56,34 +56,34 @@ class KickassTransaction extends ObjectModel
     public static function getByTransactionId($transaction_id)
     {
         if(Validate::isReference($transaction_id)){
-            $id = Db::getInstance()->getValue('SELECT `id_kickass_transaction` as id FROM `'._DB_PREFIX_.'kickass_transaction` WHERE transaction_id="'. $transaction_id.'"');
+            $id = Db::getInstance()->getValue('SELECT `id_idcut_transaction` as id FROM `'._DB_PREFIX_.'idcut_transaction` WHERE transaction_id="'. $transaction_id.'"');
         }else{
             $id = null;
         }
         
-        return new KickassTransaction($id);
+        return new IDcutTransaction($id);
     }
 
     public static function getByOrderId($id_order)
     {
         if(Validate::isUnsignedId($id_order)){
-            $id = Db::getInstance()->getValue('SELECT `id_kickass_transaction` as id FROM `'._DB_PREFIX_.'kickass_transaction` WHERE id_order="'. $id_order.'"');
+            $id = Db::getInstance()->getValue('SELECT `id_idcut_transaction` as id FROM `'._DB_PREFIX_.'idcut_transaction` WHERE id_order="'. $id_order.'"');
         }else{
             $id = null;
         }
 
-        return new KickassTransaction($id);
+        return new IDcutTransaction($id);
     }
 
     public function setStatus($status)
     {
-        if(isset(KickassTransaction::$available_statuses[$status]))
+        if(isset(IDcutTransaction::$available_statuses[$status]))
         {
-            $this->status = KickassTransaction::$available_statuses[$status];
+            $this->status = IDcutTransaction::$available_statuses[$status];
         }
         else
         {
-            $this->status = KickassTransaction::$available_statuses['pending'];
+            $this->status = IDcutTransaction::$available_statuses['pending'];
         }
         return true;
     }

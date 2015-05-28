@@ -1,5 +1,5 @@
 <?php
-namespace Kickass\Jash\Core;
+namespace IDcut\Jash\Core;
 
 abstract class CoreAbstract implements CoreInterface {
 
@@ -18,7 +18,7 @@ abstract class CoreAbstract implements CoreInterface {
         return $this->OAuthProviderBuilder->buildProvider()->getProvider();
     }
 
-    public function setOAuthProviderBuilder(\Kickass\Jash\OAuth2\Client\Provider\KickassBuilder $OAuthProviderBuilder)
+    public function setOAuthProviderBuilder(\IDcut\Jash\OAuth2\Client\Provider\IDcutBuilder $OAuthProviderBuilder)
     {
         $this->OAuthProviderBuilder = $OAuthProviderBuilder;
         return $this;
@@ -34,12 +34,12 @@ abstract class CoreAbstract implements CoreInterface {
     }
     
 
-    public function setConfig(\Kickass\Jash\Config\ConfigInterface $config)
+    public function setConfig(\IDcut\Jash\Config\ConfigInterface $config)
     {
         $this->config = $config;
     }
 
-    public function setCipher(\Kickass\Jash\Cipher\CipherInterface $cipher)
+    public function setCipher(\IDcut\Jash\Cipher\CipherInterface $cipher)
     {
         $this->cipher = $cipher;
     }
@@ -49,7 +49,7 @@ abstract class CoreAbstract implements CoreInterface {
         return $this->cipher;
     }
     
-    public function setApiClient(\Kickass\Jash\APIClient\KickassInterface $apiClient){
+    public function setApiClient(\IDcut\Jash\APIClient\IDcutInterface $apiClient){
         $this->apiClient = $apiClient;
     }
     
@@ -57,7 +57,7 @@ abstract class CoreAbstract implements CoreInterface {
         return $this->apiClient;
     }
 
-    public function setView(\Kickass\Jash\Template\TemplateInterface $view){
+    public function setView(\IDcut\Jash\Template\TemplateInterface $view){
         $this->view = $view;
     }
 

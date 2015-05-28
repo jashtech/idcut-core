@@ -1,7 +1,7 @@
 <?php
 
-namespace Kickass\Jash\Prestashop;
+namespace IDcut\Jash\Prestashop;
 
-class Core extends \Kickass\Jash\Core\Core{
+class Core extends \IDcut\Jash\Core\Core{
     
 }

@@ -2,11 +2,11 @@
 
 if (!defined('_PS_VERSION_'))
     exit;
-require_once(dirname(__FILE__) . '/classes/KickassTransaction.php');
-require_once(dirname(__FILE__) . '/classes/KickassDealDefinition.php');
-require_once(dirname(__FILE__) . '/classes/KickassDeal.php');
-require_once(dirname(__FILE__) . '/classes/KickassRange.php');
-class Kickass extends PaymentModule
+require_once(dirname(__FILE__) . '/classes/IDcutTransaction.php');
+require_once(dirname(__FILE__) . '/classes/IDcutDealDefinition.php');
+require_once(dirname(__FILE__) . '/classes/IDcutDeal.php');
+require_once(dirname(__FILE__) . '/classes/IDcutRange.php');
+class IDcut extends PaymentModule
 {
 
     private $loader = null;
@@ -14,7 +14,7 @@ class Kickass extends PaymentModule
 
     public function __construct()
     {
-        $this->name = 'kickass';
+        $this->name = 'idcut';
         $this->author = 'Tomasz Wesołowski <twesolowski@jash.pl>';
         $this->tab = 'payments_gateways';
         $this->version = '1.0';
@@ -27,17 +27,17 @@ class Kickass extends PaymentModule
         $this->bootstrap = true;
         parent::__construct();
 
-        $this->displayName = $this->l('Kickass');
-        $this->description = $this->l('Prestashop - kickass module.');
+        $this->displayName = $this->l('IDcut');
+        $this->description = $this->l('Prestashop - idcut module.');
         $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
 
         $this->core = require 'bootstrap/prestashop.php';
 
         $c_tmp = $this->getConfigFieldsValues();
         $i = 1;
-        if ((!isset($c_tmp['PS_KICKASS_CLIENT_ID']) || !isset($c_tmp['PS_KICKASS_REDIRECT_URL']) || empty($c_tmp['PS_KICKASS_CLIENT_ID']) || empty($c_tmp['PS_KICKASS_REDIRECT_URL'])))
+        if ((!isset($c_tmp['PS_IDCUT_CLIENT_ID']) || !isset($c_tmp['PS_IDCUT_REDIRECT_URL']) || empty($c_tmp['PS_IDCUT_CLIENT_ID']) || empty($c_tmp['PS_IDCUT_REDIRECT_URL'])))
             $this->warning .= '<br>' . $i++ . '. ' . $this->l('The client ID and Redirect url fields must be configured before using this module.');
-        if ((!isset($c_tmp['PS_KICKASS_CLIENT_SECRET']) || empty($c_tmp['PS_KICKASS_CLIENT_SECRET'])))
+        if ((!isset($c_tmp['PS_IDCUT_CLIENT_SECRET']) || empty($c_tmp['PS_IDCUT_CLIENT_SECRET'])))
             $this->warning .= '<br>' . $i++ . '. ' . $this->l('You need to authorize your shop with API before using this module.');
         if (!count(Currency::checkPaymentCurrencies($this->id)))
             $this->warning .= '<br>' . $i++ . '. ' . $this->l('No currency has been set for this module.');
@@ -46,7 +46,7 @@ class Kickass extends PaymentModule
     public function install()
     {
         if (!parent::install() ||
-                !Configuration::updateValue('PS_KICKASS_SCOPES', 'id;name') ||
+                !Configuration::updateValue('PS_IDCUT_SCOPES', 'id;name') ||
                 !$this->installTabs() ||
                 !$this->createOrderState() ||
                 !$this->installDB() ||
@@ -61,10 +61,10 @@ class Kickass extends PaymentModule
     {
         if (
                 !parent::uninstall() ||
-                !Configuration::deleteByName('PS_KICKASS_CLIENT_ID') ||
-                !Configuration::deleteByName('PS_KICKASS_CLIENT_SECRET') ||
-                !Configuration::deleteByName('PS_KICKASS_REDIRECT_URL') ||
-                !Configuration::deleteByName('PS_KICKASS_SCOPES') ||
+                !Configuration::deleteByName('PS_IDCUT_CLIENT_ID') ||
+                !Configuration::deleteByName('PS_IDCUT_CLIENT_SECRET') ||
+                !Configuration::deleteByName('PS_IDCUT_REDIRECT_URL') ||
+                !Configuration::deleteByName('PS_IDCUT_SCOPES') ||
                 !$this->uninstallTabs() ||
                 !$this->uninstallDB()
         ) {
@@ -75,18 +75,18 @@ class Kickass extends PaymentModule
 
     protected function installDB(){
         return Db::getInstance()->Execute(
-                'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'kickass_transaction` (
-                    `id_kickass_transaction` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+                'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'idcut_transaction` (
+                    `id_idcut_transaction` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
                     `id_order` INT( 10 ) UNSIGNED DEFAULT NULL,
                     `transaction_id` varchar(254) NOT NULL,
                     `status` TINYINT(4) UNSIGNED DEFAULT 0,
                     `error_code` INT( 10 ) UNSIGNED DEFAULT NULL,
                     `message` text DEFAULT NULL,
                     `date_edit` DATETIME DEFAULT NULL,
-                    PRIMARY KEY (`id_kickass_transaction`)
+                    PRIMARY KEY (`id_idcut_transaction`)
                 ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;
-                CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'kickass_deal_definition` (
-                    `id_kickass_deal_definition` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+                CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'idcut_deal_definition` (
+                    `id_idcut_deal_definition` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
                     `uuid` varchar(254) NOT NULL,
                     `start_date` DATETIME NOT NULL,
                     `end_date` DATETIME NOT NULL,
@@ -95,35 +95,35 @@ class Kickass extends PaymentModule
                     `user_max` INT( 10 ) UNSIGNED NOT NULL,
                     `min_order_value` INT( 10 ) UNSIGNED NOT NULL,
                     `range_type` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
-                    PRIMARY KEY (`id_kickass_deal_definition`)
+                    PRIMARY KEY (`id_idcut_deal_definition`)
                 ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;
-                CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'kickass_deal` (
-                    `id_kickass_deal` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+                CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'idcut_deal` (
+                    `id_idcut_deal` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
                     `deal_id` varchar(254) NOT NULL,
-                    `id_kickass_deal_definition` INT( 10 ) UNSIGNED NOT NULL,
+                    `id_idcut_deal_definition` INT( 10 ) UNSIGNED NOT NULL,
                     `created_at` DATETIME NOT NULL,
                     `hash_id` varchar(254) NOT NULL,
-                    PRIMARY KEY (`id_kickass_deal`)
+                    PRIMARY KEY (`id_idcut_deal`)
                 ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;
-                CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'kickass_range` (
-                    `id_kickass_range` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-                    `id_kickass_deal_definition` INT( 10 ) UNSIGNED NOT NULL,
+                CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'idcut_range` (
+                    `id_idcut_range` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+                    `id_idcut_deal_definition` INT( 10 ) UNSIGNED NOT NULL,
                     `min_participants_number` INT( 10 ) UNSIGNED NOT NULL,
                     `discount_size` INT( 10 ) UNSIGNED NOT NULL,
-                    PRIMARY KEY (`id_kickass_range`)
+                    PRIMARY KEY (`id_idcut_range`)
                 ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;'
             );
     }
 
     public function installTabs()
     {
-        $id_root_tab = $this->installTab('AdminKickassDealDefinition', 'Kickass', 0);
+        $id_root_tab = $this->installTab('AdminIDcutDealDefinition', 'IDcut', 0);
         $ret = (int) $id_root_tab > 0 ? true : false;
         if ($ret) {
-            $ret &= $this->installTab('AdminKickassDealDefinition', 'Deal Definition', $id_root_tab) > 0 ? true : false;
-            $ret &= $this->installTab('AdminKickassDeal', 'Deals', $id_root_tab) > 0 ? true : false;
-            $ret &= $this->installTab('AdminKickassTransaction', 'Transactions', $id_root_tab) > 0 ? true : false;
-            $ret &= $this->installTab('AdminKickassStatus', 'Status', $id_root_tab) > 0 ? true : false;
+            $ret &= $this->installTab('AdminIDcutDealDefinition', 'Deal Definition', $id_root_tab) > 0 ? true : false;
+            $ret &= $this->installTab('AdminIDcutDeal', 'Deals', $id_root_tab) > 0 ? true : false;
+            $ret &= $this->installTab('AdminIDcutTransaction', 'Transactions', $id_root_tab) > 0 ? true : false;
+            $ret &= $this->installTab('AdminIDcutStatus', 'Status', $id_root_tab) > 0 ? true : false;
         }
 
         return $ret;
@@ -145,10 +145,10 @@ class Kickass extends PaymentModule
 
     protected function uninstallDB(){
         return Db::getInstance()->Execute(
-                'DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'kickass_transaction`;
-                DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'kickass_deal_definition`;
-                DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'kickass_deal`;
-                DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'kickass_range`;'
+                'DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'idcut_transaction`;
+                DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'idcut_deal_definition`;
+                DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'idcut_deal`;
+                DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'idcut_range`;'
             );
     }
 
@@ -167,12 +167,12 @@ class Kickass extends PaymentModule
      */
     public function createOrderState()
     {
-        if (!Configuration::get('PS_OS_KICKASS')) {
+        if (!Configuration::get('PS_OS_IDCUT')) {
             $order_state = new OrderState();
             $order_state->name = array();
 
             foreach (Language::getLanguages() as $language) {
-                $order_state->name[$language['id_lang']] = 'Waiting for payment Kickass';
+                $order_state->name[$language['id_lang']] = 'Waiting for payment IDcut';
             }
 
             $order_state->send_email = false;
@@ -189,14 +189,14 @@ class Kickass extends PaymentModule
             } else {
                 return false;
             }
-            Configuration::updateValue('PS_OS_KICKASS', (int) $order_state->id);
+            Configuration::updateValue('PS_OS_IDCUT', (int) $order_state->id);
         }
-        if (!Configuration::get('PS_OS_KICKASS_PENDING')) {
+        if (!Configuration::get('PS_OS_IDCUT_PENDING')) {
             $order_state = new OrderState();
             $order_state->name = array();
 
             foreach (Language::getLanguages() as $language) {
-                $order_state->name[$language['id_lang']] = 'Processing Kickass payment';
+                $order_state->name[$language['id_lang']] = 'Processing IDcut payment';
             }
 
             $order_state->send_email = false;
@@ -213,7 +213,7 @@ class Kickass extends PaymentModule
             } else {
                 return false;
             }
-            Configuration::updateValue('PS_OS_KICKASS_PENDING', (int) $order_state->id);
+            Configuration::updateValue('PS_OS_IDCUT_PENDING', (int) $order_state->id);
         }
         return true;
     }
@@ -225,21 +225,21 @@ class Kickass extends PaymentModule
         if (Tools::isSubmit('submitModule')) {
 //            $this->getContent2();
             /* Update Client ID */
-            $clientId = Tools::getValue('PS_KICKASS_CLIENT_ID');
+            $clientId = Tools::getValue('PS_IDCUT_CLIENT_ID');
             if (isset($clientId)) {
-                $this->core->config()->update("PS_KICKASS_CLIENT_ID", $clientId);
+                $this->core->config()->update("PS_IDCUT_CLIENT_ID", $clientId);
             }
 
             /* Update Client Secret */
-            $clientSecret = trim(Tools::getValue('PS_KICKASS_CLIENT_SECRET'));
+            $clientSecret = trim(Tools::getValue('PS_IDCUT_CLIENT_SECRET'));
             if (isset($clientSecret)) {
-                $this->core->config()->setEncrypted("PS_KICKASS_CLIENT_SECRET", $clientSecret);
+                $this->core->config()->setEncrypted("PS_IDCUT_CLIENT_SECRET", $clientSecret);
             }
 
             /* Update redirect URL */
-            $redirectUrl = Tools::getValue('PS_KICKASS_REDIRECT_URL');
+            $redirectUrl = Tools::getValue('PS_IDCUT_REDIRECT_URL');
             if (isset($redirectUrl)) {
-                $this->core->config()->update("PS_KICKASS_REDIRECT_URL", $redirectUrl);
+                $this->core->config()->update("PS_IDCUT_REDIRECT_URL", $redirectUrl);
             }
 
             $html .= $this->displayConfirmation($this->l('Info updated!'));
@@ -266,17 +266,17 @@ class Kickass extends PaymentModule
                     array(
                         'type' => 'text',
                         'label' => $this->l('Application Id'),
-                        'name' => 'PS_KICKASS_CLIENT_ID'
+                        'name' => 'PS_IDCUT_CLIENT_ID'
                     ),
                     array(
                         'type' => 'text',
                         'label' => $this->l('Secret'),
-                        'name' => 'PS_KICKASS_CLIENT_SECRET'
+                        'name' => 'PS_IDCUT_CLIENT_SECRET'
                     ),
                     array(
                         'type' => 'text',
                         'label' => $this->l('Callback url'),
-                        'name' => 'PS_KICKASS_REDIRECT_URL'
+                        'name' => 'PS_IDCUT_REDIRECT_URL'
                     )
                 ),
                 'submit' => array(
@@ -319,7 +319,7 @@ class Kickass extends PaymentModule
         $view->setTemplateFile("connectButton.php");
         $view->authorizationUrl = $provider->getAuthorizationUrl();
 
-        $this->core->config()->setEncrypted("PS_KICKASS_OAUTH_STATE", $provider->state);
+        $this->core->config()->setEncrypted("PS_IDCUT_OAUTH_STATE", $provider->state);
 
         $html .= $view->render();
 
@@ -335,7 +335,7 @@ class Kickass extends PaymentModule
 
         $this->smarty->assign(array(
             'this_path' => $this->_path,
-            'this_path_kickass' => $this->_path,
+            'this_path_idcut' => $this->_path,
             'this_path_ssl' => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/'
         ));
         return $this->display(__FILE__, 'payment.tpl');
@@ -349,7 +349,7 @@ class Kickass extends PaymentModule
             return;
 
         return array(
-            'cta_text' => $this->l('Pay by Kickass'),
+            'cta_text' => $this->l('Pay by IDcut'),
             'logo' => null,
             'action' => $this->context->link->getModuleLink($this->name, 'validation', array(), true)
         );
@@ -361,7 +361,7 @@ class Kickass extends PaymentModule
             return;
 
         $state = $params['objOrder']->getCurrentState();
-        if (in_array($state, array(Configuration::get('PS_OS_KICKASS'), Configuration::get('PS_OS_KICKASS_PENDING'), Configuration::get('PS_OS_OUTOFSTOCK'),
+        if (in_array($state, array(Configuration::get('PS_OS_IDCUT'), Configuration::get('PS_OS_IDCUT_PENDING'), Configuration::get('PS_OS_OUTOFSTOCK'),
                     Configuration::get('PS_OS_OUTOFSTOCK_UNPAID'), Configuration::get('PS_OS_PAYMENT')))) {
             $this->smarty->assign(array(
                 'total_to_pay' => Tools::displayPrice(
@@ -373,7 +373,7 @@ class Kickass extends PaymentModule
             if (isset($params['objOrder']->reference) && !empty($params['objOrder']->reference))
                 $this->smarty->assign('reference', $params['objOrder']->reference);
         } else {
-            $transaction = KickassTransaction::getByOrderId($params['objOrder']->id);
+            $transaction = IDcutTransaction::getByOrderId($params['objOrder']->id);
             $this->smarty->assign(array(
                 'status' => 'failed',
                 'transaction' => $transaction
@@ -402,9 +402,9 @@ class Kickass extends PaymentModule
     public function getConfigFieldsValues()
     {
         return array(
-            'PS_KICKASS_CLIENT_ID' => $this->core->config()->get("PS_KICKASS_CLIENT_ID"),
-            'PS_KICKASS_CLIENT_SECRET' => $this->core->config()->getEncrypted("PS_KICKASS_CLIENT_SECRET"),
-            'PS_KICKASS_REDIRECT_URL' => $this->core->config()->get("PS_KICKASS_REDIRECT_URL")
+            'PS_IDCUT_CLIENT_ID' => $this->core->config()->get("PS_IDCUT_CLIENT_ID"),
+            'PS_IDCUT_CLIENT_SECRET' => $this->core->config()->getEncrypted("PS_IDCUT_CLIENT_SECRET"),
+            'PS_IDCUT_REDIRECT_URL' => $this->core->config()->get("PS_IDCUT_REDIRECT_URL")
         );
     }
     public function getMyControllersUrls()

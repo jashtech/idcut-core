@@ -2,29 +2,29 @@
 
 $loader = require(dirname(__FILE__) . '/../vendor/autoload.php');
 
-$config = new \Kickass\Jash\Prestashop\Config();
+$config = new \IDcut\Jash\Prestashop\Config();
 
-$cipher = new Kickass\Jash\Cipher\Rijndael(CRYPT_RIJNDAEL_MODE_ECB);
+$cipher = new IDcut\Jash\Cipher\Rijndael(CRYPT_RIJNDAEL_MODE_ECB);
 
 $cipher->setKey(_RIJNDAEL_KEY_);
 $config->setCipher($cipher);
 
-$core = new Kickass\Jash\Prestashop\Core();
+$core = new IDcut\Jash\Prestashop\Core();
 
 $core->setConfig($config);
 $core->setCipher($cipher);
-$core->setOAuthProviderBuilder(new \Kickass\Jash\OAuth2\Client\Provider\KickassBuilder($config));
+$core->setOAuthProviderBuilder(new \IDcut\Jash\OAuth2\Client\Provider\IDcutBuilder($config));
 
-$apiClient = new \Kickass\Jash\APIClient\V1\Kickass();
-$apiClient->setAccessToken($config->getEncrypted("PS_KICKASS_API_TOKEN"));
-$apiClient->setHttpClient(new \Kickass\Jash\Http\Client([
+$apiClient = new \IDcut\Jash\APIClient\V1\IDcut();
+$apiClient->setAccessToken($config->getEncrypted("PS_IDCUT_API_TOKEN"));
+$apiClient->setHttpClient(new \IDcut\Jash\Http\Client([
         'base_url' => $apiClient->getServiceUrl(),
         'defaults' => [
             'verify' => false
             ]
         ]));
 
-$view = new \Kickass\Jash\Template\Basic();
+$view = new \IDcut\Jash\Template\Basic();
 $view->setTemplateDir(dirname(__FILE__) . '/../theme/prestashop/basic');
 $core->setView($view);
 

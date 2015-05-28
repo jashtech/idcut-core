@@ -1,6 +1,6 @@
 <?php
 
-namespace Kickass\Jash\ObjectBuilder;
+namespace IDcut\Jash\ObjectBuilder;
 
 class DealDefinition
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Kickass\Jash\DealDefinition;
+namespace IDcut\Jash\DealDefinition;
 
 class DealDefinition
 {

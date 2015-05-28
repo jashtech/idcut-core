@@ -1,11 +1,11 @@
 <?php
 
-namespace Kickass\Jash\OAuth2\Client\Provider;
+namespace IDcut\Jash\OAuth2\Client\Provider;
 
 use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Entity\User;
 
-class Kickass extends AbstractProvider {
+class IDcut extends AbstractProvider {
 
     public $scopes = ['basic'];
     public $responseType = 'json';

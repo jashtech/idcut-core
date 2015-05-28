@@ -1,6 +1,6 @@
 <?php
 
-class KickassPaymentModuleFrontController extends ModuleFrontController
+class IDcutPaymentModuleFrontController extends ModuleFrontController
 {
     public $ssl                 = true;
     public $display_column_left = false;
@@ -17,7 +17,7 @@ class KickassPaymentModuleFrontController extends ModuleFrontController
                 Tools::redirect('index.php?controller=order');
         if (Tools::isSubmit('confirm_order')){
                 if($this->module->checkDealConditions($cart)){
-                    Tools::redirect($this->context->link->getModuleLink('kickass', 'validation', array(), true));
+                    Tools::redirect($this->context->link->getModuleLink('idcut', 'validation', array(), true));
                 }
                 else{
                     $this->context->smarty->assign(array(
@@ -33,7 +33,7 @@ class KickassPaymentModuleFrontController extends ModuleFrontController
             'total' => $cart->getOrderTotal(true, Cart::BOTH),
             'isoCode' => $this->context->language->iso_code,
             'this_path' => $this->module->getPathUri(),
-            'this_path_kickass' => $this->module->getPathUri(),
+            'this_path_idcut' => $this->module->getPathUri(),
             'this_path_ssl' => Tools::getShopDomainSsl(true, true).__PS_BASE_URI__.'modules/'.$this->module->name.'/'
         ));
 

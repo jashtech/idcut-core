@@ -1,5 +1,5 @@
 <p class="payment_module">
-    <a href="{$link->getModuleLink('kickass', 'payment', [], true)|escape:'html'}" title="{l s='Pay by Kickass' mod='kickass'}">
-        {l s='Pay by Kickass' mod='kickass'}
+    <a href="{$link->getModuleLink('idcut', 'payment', [], true)|escape:'html'}" title="{l s='Pay by IDcut' mod='idcut'}">
+        {l s='Pay by IDcut' mod='idcut'}
     </a>
 </p>

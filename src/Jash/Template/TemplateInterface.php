@@ -1,6 +1,6 @@
 <?php
 
-namespace Kickass\Jash\Template;
+namespace IDcut\Jash\Template;
 
 interface TemplateInterface
 {
