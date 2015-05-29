@@ -9,6 +9,7 @@ class IDcut extends AbstractProvider {
 
     public $scopes = ['basic'];
     public $responseType = 'json';
+    static $tokenInfoUrl = 'https://kickass.jash.fr/oauth/token/info';
 
     public function urlAuthorize()
     {

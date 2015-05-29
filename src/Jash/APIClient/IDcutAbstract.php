@@ -42,7 +42,7 @@ abstract class IDcutAbstract implements IDcutInterface
     public function getTokenInfo()
     {
         try {
-            $response = $this->httpClient->get('https://kickass.jash.fr/oauth/token/info');
+            $response = $this->httpClient->get(\IDcut\Jash\OAuth2\Client\Provider\IDcut::$tokenInfoUrl);
         } catch (RequestException $e) {
             echo $e->getRequest() . "\n";
             if ($e->hasResponse()) {
