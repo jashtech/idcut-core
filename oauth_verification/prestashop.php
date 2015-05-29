@@ -1,24 +1,39 @@
 <?php
-include(dirname(__FILE__) . '/../../../config/config.inc.php');
-$core = require_once dirname(__FILE__) . '/../bootstrap/prestashop.php';
+include(dirname(__FILE__).'/../../../config/config.inc.php');
+$core = require_once dirname(__FILE__).'/../bootstrap/prestashop.php';
 
-$code = Tools::getValue("code");
-$state = Tools::getValue("state");
+$code       = Tools::getValue("code");
+$state      = Tools::getValue("state");
 $savedState = $core->config()->getEncrypted("PS_IDCUT_OAUTH_STATE");
+
+$result = "Try again";
+/*
+ * $moduleName = "idcut";
+
+eecho $moduleLink = Context::getContext()->link->getAdminLink('AdminModules', false) . '&configure=' . $moduleName . '&tab_module=' . $moduleName. '&module_name=' . $moduleName;
+ * 
+ */
 
 if (!$code) {
     exit('Invalid code');
 } elseif (empty($state) || ($state !== $savedState)) {
     exit('Invalid state');
 } else {
-    $token = $core->getOAuthProvider()->getAccessToken('authorization_code', [
-        'code' => $code
-    ]);
 
-    if ($token) {
-        $core->config()->setEncrypted("PS_IDCUT_API_TOKEN", $token);
-        $result = "Token saved";
-        //$tokenInfo = var_export($core->getApiClient()->setAccessToken($token)->getTokenInfo()->json(), 1);
+    try {
+
+        $token = $core->getOAuthProvider()->getAccessToken('authorization_code',
+            [
+            'code' => $code
+        ]);
+
+        if ($token) {
+            $core->config()->setEncrypted("PS_IDCUT_API_TOKEN", $token);
+            $result = "Token saved";
+            //$tokenInfo = var_export($core->getApiClient()->setAccessToken($token)->getTokenInfo()->json(), 1);
+        }
+    } catch (Exception $e) {
+        echo  $e->getMessage();
     }
 }
 
@@ -32,5 +47,6 @@ if (!$code) {
     </head>
     <body>
         <h2><?php echo $result; ?></h2>
+        <a onclick=" self.close ();" href="">Close this window</a>
     </body>
 </html>
