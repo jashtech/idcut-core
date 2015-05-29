@@ -6,8 +6,8 @@ class DealDefinition
 {
 
     private $id;
-    private $start_date;
-    private $end_date;
+    /*private $start_date;*/
+    /*private $end_date;*/
     private $ttl;
     private $locktime;
     private $user_max;
