@@ -230,8 +230,9 @@ class IDcut extends PaymentModule
 
             /* Update Client Secret */
             $clientSecret = trim(Tools::getValue('PS_IDCUT_CLIENT_SECRET'));
-            if (isset($clientSecret)) {
+            if (!empty($clientSecret)) {
                 $this->core->config()->setEncrypted("PS_IDCUT_CLIENT_SECRET", $clientSecret);
+             
             }
 
             /* Update redirect URL */
@@ -267,7 +268,7 @@ class IDcut extends PaymentModule
                         'name' => 'PS_IDCUT_CLIENT_ID'
                     ),
                     array(
-                        'type' => 'text',
+                        'type' => 'password',
                         'label' => $this->l('Secret'),
                         'name' => 'PS_IDCUT_CLIENT_SECRET'
                     ),

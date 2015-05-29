@@ -14,7 +14,8 @@
         <a onclick="return IDCutOauthWindowOpen(this.getAttribute('href'));" href="<?php echo $authorizationUrl; ?>" type="button" class="btn btn-info btn-lg">Reconnect</a>
     <?php endif; ?>
 
-    <?php if ($connected): ?>
+    
+   <?php /* if ($connected): ?>
         <a type="button" class="btn btn-danger btn-lg ">Disconnect</a>
-    <?php endif; ?>
+    <?php endif;  */ ?>
 </p>
