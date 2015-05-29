@@ -10,8 +10,8 @@ $result = "Try again";
 /*
  * $moduleName = "idcut";
 
-eecho $moduleLink = Context::getContext()->link->getAdminLink('AdminModules', false) . '&configure=' . $moduleName . '&tab_module=' . $moduleName. '&module_name=' . $moduleName;
- * 
+  eecho $moduleLink = Context::getContext()->link->getAdminLink('AdminModules', false) . '&configure=' . $moduleName . '&tab_module=' . $moduleName. '&module_name=' . $moduleName;
+ *
  */
 
 if (!$code) {
@@ -33,7 +33,7 @@ if (!$code) {
             //$tokenInfo = var_export($core->getApiClient()->setAccessToken($token)->getTokenInfo()->json(), 1);
         }
     } catch (Exception $e) {
-        echo  $e->getMessage();
+        echo $e->getMessage();
     }
 }
 
@@ -47,6 +47,12 @@ if (!$code) {
     </head>
     <body>
         <h2><?php echo $result; ?></h2>
-        <a onclick=" self.close ();" href="">Close this window</a>
+        <a onclick="window.opener.location.href = window.opener.location.href; self.close();" href="">Close this window</a>
+        <script>
+            /*
+            window.opener.location.href = window.opener.location.href;
+            self.close();
+            */
+        </script>
     </body>
 </html>
