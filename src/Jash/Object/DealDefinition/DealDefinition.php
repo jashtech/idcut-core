@@ -95,7 +95,16 @@ class DealDefinition implements JSONObjectInterface
 
     public function __toString()
     {
-        
+        $dealDefinition = array();
+        $dealDefinition['ttl'] = $this->getTtl();
+        $dealDefinition['locktime'] = $this->getLocktime();
+        $dealDefinition['user_max'] = $this->getUser_max();
+        $dealDefinition['min_order_value'] = $this->getMin_order_value();
+        $dealDefinition['range_type'] = $this->getRange_type();
+        $dealDefinition['ranges'] = $this->getRanges();
+
+        $dealDefinition = array_filter($dealDefinition);
+        return json_encode(array("deal_definition"=>$dealDefinition) , JSON_UNESCAPED_SLASHES );
     }
 
     public static function build(Array $input)
