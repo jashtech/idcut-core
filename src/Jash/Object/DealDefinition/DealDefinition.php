@@ -83,11 +83,6 @@ class DealDefinition implements JSONObjectInterface
         $this->range_type = $range_type;
     }
 
-    public function setRanges($ranges)
-    {
-        $this->ranges = $ranges;
-    }
-
     public function addRange(Range $range)
     {
         $this->ranges[$range->getMin_participants_number()] = $range;
