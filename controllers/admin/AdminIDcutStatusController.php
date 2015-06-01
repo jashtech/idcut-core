@@ -52,6 +52,16 @@ class AdminIDcutStatusController extends ModuleAdminController
         }
 
         
+        $s = IDcut\Jash\Object\Store::build(  $this->module->core->getApiClient()->get('/store')->getBody()  );
+
+
+        $dump = new stdClass();
+        $dump->storeBuild = $s;
+
+        $dump->storeJson = $s->__toString();
+
+        $view->dump = $dump;
+
         return $view->render();
     }
 }

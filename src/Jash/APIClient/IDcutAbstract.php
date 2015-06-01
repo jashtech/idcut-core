@@ -7,7 +7,6 @@ use GuzzleHttp\Exception\RequestException as RequestException;
 
 abstract class IDcutAbstract implements IDcutInterface
 {
-
     protected $version;
     protected $serviceUrl;
     protected $accessToken;
@@ -32,10 +31,11 @@ abstract class IDcutAbstract implements IDcutInterface
     public function setHttpClient(HttpClientInterface $httpClient)
     {
         $this->httpClient = $httpClient;
-        $this->httpClient->setDefaultOption('headers', array(
-            'Accept' => 'application/vnd.kickass.' . $this->version,
+        $this->httpClient->setDefaultOption('headers',
+            array(
+            'Accept' => 'application/vnd.kickass.'.$this->version,
             'Accept-Language' => 'en',
-            'Authorization' => 'Bearer ' . $this->accessToken
+            'Authorization' => 'Bearer '.$this->accessToken
         ));
     }
 
@@ -44,15 +44,13 @@ abstract class IDcutAbstract implements IDcutInterface
         try {
             $response = $this->httpClient->get(\IDcut\Jash\OAuth2\Client\Provider\IDcut::$tokenInfoUrl);
         } catch (RequestException $e) {
-            echo $e->getRequest() . "\n";
+            echo $e->getRequest()."\n";
             if ($e->hasResponse()) {
-               $response =  $e->getResponse() . "\n";
+                $response = $e->getResponse()."\n";
             }
         }
 
-
         return $response;
-
     }
 
     public function test()
@@ -60,11 +58,12 @@ abstract class IDcutAbstract implements IDcutInterface
         try {
             return $response = $this->httpClient->get('/ping');
         } catch (RequestException $e) {
-            echo $e->getRequest() . "\n";
+            echo $e->getRequest()."\n";
             if ($e->hasResponse()) {
-                return $e->getResponse() . "\n";
+                return $e->getResponse()."\n";
             }
         }
     }
 
+   
 }

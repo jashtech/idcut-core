@@ -12,4 +12,6 @@ interface IDcutInterface
     public function setAccessToken($token);
 
     public function setHttpClient(HttpClientInterface $httpClient);
+
+    public function get($query);
 }

@@ -316,7 +316,7 @@ class IDcut extends PaymentModule
         $this->core->config()->setEncrypted("PS_IDCUT_OAUTH_STATE", $provider->state);
 
         $html .= $view->render();
-
+        
         return $html;
     }
 

@@ -35,4 +35,8 @@
     <dt>Response Test</dt>
     <dd><pre><?php echo $testResponse; ?></pre></dd>
 
+
+    <dt>DUMP</dt>
+    <dd><pre><?php var_dump($dump); ?></pre></dd>
+
 </dl>
