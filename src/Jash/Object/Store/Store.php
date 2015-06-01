@@ -1,8 +1,10 @@
 <?php
 
-namespace IDcut\Jash\Object;
+namespace IDcut\Jash\Object\Store;
 
-class Store
+use IDcut\Jash\Object\JSONObjectInterface as JSONObjectInterface;
+
+class Store implements JSONObjectInterface
 {
     private $created_at         = null;
     private $updated_at         = null;
