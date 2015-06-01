@@ -11,16 +11,12 @@ class IDcut extends IDcutAbstract implements IDcutInterface
     protected $version    = 1;
     protected $serviceUrl = "https://api.kickass.jash.fr";
 
-    public function get($query, $headers = true)
+    public function get($query)
     {
         try {
-            if ($headers) {
-                return $this->httpClient->get($query);
-            } else {
-                return $this->httpClient->get($query)->getBody();
-            }
+             return $this->httpClient->get($query);
         } catch (\Exception $e) {
-            //echo $e->getMessage();
+            echo $e->getMessage();
         }
     }
 

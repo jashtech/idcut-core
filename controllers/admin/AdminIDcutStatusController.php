@@ -62,17 +62,20 @@ class AdminIDcutStatusController extends ModuleAdminController
         }
 
         if ($storeResponse) {
-            $storeJson = $storeResponse->getBody();
-            $store = IDcut\Jash\Object\Store\Store::build($storeJson);
+            $storeJson = $storeResponse->json();
+            $store     = IDcut\Jash\Object\Store\Store::build($storeJson);
 
-            $dump->storeBuild = $store;
-            $dump->storeJson = $store->__toString();
+            $dump->storeBuild = $storeJson;
+            $dump->storeJson  = $store->__toString();
         }
 
 
+        $ddResponse = $this->module->core->getApiClient()->get('/deal_definitions');
+        $dump->dd = var_export($ddResponse->json(), 1);
 
 
         $view->dump = $dump;
+
 
         return $view->render();
     }

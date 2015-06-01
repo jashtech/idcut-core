@@ -84,20 +84,19 @@ class Store implements JSONObjectInterface
         $this->join_deal_url = $join_deal_url;
     }
 
-    static function build($json)
+    static function build(Array $input)
     {
         $store = new Store();
 
-        if ($decoded = json_decode($json, false)) {
-            $store->setCreated_at($decoded->created_at);
-            $store->setUpdated_at($decoded->updated_at);
-            $store->setName($decoded->name);
-            $store->setUrl($decoded->url);
-            $store->setPayment_return_url($decoded->payment_return_url);
-            $store->setHook_url($decoded->hook_url);
-            $store->setJoin_deal_url($decoded->join_deal_url);
+        if ($input) {
+            $store->setCreated_at($input['created_at']);
+            $store->setUpdated_at($input['updated_at']);
+            $store->setName($input['name']);
+            $store->setUrl($input['url']);
+            $store->setPayment_return_url($input['payment_return_url']);
+            $store->setHook_url($input['hook_url']);
+            $store->setJoin_deal_url($input['join_deal_url']);
         }
-
         return $store;
     }
 
