@@ -111,7 +111,7 @@ class Store implements JSONObjectInterface
         $obj->hook_url = $this->getHook_url();
         $obj->join_deal_url = $this->getJoin_deal_url();
 
-        return json_encode($obj);
+        return json_encode(array("store"=>$obj));
     }
 
 }
