@@ -407,7 +407,7 @@ class IDcut extends PaymentModule
             'base' => $this->context->link->getPageLink('index'),
             'transaction' => $this->context->link->getPageLink('index').'?fc=module&module='.$this->name.'&controller=transaction', // Payment return
             'status_update' => $this->context->link->getPageLink('index').'?fc=module&module='.$this->name.'&controller=status_update', // update status of order
-            'deal_with_it' => $this->context->link->getPageLink('index').'?fc=module&module='.$this->name.'&controller=deal_with_it', // save deal hash in session
+            'join_deal_url' => $this->context->link->getPageLink('index').'?fc=module&module='.$this->name.'&controller=deal_with_it', // save deal hash in session
             'ModuleConfiguration' => $this->context->link->getAdminLink('AdminModules', false) . '&configure=' . $this->name . '&tab_module=' . $this->tab . '&module_name=' . $this->name, // IDcut module configuration link
         );
     }

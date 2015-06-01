@@ -11,17 +11,29 @@ class IDcut extends IDcutAbstract implements IDcutInterface
     protected $version    = 1;
     protected $serviceUrl = "https://api.kickass.jash.fr";
 
-    public function get($query, $headers=true)
+    public function get($query, $headers = true)
     {
         try {
-            if($headers){
+            if ($headers) {
                 return $this->httpClient->get($query);
-            }else{
+            } else {
                 return $this->httpClient->get($query)->getBody();
             }
-
         } catch (\Exception $e) {
             //echo $e->getMessage();
+        }
+    }
+
+    public function put($query, $body = null)
+    {
+        try {
+            return $request = $this->httpClient->put($query,
+                array(
+                'body' => $body,
+                'headers' => array('Content-type' => 'application/json')
+            ));
+        } catch (\Exception $e) {
+            echo $e->getMessage();
         }
     }
 
@@ -35,7 +47,7 @@ class IDcut extends IDcutAbstract implements IDcutInterface
         return $response = $this->get('/ping');
     }
 
-     public function setHttpClient(HttpClientInterface $httpClient)
+    public function setHttpClient(HttpClientInterface $httpClient)
     {
         $this->httpClient = $httpClient;
         $this->httpClient->setDefaultOption('headers',

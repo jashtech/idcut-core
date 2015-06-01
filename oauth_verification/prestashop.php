@@ -7,9 +7,9 @@ $state      = Tools::getValue("state");
 $savedState = $core->config()->getEncrypted("PS_IDCUT_OAUTH_STATE");
 
 $result = "Try again";
-/*
- * $moduleName = "idcut";
+$moduleName = "idcut";
 
+/*
   eecho $moduleLink = Context::getContext()->link->getAdminLink('AdminModules', false) . '&configure=' . $moduleName . '&tab_module=' . $moduleName. '&module_name=' . $moduleName;
  *
  */
@@ -30,6 +30,17 @@ if (!$code) {
         if ($token) {
             $core->config()->setEncrypted("PS_IDCUT_API_TOKEN", $token);
             $result = "Token saved";
+
+            //updaing store information
+            $store = new \IDcut\Jash\Object\Store\Store();
+
+            $store->setPayment_return_url(Context::getContext()->link->getPageLink('index').'?fc=module&module='.$moduleName.'&controller=transaction');
+            $store->setHook_url(Context::getContext()->link->getPageLink('index').'?fc=module&module='.$moduleName.'&controller=status_update');
+            $store->setJoin_deal_url(Context::getContext()->link->getPageLink('index').'fc=module&module='.$moduleName.'&controller=deal_with_it&deal_hash=%s');
+
+            $res = $core->getApiClient()->put('/store', $store);
+
+
             //$tokenInfo = var_export($core->getApiClient()->setAccessToken($token)->getTokenInfo()->json(), 1);
         }
     } catch (Exception $e) {

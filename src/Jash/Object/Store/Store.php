@@ -102,16 +102,17 @@ class Store implements JSONObjectInterface
     }
 
     public function __toString(){
-        $obj = new \stdClass();
-        $obj->name = $this->getName();
-        $obj->created_at = $this->getCreated_at();
-        $obj->updated_at = $this->getUpdated_at();
-        $obj->url = $this->getUrl();
-        $obj->payment_return_url = $this->getPayment_return_url();
-        $obj->hook_url = $this->getHook_url();
-        $obj->join_deal_url = $this->getJoin_deal_url();
+        $store = array();
+        $store['name'] = $this->getName();
+        $store['created_at']  = $this->getCreated_at();
+        $store['updated_at']  = $this->getUpdated_at();
+        $store['url']  = $this->getUrl();
+        $store['payment_return_url']  = $this->getPayment_return_url();
+        $store['hook_url']  = $this->getHook_url();
+        $store['join_deal_url'] = $this->getJoin_deal_url();
 
-        return json_encode(array("store"=>$obj));
+        $store = array_filter($store);
+        return json_encode(array("store"=>$store) , JSON_UNESCAPED_SLASHES );
     }
 
 }
