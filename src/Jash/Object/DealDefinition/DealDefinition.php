@@ -1,8 +1,9 @@
 <?php
 
-namespace IDcut\Jash\DealDefinition;
+namespace IDcut\Jash\Object\DealDefinition;
 
 use IDcut\Jash\Object\JSONObjectInterface as JSONObjectInterface;
+use IDcut\Jash\Object\Range\Range as Range;
 
 class DealDefinition implements JSONObjectInterface
 {
@@ -15,6 +16,7 @@ class DealDefinition implements JSONObjectInterface
     private $min_order_value;
     private $range_type;
     private $ranges = [];
+
 
     public function getId()
     {
@@ -86,13 +88,30 @@ class DealDefinition implements JSONObjectInterface
         $this->ranges = $ranges;
     }
 
+    public function addRange(Range $range)
+    {
+        $this->ranges[$range->getMin_participants_number()] = $range;
+    }
+
     public function __toString()
     {
         
     }
 
-    public static function build($json)
+    public static function build(Array $input)
     {
+        $dealDefinition = new DealDefinition();
+        $dealDefinition->setId($input['id']);
+        $dealDefinition->setTtl($input['ttl']);
+        $dealDefinition->setLocktime($input['locktime']);
+        $dealDefinition->setUser_max($input['user_max']);
+        $dealDefinition->setMin_order_value($input['min_order_value']);
+        $dealDefinition->setRange_type($input['range_type']);
 
+        foreach((array)$input['ranges'] as $range){
+            $dealDefinition->addRange(new Range($range['min_participants_number'] , $range['discount_size']));
+        }
+
+        return $dealDefinition;
     }
 }
