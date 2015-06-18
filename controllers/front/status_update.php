@@ -2,16 +2,10 @@
 
 class IDcutStatus_UpdateModuleFrontController extends ModuleFrontController
 {
-    protected $action_function;
-    protected $availableActions = array(
-                'view' => 'processUpdate',
-                'error' => 'processError',
-    );
 
     public function __construct()
     {
         $this->action = 'view';
-        $this->action_function = $this->availableActions[$this->action];
         parent::__construct();
 
     }
@@ -25,8 +19,8 @@ class IDcutStatus_UpdateModuleFrontController extends ModuleFrontController
                 echo 'Transaction id is invalid';
                 exit;
         }
-        if (is_callable($this->{$this->action_function}($IDcutTransaction))){
-            $this->{$this->action_function}($IDcutTransaction);
+        if (is_callable($this->processUpdate($IDcutTransaction))){
+            $this->processUpdate($IDcutTransaction);
         }
 
     }

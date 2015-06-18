@@ -24,7 +24,7 @@ class IDcutDealDefinition extends ObjectModel
     public $range_type;
 
     /** @var array array of IDcutRange objects */
-    public $ranges;
+    public $ranges = array();
 
     /** @var string url constructed with $uuid */
     protected $link;

@@ -45,7 +45,6 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
     public function initPageHeaderToolbar()
     {
         parent::initPageHeaderToolbar();
-        unset ($this->toolbar_btn['new']);
     }
 
     public function renderView()
@@ -69,6 +68,10 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
             if (!($obj = $this->loadObject(true)))
                     return;
 
+            $ranges_array = array();
+            foreach($obj->ranges as $r){
+                $ranges_array[(int)$r->min_participants_number] = (int)$r->discount_size;
+            }
             $this->fields_form = array(
                     'legend' => array(
                             'title' => $this->l('Deal Definition'),
@@ -117,6 +120,14 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
                                                     'label' => $this->l('Percent')
                                             )
                                     ),
+                            ),
+                            array(
+                                    'type' => 'ranges',
+                                    'label' => $this->l('Ranges'),
+                                    'name' => 'ranges',
+                                    'required' => true,
+                                    'current_ranges' => $obj->ranges,
+                                    'value' => json_encode($ranges_array),
                             ),
                     ),
                     'submit' => array(
