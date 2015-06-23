@@ -395,8 +395,42 @@ class IDcut extends PaymentModule
         return false;
     }
 
-    public function checkDealConditions($cart)
+    public function checkDealConditions($cart, IDcut\Jash\Object\DealDefinition\DealDefinition $deal_definition = null, $deal = null)
     {
+        if($deal === null){
+            try {
+                $dealCreateResponse = $this->core->getApiClient()->post('/deals');
+            } catch (\Exception $e) {
+                return false;
+            }
+
+            if((int)$dealCreateResponse->getStatusCode() !== 201 && !$dealCreateResponse->hasHeader('location')){
+                return false;
+            }
+
+            try {
+                $location = $dealCreateResponse->getHeader('location');
+                $dealResponse = $this->core->getApiClient()->get($location.'?expand=deal_definition');
+            } catch (\Exception $e) {
+                return false;
+            }
+
+            if (!$dealResponse) {
+                return false;
+            }
+
+            $dealJson = $dealResponse->json();
+            if(!isset($dealJson['deal_definition']['id'])){
+                return false;
+            }
+
+            $deal = $dealJson;
+            $dealJson['deal_definition']['ranges'] = isset($dealJson['deal_definition']['ranges'])?$dealJson['deal_definition']['ranges']:array();
+            $deal_definition = IDcut\Jash\Object\DealDefinition\DealDefinition::build($dealJson['deal_definition']);
+        }
+
+        
+        
         return false;
     }
 

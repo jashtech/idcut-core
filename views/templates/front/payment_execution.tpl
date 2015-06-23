@@ -10,10 +10,12 @@
 {include file="$tpl_dir./order-steps.tpl"}
 
 {if isset($nbProducts) && $nbProducts <= 0}
-    <p class="warning">{l s='Your shopping cart is empty.' mod='idcut'}</p>
+    <p class="alert alert-warning">{l s='Your shopping cart is empty.' mod='idcut'}</p>
 {else}
-    {if isset($error_message) && !empty($error_message)}
-        <p class="warning">{$error_message|escape:'html'}</p>
+    {if isset($error_messages) && !empty($error_messages)}
+        {foreach from=$error_messages item=error}
+            <p class="alert alert-warning">{$error|escape:'html'}</p>
+        {/foreach}
     {/if}
     
     <h3>{l s='IDcut payment' mod='idcut'}</h3>
@@ -66,9 +68,26 @@
         <p>
             <b>{l s='Please confirm your order by clicking \'I confirm my order\'.' mod='idcut'}</b>
         </p>
-        <p class="cart_navigation" id="cart_navigation">
+        {*<p class="cart_navigation" id="cart_navigation">
             <input type="submit" name="confirm_order" value="{l s='I confirm my order' mod='idcut'}" class="exclusive_large"/>
             <a href="{$link->getPageLink('order', true, NULL, "step=3")|escape:'html'}" class="button_large">{l s='Other payment methods' mod='idcut'}</a>
+            
+            
+        </p>*}
+        <p class="cart_navigation clearfix" id="cart_navigation">
+        	<a 
+            class="button-exclusive btn btn-default" 
+            href="{$link->getPageLink('order', true, NULL, "step=3")|escape:'html':'UTF-8'}">
+                <i class="icon-chevron-left"></i>{l s='Other payment methods' mod='idcut'}
+            </a>
+            <button 
+            class="button btn btn-default button-medium" 
+            type="submit"
+            name="confirm_order" 
+            value="confirm_order_val"
+            >
+                <span>{l s='I confirm my order' mod='idcut'}<i class="icon-chevron-right right"></i></span>
+            </button>
         </p>
     </form>
 {/if}
