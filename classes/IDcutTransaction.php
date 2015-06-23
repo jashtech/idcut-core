@@ -6,6 +6,7 @@ class IDcutTransaction extends ObjectModel
     public $id;
     public $id_order;
     public $transaction_id;
+    public $deal_id;
     public $status;
     public $error_code;
     public $message;
@@ -34,6 +35,8 @@ class IDcutTransaction extends ObjectModel
             'id_order' => array('type' => self::TYPE_INT, 'validate' => 'isUnsignedInt',
                 'required' => true),
             'transaction_id' => array('type' => self::TYPE_STRING, 'validate' => 'isReference',
+                'required' => true, 'size' => 254),
+            'deal_id' => array('type' => self::TYPE_STRING, 'validate' => 'isReference',
                 'required' => true, 'size' => 254),
             'status' => array('type' => self::TYPE_INT, 'validate' => 'isUnsignedInt'),
             'error_code' => array('type' => self::TYPE_INT, 'validate' => 'isUnsignedInt'),

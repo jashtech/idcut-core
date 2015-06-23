@@ -5,7 +5,7 @@ class IDcutRange extends ObjectModel
     /** @var integer */
     public $id;
     /** @var int */
-    public $id_idcut_deal_definition;
+    public $deal_definition_id;
     /** @var int min participants to trigger */
     public $min_participants_number;
     /** @var int mixed cents or percent */
@@ -20,26 +20,21 @@ class IDcutRange extends ObjectModel
         'primary' => 'id_idcut_range',
         'multilang' => false,
         'fields' => array(
-            'id_idcut_deal_definition' => array('type' => self::TYPE_INT, 'validate' => 'isUnsignedInt', 'required' => true),
+            'deal_definition_id' => array('type' => self::TYPE_STRING, 'validate' => 'isReference',
+                'required' => true, 'size' => 254),
             'min_participants_number' => array('type' => self::TYPE_INT, 'validate' => 'isUnsignedInt', 'required' => true),
             'discount_size' => array('type' => self::TYPE_INT, 'validate' => 'isUnsignedInt', 'required' => true),
-        ),
-        'associations' => array(
-            'idcut_deal_definition' => array('type' => self::HAS_ONE),
         ),
     );
     protected $webserviceParameters = array(
             'objectsNodeName' => 'idcut_ranges',
-            'fields' => array(
-                    'id_idcut_deal_definition' => array('xlink_resource'=> 'idcut_deal_definitions',),
-            ),
     );
 
-    public static function getRangesByIDcutDealDefinition($id_idcut_deal_definition)
+    public static function getRangesByIDcutDealDefinition($deal_definition_id)
     {
         $ret_array = array();
-        if(Validate::isUnsignedInt($id_idcut_deal_definition)){
-            $result = Db::getInstance()->ExecuteS('SELECT `id_idcut_range` as id FROM `'._DB_PREFIX_.'idcut_range` WHERE id_idcut_deal_definition="'. $id_idcut_deal_definition.'" ORDER BY min_participants_number');
+        if(Validate::isReference($deal_definition_id)){
+            $result = Db::getInstance()->ExecuteS('SELECT `id_idcut_range` as id FROM `'._DB_PREFIX_.'idcut_range` WHERE deal_definition_id="'. $deal_definition_id.'" ORDER BY min_participants_number');
             foreach($result as $r){
                 $ret_array[]= new IDcutRange((int)$r['id']);
             }

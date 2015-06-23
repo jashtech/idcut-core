@@ -19,7 +19,7 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
 
         $this->fields_list = array(
             'id_idcut_deal_definition' => array('title' => $this->l('ID')),
-            'uuid' => array('title' => $this->l('Deal Definition ID')),
+            'deal_definition_id' => array('title' => $this->l('Deal Definition ID')),
             'ttl' => array('title' => $this->l('Time to join'), 'callback' => 'printTimeForHuman'),
             'locktime' => array('title' => $this->l('Time to return money'), 'callback' => 'printTimeForHuman'),
             'user_max' => array('title' => $this->l('User limit')),

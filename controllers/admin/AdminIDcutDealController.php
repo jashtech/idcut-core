@@ -19,7 +19,7 @@ class AdminIDcutDealController extends ModuleAdminController
         $this->fields_list = array(
             'id_idcut_deal' => array('title' => $this->l('ID')),
             'deal_id' => array('title' => $this->l('Deal ID')),
-            'id_idcut_deal_definition' => array('title' => $this->l('Definition ID')),
+            'deal_definition_id' => array('title' => $this->l('Definition ID')),
             'created_at' => array('title' => $this->l('Created at')),
             'hash_id' => array('title' => $this->l('Hash ID')),
         );

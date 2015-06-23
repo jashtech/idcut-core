@@ -20,6 +20,7 @@ class AdminIDcutTransactionController extends ModuleAdminController
             'id_idcut_transaction' => array('title' => $this->l('ID')),
             'id_order' => array('title' => $this->l('Order ID')),
             'transaction_id' => array('title' => $this->l('Transaction ID')),
+            'deal_id' => array('title' => $this->l('Deal ID')),
             'status' => array('title' => $this->l('Status')),
             'error_code' => array('title' => $this->l('Error code')),
             'date_edit' => array('title' => $this->l('Last update')),

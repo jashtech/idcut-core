@@ -6,7 +6,10 @@ class IDcutDealDefinition extends ObjectModel
     public $id;
 
     /** @var string xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx */
-    public $uuid;
+    public $deal_definition_id;
+
+    /** @var bool */
+    public $active;
 
     /** @var int seconds */
     public $ttl;
@@ -26,7 +29,7 @@ class IDcutDealDefinition extends ObjectModel
     /** @var array array of IDcutRange objects */
     public $ranges = array();
 
-    /** @var string url constructed with $uuid */
+    /** @var string url constructed with $deal_definition_id */
     protected $link;
 
     /**
@@ -37,8 +40,10 @@ class IDcutDealDefinition extends ObjectModel
         'primary' => 'id_idcut_deal_definition',
         'multilang' => false,
         'fields' => array(
-            'uuid' => array('type' => self::TYPE_STRING, 'validate' => 'isReference',
+            'deal_definition_id' => array('type' => self::TYPE_STRING, 'validate' => 'isReference',
                 'required' => true, 'size' => 254, 'copy_post' => false),
+            'active' => array('type' => self::TYPE_BOOL, 'validate' => 'isBool',
+                'required' => true),
             'ttl' => array('type' => self::TYPE_INT, 'validate' => 'isUnsignedInt',
                 'required' => true),
             'locktime' => array('type' => self::TYPE_INT, 'validate' => 'isUnsignedInt',
@@ -62,14 +67,19 @@ class IDcutDealDefinition extends ObjectModel
         }
     }
 
-    public static function getByUuid($uuid)
+    public static function getByDealDefinitionId($deal_definition_id)
     {
-        if (Validate::isReference($uuid)) {
-            $id = Db::getInstance()->getValue('SELECT `id_idcut_deal_definition` as id FROM `'._DB_PREFIX_.'idcut_deal_definition` WHERE uuid="'.$uuid.'"');
+        if (Validate::isReference($deal_definition_id)) {
+            $id = Db::getInstance()->getValue('SELECT `id_idcut_deal_definition` as id FROM `'._DB_PREFIX_.'idcut_deal_definition` WHERE deal_definition_id="'.$deal_definition_id.'"');
         } else {
             $id = null;
         }
 
+        return new IDcutDealDefinition($id);
+    }
+    public static function getActive()
+    {
+        $id = Db::getInstance()->getValue('SELECT `id_idcut_deal_definition` as id FROM `'._DB_PREFIX_.'idcut_deal_definition` WHERE active=1');
         return new IDcutDealDefinition($id);
     }
 
@@ -80,8 +90,8 @@ class IDcutDealDefinition extends ObjectModel
 
     protected function setLink()
     {
-        if (Validate::isReference($this->uuid)) {
-            $this->link = 'https://api.kickass.jash.fr/deal_definitions/'.$this->uuid;
+        if (Validate::isReference($this->deal_definition_id)) {
+            $this->link = 'https://api.kickass.jash.fr/deal_definitions/'.$this->deal_definition_id;
         } else {
             $this->link = null;
         }

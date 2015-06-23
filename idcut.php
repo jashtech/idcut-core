@@ -78,6 +78,8 @@ class IDcut extends PaymentModule
                 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'idcut_transaction` (
                     `id_idcut_transaction` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
                     `id_order` INT( 10 ) UNSIGNED DEFAULT NULL,
+                    `id_cart` INT( 10 ) UNSIGNED DEFAULT NULL,
+                    `deal_id` varchar(254) NOT NULL,
                     `transaction_id` varchar(254) NOT NULL,
                     `status` TINYINT(4) UNSIGNED DEFAULT 0,
                     `error_code` INT( 10 ) UNSIGNED DEFAULT NULL,
@@ -87,7 +89,8 @@ class IDcut extends PaymentModule
                 ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;
                 CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'idcut_deal_definition` (
                     `id_idcut_deal_definition` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-                    `uuid` varchar(254) NOT NULL,
+                    `deal_definition_id` varchar(254) NOT NULL,
+                    `active` TINYINT(1) UNSIGNED NOT NULL,
                     `ttl` INT( 10 ) UNSIGNED NOT NULL,
                     `locktime` INT( 10 ) UNSIGNED NOT NULL,
                     `user_max` INT( 10 ) UNSIGNED NOT NULL,
@@ -98,14 +101,18 @@ class IDcut extends PaymentModule
                 CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'idcut_deal` (
                     `id_idcut_deal` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
                     `deal_id` varchar(254) NOT NULL,
-                    `id_idcut_deal_definition` INT( 10 ) UNSIGNED NOT NULL,
                     `created_at` DATETIME NOT NULL,
+                    `updated_at` DATETIME NOT NULL,
+                    `state` varchar(32) NOT NULL,
+                    `ended` TINYINT(1) UNSIGNED NOT NULL,
+                    `end_date` DATETIME NOT NULL,
                     `hash_id` varchar(254) NOT NULL,
+                    `deal_definition_id` varchar(254) NOT NULL,
                     PRIMARY KEY (`id_idcut_deal`)
                 ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;
                 CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'idcut_range` (
                     `id_idcut_range` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-                    `id_idcut_deal_definition` INT( 10 ) UNSIGNED NOT NULL,
+                    `deal_definition_id` varchar(254) NOT NULL,
                     `min_participants_number` INT( 10 ) UNSIGNED NOT NULL,
                     `discount_size` INT( 10 ) UNSIGNED NOT NULL,
                     PRIMARY KEY (`id_idcut_range`)
