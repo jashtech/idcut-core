@@ -32,6 +32,19 @@ class IDcut extends IDcutAbstract implements IDcutInterface
             echo $e->getMessage();
         }
     }
+    
+    public function post($query, $body = null)
+    {
+        try {
+            return $request = $this->httpClient->post($query,
+                array(
+                'body' => $body,
+                'headers' => array('Content-type' => 'application/json')
+            ));
+        } catch (\Exception $e) {
+            echo $e->getMessage();
+        }
+    }
 
     public function getTokenInfo()
     {
