@@ -5,11 +5,17 @@ class IDcutTransaction extends ObjectModel
     /** @var integer */
     public $id;
     public $id_order;
+    public $id_cart;
     public $transaction_id;
     public $deal_id;
     public $status;
+    public $title;
+    public $amount;
+    public $amount_cents;
+    public $amount_currency;
     public $error_code;
     public $message;
+    public $created_at;
     public $date_edit;
     public $order;
 
@@ -32,16 +38,25 @@ class IDcutTransaction extends ObjectModel
         'primary' => 'id_idcut_transaction',
         'multilang' => false,
         'fields' => array(
-            'id_order' => array('type' => self::TYPE_INT, 'validate' => 'isUnsignedInt',
+            'id_order' => array('type' => self::TYPE_INT, 'validate' => 'isUnsignedInt'),
+            'id_cart' => array('type' => self::TYPE_INT, 'validate' => 'isUnsignedInt',
                 'required' => true),
             'transaction_id' => array('type' => self::TYPE_STRING, 'validate' => 'isReference',
-                'required' => true, 'size' => 254),
+                'size' => 254),
             'deal_id' => array('type' => self::TYPE_STRING, 'validate' => 'isReference',
                 'required' => true, 'size' => 254),
             'status' => array('type' => self::TYPE_INT, 'validate' => 'isUnsignedInt'),
+            'title' => array('type' => self::TYPE_STRING, 'validate' => 'isGenericName',
+                'size' => 254),
+            'amount' => array('type' => self::TYPE_STRING, 'validate' => 'isReference',
+                'required' => true, 'size' => 32),
+            'amount_cents' => array('type' => self::TYPE_INT, 'validate' => 'isInt',
+                'required' => true),
+            'amount_currency' => array('type' => self::TYPE_STRING, 'validate' => 'isLanguageIsoCode', 'required' => true, 'size' => 3),
             'error_code' => array('type' => self::TYPE_INT, 'validate' => 'isUnsignedInt'),
             'message' => array('type' => self::TYPE_STRING, 'validate' => 'isCleanHtml',
                 'required' => false),
+            'created_at' => array('type' => self::TYPE_DATE, 'validate' => 'isDate', 'copy_post' => false),
             'date_edit' => array('type' => self::TYPE_DATE, 'validate' => 'isDate', 'copy_post' => false),
         ),
         'associations' => array(
@@ -78,6 +93,17 @@ class IDcutTransaction extends ObjectModel
         return new IDcutTransaction($id);
     }
 
+    public static function getByCartId($id_cart)
+    {
+        if(Validate::isUnsignedId($id_cart)){
+            $id = Db::getInstance()->getValue('SELECT `id_idcut_transaction` as id FROM `'._DB_PREFIX_.'idcut_transaction` WHERE id_cart="'. $id_cart.'"');
+        }else{
+            $id = null;
+        }
+
+        return new IDcutTransaction($id);
+    }
+
     public function setStatus($status)
     {
         if(isset(IDcutTransaction::$available_statuses[$status]))
@@ -89,6 +115,14 @@ class IDcutTransaction extends ObjectModel
             $this->status = IDcutTransaction::$available_statuses['pending'];
         }
         return true;
+    }
+    
+    public function setAmount_cents_AND_currency($total, Currency $currency)
+    {
+        $this->amount_cents = (int)($total*100);
+        $this->amount_currency = $currency->iso_code;
+        
+        return $this;
     }
 
     public function getStatus()

@@ -12,7 +12,6 @@ class IDcutPaymentModuleFrontController extends ModuleFrontController
     {
         parent::initContent();
         $error_messages = array();
-
         $cart = $this->context->cart;
         if (!$this->module->checkCurrency($cart))
                 Tools::redirect('index.php?controller=order');
@@ -43,7 +42,7 @@ class IDcutPaymentModuleFrontController extends ModuleFrontController
                     $error_messages[] = Tools::displayError('You must specify deal token');
                 }
                 if(empty($error_messages)){
-                    if(false && $this->module->checkDealConditions($cart, $dealDefinition, $deal)){
+                    if($this->module->checkDealConditions($cart, $dealDefinition, $deal)){
                         Tools::redirect($this->context->link->getModuleLink('idcut', 'validation', array(), true));
                     }
                     else{

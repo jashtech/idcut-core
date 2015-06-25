@@ -2,75 +2,49 @@
 
 class IDcutValidationModuleFrontController extends ModuleFrontController
 {
-    protected function getCurrentDealDefinition()
-    {
-        /*
-         * GET http://api.idcut.jash.fr/deal_definitions/<uuid>
-         * 
-         * example for deal d9d03443-befe-480d-866e-03154e1f7670
-         */
-        //        $response = $this->module->core->getApiClient()->getCurrentDealDefinition();
-        //        if($response instanceof GuzzleHttp\Message\Response){
-        //            $r = var_export($response , true);
-        //        }
-        $json_response ='{"id":"d9d03443-befe-480d-866e-03154e1f7670","start_date":"2015-02-04T00:00:00.000Z","end_date":"2015-09-20T00:00:00.000Z","ttl":242332,"locktime":4234354,"user_max":5,"min_order_value":636,"range_type":"percent","ranges":[{"min_participants_number":4,"discount_size":5}],"link":"https://api.idcut.jash.fr/deal_definitions/d9d03443-befe-480d-866e-03154e1f7670"}';
-        return json_decode($json_response);
-    }
     
-    protected function createTransaction($deal)
+    protected function createTransaction(IDcutTransaction $transaction)
     {
-        /*
-            POST http://api.kickass.jash.fr/deal_definitions/<deal_definition_id>/transactions
-            {
-                "transaction":{
-                    "amount_cents": "1000",
-                    "title": "order payment"
-                }
-            }
-         *
-         * example for deal d9d03443-befe-480d-866e-03154e1f7670
-         * returned transaction_id 492131f6-7556-4735-a5c3-89e5c115cbf4
-         */
-        //        $response = $this->module->core->getApiClient()->createTransaction();
-        //        if($response instanceof GuzzleHttp\Message\Response){
-        //            $r = var_export($response , true);
-        //        }
+        $transaction_body = new \IDcut\Jash\Object\Transaction\Transaction();
 
-        $request_link = $deal->link.'/transactions';
+        $transaction_body->setAmount_cents($transaction->amount_cents);
+        $transaction_body->setAmount_currency($transaction->amount_currency);
+        $transaction_body->setTitle($transaction->title);
+        $transaction_body->setDeal_id($transaction->deal_id);
+        
 
-        $transaction_id = $this->getTransactionId($request_link);
-
-        $transaction = IDcutTransaction::getByTransactionId($transaction_id);
-        if(!isset($transaction->id)){
-            $transaction->transaction_id = $transaction_id;
-            $transaction->id_order = $this->module->currentOrder;
-            $transaction->setStatus('init');
-            $transaction->date_edit = date('Y-m-d H:i:s');
-            $transaction->save();
+        try {
+            $transactionCreateResponse = $this->module->core->getApiClient()->post('/transactions', $transaction_body->__toStringForCreate());
+        } catch (\Exception $e) {
+            $error_messages[] = Tools::displayError('Error when trying to Create Transaction');
         }
 
-        return $transaction;
+        if((int)$transactionCreateResponse->getStatusCode() !== 201 || !$transactionCreateResponse->hasHeader('location')){
+            return false;
+        }
+
+        try {
+            $location = $transactionCreateResponse->getHeader('location');
+            $transactionResponse = $this->module->core->getApiClient()->get($location);
+        } catch (\Exception $e) {
+            return false;
+        }
+
+        if (!$transactionResponse) {
+            return false;
+        }
+
+        $transactionJson = $transactionResponse->json();
+        if(!isset($transactionJson['id'])){
+            return false;
+        }
+
+        return IDcut\Jash\Object\Transaction\Transaction::build($transactionJson);
     }
 
-    protected function getTransactionId($request_link)
+    protected function redirectTransaction(IDcut\Jash\Object\Transaction\Transaction $transaction)
     {
-        /* Example
-         * for '492131f6-7556-4735-a5c3-89e5c115cbf4'
-         */
-        $config = explode(',',Configuration::get('PS_DEMO_IDCUT_TRAN'));
-        $tid = $config[0];
-        unset($config[0]);
-        $config = Configuration::updateValue('PS_DEMO_IDCUT_TRAN', implode(',',$config));
-
-        return $tid;
-    }
-
-    protected function redirectTransaction(IDcutTransaction $transaction)
-    {
-        /* Example
-         * https://kickass.jash.fr/en/transactions/492131f6-7556-4735-a5c3-89e5c115cbf4/start
-         */
-        Tools::redirect('https://kickass.jash.fr/en/transactions/'.$transaction->transaction_id.'/start');
+        Tools::redirect($transaction->getConfirm_payment_link());
     }
 
     public function postProcess()
@@ -102,19 +76,39 @@ class IDcutValidationModuleFrontController extends ModuleFrontController
         $total    = (float) $cart->getOrderTotal(true, Cart::BOTH);
 
         $mailVars = array();
-        $deal = $this->getCurrentDealDefinition();
-        
+
+        $transaction = IDcutTransaction::getByCartId($cart->id);
+        $transaction->setAmount_cents_AND_currency($total, $currency);
+
         $this->module->validateOrder((int) $cart->id,
             Configuration::get('PS_OS_IDCUT'), $total,
             $this->module->displayName, NULL, $mailVars, (int) $currency->id,
             false, $customer->secure_key);
-        
-        $Transaction = $this->createTransaction($deal);
-        if(Validate::isLoadedObject($Transaction)){
-            $this->redirectTransaction($Transaction);
+
+        $transaction->id_order = $this->module->currentOrder;
+        $transaction->title = $this->module->l('Order:').' '.OrderCore::getUniqReferenceOf($this->module->currentOrder);
+
+        $transactionApi = $this->createTransaction($transaction);
+
+        if($transactionApi !== false){
+            $transaction->transaction_id = $transactionApi->getId();
+
+            $Date = strtotime($transactionApi->getCreated_at());
+            $converted = date("Y-m-d H:i:s", $Date);
+
+            $transaction->created_at = $converted;
+            $transaction->date_edit = $converted;
+            $transaction->title = $transactionApi->getTitle();
+            $transaction->setStatus($transactionApi->getStatus());
+            $transaction->amount = $transactionApi->getAmount();
+            $transaction->amount_cents = $transactionApi->getAmount_cents();
+            $transaction->amount_currency = $transactionApi->getAmount_currency();
+            $transaction->save();
+            
+            $this->redirectTransaction($transactionApi);
         }
         else{
-            d($deal);
+            d(Tools::displayError('Error when trying to Create Transaction'));
         }
     }
 }

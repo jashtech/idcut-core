@@ -79,11 +79,16 @@ class IDcut extends PaymentModule
                     `id_idcut_transaction` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
                     `id_order` INT( 10 ) UNSIGNED DEFAULT NULL,
                     `id_cart` INT( 10 ) UNSIGNED DEFAULT NULL,
-                    `deal_id` varchar(254) NOT NULL,
                     `transaction_id` varchar(254) NOT NULL,
+                    `deal_id` varchar(254) NOT NULL,
                     `status` TINYINT(4) UNSIGNED DEFAULT 0,
+                    `title` varchar(254) DEFAULT NULL,
+                    `amount` varchar(32) NOT NULL,
+                    `amount_cents` BIGINT(20) UNSIGNED DEFAULT 0,
+                    `amount_currency` varchar(3) NOT NULL,
                     `error_code` INT( 10 ) UNSIGNED DEFAULT NULL,
                     `message` text DEFAULT NULL,
+                    `created_at` DATETIME DEFAULT NULL,
                     `date_edit` DATETIME DEFAULT NULL,
                     PRIMARY KEY (`id_idcut_transaction`)
                 ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;
@@ -395,7 +400,22 @@ class IDcut extends PaymentModule
         return false;
     }
 
-    public function checkDealConditions($cart, IDcut\Jash\Object\DealDefinition\DealDefinition $deal_definition = null, $deal = null)
+    public function checkCartValue($cart, IDcut\Jash\Object\DealDefinition\DealDefinition $deal_definition = null)
+    {
+        $currency = $this->context->currency;
+        
+        $total = $cart->getOrderTotal(true, Cart::BOTH);
+        if($currency->iso_code !== 'EUR' && $eur_id = CurrencyCore::getIdByIsoCode('EUR') && $currency_eur = CurrencyCore::getCurrency($eur_id)){
+            $total = ToolsCore::convertPrice($total, $currency_eur, true, $this->context);
+            $currency = $currency_eur;
+        }
+
+        $total_cents = (int)(($total*100));
+
+        return (bool)($total_cents >= (int)$deal_definition->getMin_order_value());
+    }
+    
+    public function checkDealConditions($cart, IDcut\Jash\Object\DealDefinition\DealDefinition &$deal_definition = null, &$deal = null)
     {
         if($deal === null){
             try {
@@ -404,7 +424,7 @@ class IDcut extends PaymentModule
                 return false;
             }
 
-            if((int)$dealCreateResponse->getStatusCode() !== 201 && !$dealCreateResponse->hasHeader('location')){
+            if((int)$dealCreateResponse->getStatusCode() !== 201 || !$dealCreateResponse->hasHeader('location')){
                 return false;
             }
 
@@ -427,11 +447,31 @@ class IDcut extends PaymentModule
             $deal = $dealJson;
             $dealJson['deal_definition']['ranges'] = isset($dealJson['deal_definition']['ranges'])?$dealJson['deal_definition']['ranges']:array();
             $deal_definition = IDcut\Jash\Object\DealDefinition\DealDefinition::build($dealJson['deal_definition']);
+        }elseif($deal['state'] == 'closed'){
+            return false;
+        }
+        
+        if(
+            $deal['ended'] ||
+            (int)$deal['counts']['paid_deal_participants_count'] >= (int)$deal_definition->getUser_max() ||
+            !$this->checkCartValue($cart,$deal_definition)
+            )
+        {
+            return false;
         }
 
-        
-        
-        return false;
+        $IDcutTransaction = IDcutTransaction::getByCartId($cart->id);
+        $IDcutTransaction->id_cart = $cart->id;
+        $IDcutTransaction->deal_id = $deal['id'];
+
+        $IDcutTransaction->setStatus('init');
+        $IDcutTransaction->amount = Tools::displayPrice($cart->getOrderTotal(true, Cart::BOTH));
+
+        $IDcutTransaction->setAmount_cents_AND_currency($cart->getOrderTotal(true, Cart::BOTH), $this->context->currency);
+
+        $IDcutTransaction->save();
+
+        return true;
     }
 
     public function getConfigFieldsValues()
