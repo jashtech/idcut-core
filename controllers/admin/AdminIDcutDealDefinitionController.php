@@ -57,10 +57,64 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
         return parent::renderView();
     }
 
+    public function validateRules($class_name = false)
+    {
+        if (($error                  = $this->validateRanges(Tools::getValue('ranges')))
+            !== true) $this->errors['ranges'] = $error;
+
+        parent::validateRules($class_name);
+    }
+
+    public function validateRanges($rangesJson)
+    {
+        if ($rangesJson === false) {
+            return $this->module->l('Empty Ranges');
+        }
+        $rangesArray = json_decode($rangesJson, true);
+        if (is_array($rangesArray)) {
+            $rge_max = 0;
+            foreach ($rangesArray as $rge) {
+                $rge = explode('-', $rge);
+                if (count($rge) != 2 || !Validate::isUnsignedInt($rge[0]) || !Validate::isUnsignedInt($rge[1])) {
+                    return $this->module->l('Ranges are not setted properly');
+                } elseif ($rge[1] < $rge_max) {
+                    return $this->module->l('Ranges field: more people can not have less reduction');
+                }
+                $rge_max = $rge[1];
+            }
+            return true;
+        } else {
+            return $this->module->l('Ranges are not setted properly');
+        }
+    }
+
     public function postProcess()
     {
-        /* Ranges save should be triggered here */
-        return parent::postProcess();
+        parent::postProcess();
+        if (Tools::isSubmit('submitAdd'.$this->table) || Tools::isSubmit('submitAdd'.$this->table.'AndStay')
+            || Tools::isSubmit('submitAdd'.$this->table.'AndPreview') || Tools::isSubmit('submitAdd'.$this->table.'AndBackToParent')) {
+            $ranges      = Tools::getValue('ranges');
+            $rangesArray = json_decode($ranges, true);
+            if (is_array($rangesArray)) {
+                $rangesToSave = array();
+                foreach ($rangesArray as $rge) {
+                    $rge                   = explode('-', $rge);
+                    $rangesToSave[$rge[0]] = $rge[0];
+                }
+            }
+            $obj = $this->loadObject();
+            if (!$obj->deal_definition_id) {
+                //request to API to create and save deal_definition_id
+            }
+
+            if ($this->id_object) {
+                // update current object
+            } else {
+                // add new object
+            }
+
+            // here should be saving ranges part
+        }
     }
 
     public function renderForm()

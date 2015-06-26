@@ -1,28 +1,3 @@
-{*
-* 2007-2013 PrestaShop
-*
-* NOTICE OF LICENSE
-*
-* This source file is subject to the Academic Free License (AFL 3.0)
-* that is bundled with this package in the file LICENSE.txt.
-* It is also available through the world-wide-web at this URL:
-* http://opensource.org/licenses/afl-3.0.php
-* If you did not receive a copy of the license and are unable to
-* obtain it through the world-wide-web, please send an email
-* to license@prestashop.com so we can send you a copy immediately.
-*
-* DISCLAIMER
-*
-* Do not edit or add to this file if you wish to upgrade PrestaShop to newer
-* versions in the future. If you wish to customize PrestaShop for your
-* needs please refer to http://www.prestashop.com for more information.
-*
-*  @author PrestaShop SA <contact@prestashop.com>
-*  @copyright  2007-2013 PrestaShop SA
-*  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
-*  International Registered Trademark & Property of PrestaShop SA
-*}
-
 {extends file="helpers/form/form.tpl"}
 
 {block name="input"}
@@ -49,7 +24,6 @@
             $(document).ready( function() {
                 $('input#new_min_participants_number').change(function($e){
                     var $mpn = $(this).val();
-                    console.log($mpn);
                     if(isUint32($mpn)){
                         if($(this).hasClass('unvalid')){
                             $(this).removeClass('unvalid');
@@ -68,6 +42,10 @@
                         $(this).addClass('unvalid');
                     }
                 });
+                $("#current_ranges").on('click', 'a',function() {
+                    $(this).parent().parent().remove();
+                    rebuildJsonValue('{/literal}{$input.name}{literal}');
+                });
                 $('#ranges_add').click(function() {
                         if(isUint32($('input#new_min_participants_number').val()) && isUint32($('input#new_discount_size').val())){
                             var mpn = parseInt($('input#new_min_participants_number').val());
@@ -76,13 +54,25 @@
                             var $matched = $('#current_ranges').children($elid);
                             if(typeof $matched !== 'undefined' && $matched.length>0){
                                 $matched.children("div.discount_size").html(nds);
+                                $matched.attr("data-discount_size", nds);
                             }else{
-                                $("#current_ranges").append("<div class='row' id='ranges_"+mpn+"'><div class='col-lg-5' class='min_participants_number'>"+mpn+"</div><div class='col-lg-5' class='discount_size'>"+nds+"</div><div class='col-lg-2'><a class='list-toolbar-btn' href='#'><i class='process-icon-cancel'></i></a></div></div>");
+                                var smaller = 0;
+                                $('#current_ranges').children().each(function(){
+                                    if($(this).attr('data-min_participants_number') < mpn){
+                                        smaller = $(this);
+                                    }else{
+                                        return;
+                                    }
+                                });
+                                var $html_el = "<div class='row' id='ranges_"+mpn+"' data-min_participants_number='"+mpn+"'  data-discount_size='"+nds+"'><div class='col-lg-5 min_participants_number'>"+mpn+"</div><div class='col-lg-5 discount_size'>"+nds+"</div><div class='col-lg-2'><a class='list-toolbar-btn' href='#current_ranges'><i class='process-icon-cancel'></i></a></div></div>";
+                                if(smaller===0){
+                                    $("#current_ranges").append($html_el);
+                                }else{
+                                    smaller.after($html_el);
+                                }
                             }
-                            console.log($matched);
-                            rebuildJsonValue({/literal}{$input.name}{literal});
+                            rebuildJsonValue('{/literal}{$input.name}{literal}');
                         }
-                        console.log('triggered_add');
                         return false;
                 });
             });
@@ -93,13 +83,17 @@
             function rebuildJsonValue(name){
                 var arr_to_parse = [];
                 $('#current_ranges').children().each(function(){
-                   var mpn = parseInt($(this).children(".min_participants_number").html(),10);
-                   var nds = parseInt($(this).children(".discount_size").html(),10);
-                   arr_to_parse[mpn]= nds;
+                   var mpn = parseInt($(this).attr("data-min_participants_number"),10);
+                   var nds = parseInt($(this).attr("data-discount_size"),10);
+                   arr_to_parse.push(''+mpn+'-'+nds);
                 });
                 console.log("arr_to_parse");
                 console.log(arr_to_parse);
-                $("#"+name).val(parseJson(arr_to_parse));
+                console.log("input#"+name);
+                console.log($("input#"+name));
+                console.log(JSON.stringify(arr_to_parse));
+
+                $("input#"+name).val(JSON.stringify(arr_to_parse));
             }
             {/literal}
         </script>
@@ -113,10 +107,10 @@
             </div>
             <div id="current_ranges">
                 {foreach $input.current_ranges as $r}
-                <div class="row" id="ranges_{$r->min_participants_number}">
-                    <div class="col-lg-5" class="min_participants_number">{$r->min_participants_number}</div>
-                    <div class="col-lg-5" class="discount_size">{$r->discount_size}</div>
-                    <div class="col-lg-2"><a class="list-toolbar-btn" href="#"><i class="process-icon-cancel"></i></a></div>
+                <div class="row" id="ranges_{$r->min_participants_number}" data-min_participants_number="{$r->min_participants_number}"  data-discount_size="{$r->discount_size}">
+                    <div class="col-lg-5 min_participants_number">{$r->min_participants_number}</div>
+                    <div class="col-lg-5 discount_size">{$r->discount_size}</div>
+                    <div class="col-lg-2"><a class="list-toolbar-btn" href="#current_ranges"><i class="process-icon-cancel"></i></a></div>
                 </div>
                 {/foreach}
             </div>
