@@ -77,6 +77,7 @@ class IDcutDealDefinition extends ObjectModel
 
         return new IDcutDealDefinition($id);
     }
+
     public static function getActive()
     {
         $id = Db::getInstance()->getValue('SELECT `id_idcut_deal_definition` as id FROM `'._DB_PREFIX_.'idcut_deal_definition` WHERE active=1');
@@ -97,19 +98,23 @@ class IDcutDealDefinition extends ObjectModel
         }
         return $this;
     }
-    
-    public function formatTtl(){
-        return $this->formatSeconds((int)$this->ttl);
+
+    public function formatTtl()
+    {
+        return $this->formatSeconds((int) $this->ttl);
     }
 
-    public function formatLocktime(){
-        return $this->formatSeconds((int)$this->locktime);
+    public function formatLocktime()
+    {
+        return $this->formatSeconds((int) $this->locktime);
     }
 
-    protected function formatSeconds($seconds){
-        $zero    = new DateTime("@0");
-        $offset  = new DateTime("@$seconds");
-        $diff    = $zero->diff($offset);
-        return sprintf("%02dd %02dh %02dm %02ds", $diff->days, $diff->h, $diff->i, $diff->s);
+    protected function formatSeconds($seconds)
+    {
+        $zero   = new DateTime("@0");
+        $offset = new DateTime("@$seconds");
+        $diff   = $zero->diff($offset);
+        return sprintf("%02dd %02dh %02dm %02ds", $diff->days, $diff->h,
+            $diff->i, $diff->s);
     }
 }

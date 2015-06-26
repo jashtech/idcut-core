@@ -6,17 +6,16 @@ use IDcut\Jash\Object\JSONObjectInterface as JSONObjectInterface;
 
 class Transaction implements JSONObjectInterface
 {
-
-    private $id                 = null;
-    private $created_at         = null;
-    private $title               = null;
-    private $status                = null;
-    private $amount = null;
-    private $amount_cents           = null;
+    private $id                   = null;
+    private $created_at           = null;
+    private $title                = null;
+    private $status               = null;
+    private $amount               = null;
+    private $amount_cents         = null;
     private $amount_currency      = null;
-    private $link      = null;
-    private $confirm_payment_link      = null;
-    private $deal_id      = null;
+    private $link                 = null;
+    private $confirm_payment_link = null;
+    private $deal_id              = null;
 
     public function getId()
     {
@@ -131,46 +130,49 @@ class Transaction implements JSONObjectInterface
             $transaction->setAmount_cents($input['amount_cents']);
             $transaction->setAmount_currency($input['amount_currency']);
             $transaction->setLink($input['link']);
-            if(isset($input['confirm_payment_link'])){
+            if (isset($input['confirm_payment_link'])) {
                 $transaction->setConfirm_payment_link($input['confirm_payment_link']);
             }
         }
         return $transaction;
     }
 
-    public function __toString(){
-        $transaction = array();
-        $transaction['id'] = $this->getId();
-        $transaction['created_at']  = $this->getCreated_at();
-        $transaction['title']  = $this->getTitle();
-        $transaction['status']  = $this->getStatus();
-        $transaction['amount']  = $this->getAmount();
-        $transaction['amount_cents']  = $this->getAmount_cents();
-        $transaction['amount_currency']  = $this->getAmount_currency();
-        $transaction['link']  = $this->getLink();
-        $transaction['confirm_payment_link']  = $this->getConfirm_payment_link();
+    public function __toString()
+    {
+        $transaction                         = array();
+        $transaction['id']                   = $this->getId();
+        $transaction['created_at']           = $this->getCreated_at();
+        $transaction['title']                = $this->getTitle();
+        $transaction['status']               = $this->getStatus();
+        $transaction['amount']               = $this->getAmount();
+        $transaction['amount_cents']         = $this->getAmount_cents();
+        $transaction['amount_currency']      = $this->getAmount_currency();
+        $transaction['link']                 = $this->getLink();
+        $transaction['confirm_payment_link'] = $this->getConfirm_payment_link();
 
         $transaction = array_filter($transaction);
-        return json_encode(array("transaction"=>$transaction) , JSON_UNESCAPED_SLASHES );
+        return json_encode(array("transaction" => $transaction),
+            JSON_UNESCAPED_SLASHES);
     }
-    
-    public function __toStringForCreate(){
+
+    public function __toStringForCreate()
+    {
         $transaction = array();
 
-        $transaction['amount_cents']  = $this->getAmount_cents();
-        $transaction['amount_currency']  = $this->getAmount_currency();
-        $transaction['title']  = $this->getTitle();
-        $transaction['deal_id']  = $this->getDeal_id();
+        $transaction['amount_cents']    = $this->getAmount_cents();
+        $transaction['amount_currency'] = $this->getAmount_currency();
+        $transaction['title']           = $this->getTitle();
+        $transaction['deal_id']         = $this->getDeal_id();
 
-        if(empty($transaction['amount_currency'])){
+        if (empty($transaction['amount_currency'])) {
             unset($transaction['amount_currency']);
         }
-        if(empty($transaction['deal_id'])){
+        if (empty($transaction['deal_id'])) {
             unset($transaction['deal_id']);
         }
 
         $transaction = array_filter($transaction);
-        return json_encode(array("transaction"=>$transaction) , JSON_UNESCAPED_SLASHES );
+        return json_encode(array("transaction" => $transaction),
+            JSON_UNESCAPED_SLASHES);
     }
-
 }

@@ -71,7 +71,7 @@ class AdminIDcutStatusController extends ModuleAdminController
 
 
         $ddResponse = $this->module->core->getApiClient()->get('/deal_definitions');
-        $dump->dd = var_export($ddResponse->json(), 1);
+        $dump->dd   = var_export($ddResponse->json(), 1);
 
 
         $view->dump = $dump;

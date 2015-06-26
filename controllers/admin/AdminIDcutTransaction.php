@@ -13,7 +13,7 @@ class AdminIDcutTransactionController extends ModuleAdminController
         $this->context    = Context::getContext();
         $this->meta_title = $this->l('Your IDcut Transaction');
 
-        $this->_orderBy = 'date_edit';
+        $this->_orderBy  = 'date_edit';
         $this->_orderWay = 'DESC';
 
         $this->fields_list = array(
@@ -25,7 +25,7 @@ class AdminIDcutTransactionController extends ModuleAdminController
             'error_code' => array('title' => $this->l('Error code')),
             'date_edit' => array('title' => $this->l('Last update')),
         );
-        
+
         parent::__construct();
         if (!$this->module->active)
                 Tools::redirectAdmin($this->context->link->getAdminLink('AdminHome'));
@@ -44,7 +44,7 @@ class AdminIDcutTransactionController extends ModuleAdminController
     public function initPageHeaderToolbar()
     {
         parent::initPageHeaderToolbar();
-        unset ($this->toolbar_btn['new']);
+        unset($this->toolbar_btn['new']);
     }
 
     public function renderView()
@@ -53,8 +53,7 @@ class AdminIDcutTransactionController extends ModuleAdminController
         $this->tpl_view_vars = array(
             'transaction' => $this->object
         );
-        
+
         return parent::renderView();
     }
-
 }

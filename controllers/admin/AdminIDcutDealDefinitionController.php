@@ -53,7 +53,7 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
         $this->tpl_view_vars = array(
             'deal_definition' => $this->object
         );
-        
+
         return parent::renderView();
     }
 
@@ -65,91 +65,90 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
 
     public function renderForm()
     {
-            if (!($obj = $this->loadObject(true)))
-                    return;
+        if (!($obj = $this->loadObject(true))) return;
 
-            $ranges_array = array();
-            foreach($obj->ranges as $r){
-                $ranges_array[(int)$r->min_participants_number] = (int)$r->discount_size;
-            }
-            $this->fields_form = array(
-                    'legend' => array(
-                            'title' => $this->l('Deal Definition'),
-                            'icon' => 'icon-cog'
+        $ranges_array = array();
+        foreach ($obj->ranges as $r) {
+            $ranges_array[(int) $r->min_participants_number] = (int) $r->discount_size;
+        }
+        $this->fields_form = array(
+            'legend' => array(
+                'title' => $this->l('Deal Definition'),
+                'icon' => 'icon-cog'
+            ),
+            'input' => array(
+                array(
+                    'type' => 'text',
+                    'label' => $this->l('Time to join'),
+                    'name' => 'ttl',
+                    'required' => true
+                ),
+                array(
+                    'type' => 'text',
+                    'label' => $this->l('Time to return money'),
+                    'name' => 'locktime',
+                    'required' => true
+                ),
+                array(
+                    'type' => 'text',
+                    'label' => $this->l('Maximum users'),
+                    'name' => 'user_max',
+                    'required' => true
+                ),
+                array(
+                    'type' => 'text',
+                    'label' => $this->l('Minimum order value'),
+                    'name' => 'min_order_value',
+                    'required' => true
+                ),
+                array(
+                    'type' => 'range_type',
+                    'label' => $this->l('Range type'),
+                    'name' => 'range_type',
+                    'required' => true,
+                    'is_bool' => true,
+                    'values' => array(
+                        array(
+                            'id' => 'range_type_on',
+                            'value' => 1,
+                            'label' => $this->l('Amount')
+                        ),
+                        array(
+                            'id' => 'range_type_off',
+                            'value' => 0,
+                            'label' => $this->l('Percent')
+                        )
                     ),
-                    'input' => array(
-                            array(
-                                    'type' => 'text',
-                                    'label' => $this->l('Time to join'),
-                                    'name' => 'ttl',
-                                    'required' => true
-                            ),
-                            array(
-                                    'type' => 'text',
-                                    'label' => $this->l('Time to return money'),
-                                    'name' => 'locktime',
-                                    'required' => true
-                            ),
-                            array(
-                                    'type' => 'text',
-                                    'label' => $this->l('Maximum users'),
-                                    'name' => 'user_max',
-                                    'required' => true
-                            ),
-                            array(
-                                    'type' => 'text',
-                                    'label' => $this->l('Minimum order value'),
-                                    'name' => 'min_order_value',
-                                    'required' => true
-                            ),
-                            array(
-                                    'type' => 'range_type',
-                                    'label' => $this->l('Range type'),
-                                    'name' => 'range_type',
-                                    'required' => true,
-                                    'is_bool' => true,
-                                    'values' => array(
-                                            array(
-                                                    'id' => 'range_type_on',
-                                                    'value' => 1,
-                                                    'label' => $this->l('Amount')
-                                            ),
-                                            array(
-                                                    'id' => 'range_type_off',
-                                                    'value' => 0,
-                                                    'label' => $this->l('Percent')
-                                            )
-                                    ),
-                            ),
-                            array(
-                                    'type' => 'ranges',
-                                    'label' => $this->l('Ranges'),
-                                    'name' => 'ranges',
-                                    'required' => true,
-                                    'current_ranges' => $obj->ranges,
-                                    'value' => json_encode($ranges_array),
-                            ),
-                    ),
-                    'submit' => array(
-                            'title' => $this->l('Save'),
-                    )
-            );
+                ),
+                array(
+                    'type' => 'ranges',
+                    'label' => $this->l('Ranges'),
+                    'name' => 'ranges',
+                    'required' => true,
+                    'current_ranges' => $obj->ranges,
+                    'value' => json_encode($ranges_array),
+                ),
+            ),
+            'submit' => array(
+                'title' => $this->l('Save'),
+            )
+        );
 
-            return parent::renderForm();
+        return parent::renderForm();
     }
 
     public function printRangeType($t)
     {
         $types = array(0 => $this->l('Percent'), 1 => $this->l('Amount'));
-        return isset($types[$t])?$types[$t]:$types[0];
+        return isset($types[$t]) ? $types[$t] : $types[0];
     }
 
     public function printTimeForHuman($t)
     {
-        $zero    = new DateTime("@0");
-        $offset  = new DateTime("@$t");
-        $diff    = $zero->diff($offset);
-        return sprintf("%02dd %02dh %02dm %02ds", $diff->days, $diff->h, $diff->i, $diff->s);
+        $zero   = new DateTime("@0");
+        $offset = new DateTime("@$t");
+        $diff   = $zero->diff($offset);
+        return sprintf("%02dd %02dh %02dm %02ds", $diff->days, $diff->h,
+            $diff->i, $diff->s);
     }
-
 }

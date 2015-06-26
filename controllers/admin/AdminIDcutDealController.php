@@ -13,7 +13,7 @@ class AdminIDcutDealController extends ModuleAdminController
         $this->context    = Context::getContext();
         $this->meta_title = $this->l('Your IDcut Deals');
 
-        $this->_orderBy = 'created_at';
+        $this->_orderBy  = 'created_at';
         $this->_orderWay = 'DESC';
 
         $this->fields_list = array(
@@ -23,7 +23,7 @@ class AdminIDcutDealController extends ModuleAdminController
             'created_at' => array('title' => $this->l('Created at')),
             'hash_id' => array('title' => $this->l('Hash ID')),
         );
-        
+
         parent::__construct();
         if (!$this->module->active)
                 Tools::redirectAdmin($this->context->link->getAdminLink('AdminHome'));
@@ -42,7 +42,6 @@ class AdminIDcutDealController extends ModuleAdminController
     public function initPageHeaderToolbar()
     {
         parent::initPageHeaderToolbar();
-        unset ($this->toolbar_btn['new']);
+        unset($this->toolbar_btn['new']);
     }
-
 }

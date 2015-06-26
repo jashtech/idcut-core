@@ -1,56 +1,56 @@
 <?php
+if (!defined('_PS_VERSION_')) exit;
+require_once(dirname(__FILE__).'/classes/IDcutTransaction.php');
+require_once(dirname(__FILE__).'/classes/IDcutDealDefinition.php');
+require_once(dirname(__FILE__).'/classes/IDcutDeal.php');
+require_once(dirname(__FILE__).'/classes/IDcutRange.php');
 
-if (!defined('_PS_VERSION_'))
-    exit;
-require_once(dirname(__FILE__) . '/classes/IDcutTransaction.php');
-require_once(dirname(__FILE__) . '/classes/IDcutDealDefinition.php');
-require_once(dirname(__FILE__) . '/classes/IDcutDeal.php');
-require_once(dirname(__FILE__) . '/classes/IDcutRange.php');
 class IDcut extends PaymentModule
 {
-
     private $loader = null;
     public $core;
 
     public function __construct()
     {
-        $this->name = 'idcut';
-        $this->author = 'Tomasz Wesołowski <twesolowski@jash.pl>';
-        $this->tab = 'payments_gateways';
-        $this->version = '1.0';
-        $this->controllers = array('auth', 'payment', 'validation');
+        $this->name             = 'idcut';
+        $this->author           = 'Tomasz Wesołowski <twesolowski@jash.pl>';
+        $this->tab              = 'payments_gateways';
+        $this->version          = '1.0';
+        $this->controllers      = array('auth', 'payment', 'validation');
         $this->is_eu_compatible = 1;
 
-        $this->currencies = true;
+        $this->currencies      = true;
         $this->currencies_mode = 'checkbox';
 
         $this->bootstrap = true;
         parent::__construct();
 
-        $this->displayName = $this->l('IDcut');
-        $this->description = $this->l('Prestashop - idcut module.');
+        $this->displayName            = $this->l('IDcut');
+        $this->description            = $this->l('Prestashop - idcut module.');
         $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
 
         $this->core = require 'bootstrap/prestashop.php';
 
         $c_tmp = $this->getConfigFieldsValues();
-        $i = 1;
-        if ((!isset($c_tmp['PS_IDCUT_CLIENT_ID']) || !isset($c_tmp['PS_IDCUT_REDIRECT_URL']) || empty($c_tmp['PS_IDCUT_CLIENT_ID']) || empty($c_tmp['PS_IDCUT_REDIRECT_URL'])))
-            $this->warning .= '<br>' . $i++ . '. ' . $this->l('The client ID and Redirect url fields must be configured before using this module.');
+        $i     = 1;
+        if ((!isset($c_tmp['PS_IDCUT_CLIENT_ID']) || !isset($c_tmp['PS_IDCUT_REDIRECT_URL'])
+            || empty($c_tmp['PS_IDCUT_CLIENT_ID']) || empty($c_tmp['PS_IDCUT_REDIRECT_URL'])))
+                $this->warning .= '<br>'.$i++.'. '.$this->l('The client ID and Redirect url fields must be configured before using this module.');
         if ((!isset($c_tmp['PS_IDCUT_CLIENT_SECRET']) || empty($c_tmp['PS_IDCUT_CLIENT_SECRET'])))
-            $this->warning .= '<br>' . $i++ . '. ' . $this->l('You need to authorize your shop with API before using this module.');
+                $this->warning .= '<br>'.$i++.'. '.$this->l('You need to authorize your shop with API before using this module.');
         if (!count(Currency::checkPaymentCurrencies($this->id)))
-            $this->warning .= '<br>' . $i++ . '. ' . $this->l('No currency has been set for this module.');
+                $this->warning .= '<br>'.$i++.'. '.$this->l('No currency has been set for this module.');
     }
 
     public function install()
     {
         if (!parent::install() ||
-                !Configuration::updateValue('PS_IDCUT_SCOPES', 'id;name') ||
-                !$this->installTabs() ||
-                !$this->createOrderState() ||
-                !$this->installDB() ||
-                !$this->registerHook('payment') || !$this->registerHook('displayPaymentEU') || !$this->registerHook('paymentReturn')
+            !Configuration::updateValue('PS_IDCUT_SCOPES', 'id;name') ||
+            !$this->installTabs() ||
+            !$this->createOrderState() ||
+            !$this->installDB() ||
+            !$this->registerHook('payment') || !$this->registerHook('displayPaymentEU')
+            || !$this->registerHook('paymentReturn')
         ) {
             return false;
         }
@@ -60,22 +60,23 @@ class IDcut extends PaymentModule
     public function uninstall()
     {
         if (
-                !parent::uninstall() ||
-                !Configuration::deleteByName('PS_IDCUT_CLIENT_ID') ||
-                !Configuration::deleteByName('PS_IDCUT_CLIENT_SECRET') ||
-                !Configuration::deleteByName('PS_IDCUT_REDIRECT_URL') ||
-                !Configuration::deleteByName('PS_IDCUT_SCOPES') ||
-                !$this->uninstallTabs() ||
-                !$this->uninstallDB()
+            !parent::uninstall() ||
+            !Configuration::deleteByName('PS_IDCUT_CLIENT_ID') ||
+            !Configuration::deleteByName('PS_IDCUT_CLIENT_SECRET') ||
+            !Configuration::deleteByName('PS_IDCUT_REDIRECT_URL') ||
+            !Configuration::deleteByName('PS_IDCUT_SCOPES') ||
+            !$this->uninstallTabs() ||
+            !$this->uninstallDB()
         ) {
             return false;
         }
         return true;
     }
 
-    protected function installDB(){
+    protected function installDB()
+    {
         return Db::getInstance()->Execute(
-                'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'idcut_transaction` (
+                'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'idcut_transaction` (
                     `id_idcut_transaction` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
                     `id_order` INT( 10 ) UNSIGNED DEFAULT NULL,
                     `id_cart` INT( 10 ) UNSIGNED DEFAULT NULL,
@@ -91,8 +92,8 @@ class IDcut extends PaymentModule
                     `created_at` DATETIME DEFAULT NULL,
                     `date_edit` DATETIME DEFAULT NULL,
                     PRIMARY KEY (`id_idcut_transaction`)
-                ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;
-                CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'idcut_deal_definition` (
+                ) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8;
+                CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'idcut_deal_definition` (
                     `id_idcut_deal_definition` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
                     `deal_definition_id` varchar(254) NOT NULL,
                     `active` TINYINT(1) UNSIGNED NOT NULL,
@@ -102,8 +103,8 @@ class IDcut extends PaymentModule
                     `min_order_value` INT( 10 ) UNSIGNED NOT NULL,
                     `range_type` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
                     PRIMARY KEY (`id_idcut_deal_definition`)
-                ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;
-                CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'idcut_deal` (
+                ) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8;
+                CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'idcut_deal` (
                     `id_idcut_deal` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
                     `deal_id` varchar(254) NOT NULL,
                     `created_at` DATETIME NOT NULL,
@@ -114,26 +115,30 @@ class IDcut extends PaymentModule
                     `hash_id` varchar(254) NOT NULL,
                     `deal_definition_id` varchar(254) NOT NULL,
                     PRIMARY KEY (`id_idcut_deal`)
-                ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;
-                CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'idcut_range` (
+                ) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8;
+                CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'idcut_range` (
                     `id_idcut_range` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
                     `deal_definition_id` varchar(254) NOT NULL,
                     `min_participants_number` INT( 10 ) UNSIGNED NOT NULL,
                     `discount_size` INT( 10 ) UNSIGNED NOT NULL,
                     PRIMARY KEY (`id_idcut_range`)
-                ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;'
-            );
+                ) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8;'
+        );
     }
 
     public function installTabs()
     {
         $id_root_tab = $this->installTab('AdminIDcutDealDefinition', 'IDcut', 0);
-        $ret = (int) $id_root_tab > 0 ? true : false;
+        $ret         = (int) $id_root_tab > 0 ? true : false;
         if ($ret) {
-            $ret &= $this->installTab('AdminIDcutDealDefinition', 'Deal Definition', $id_root_tab) > 0 ? true : false;
-            $ret &= $this->installTab('AdminIDcutDeal', 'Deals', $id_root_tab) > 0 ? true : false;
-            $ret &= $this->installTab('AdminIDcutTransaction', 'Transactions', $id_root_tab) > 0 ? true : false;
-            $ret &= $this->installTab('AdminIDcutStatus', 'Status', $id_root_tab) > 0 ? true : false;
+            $ret &= $this->installTab('AdminIDcutDealDefinition',
+                    'Deal Definition', $id_root_tab) > 0 ? true : false;
+            $ret &= $this->installTab('AdminIDcutDeal', 'Deals', $id_root_tab) > 0
+                    ? true : false;
+            $ret &= $this->installTab('AdminIDcutTransaction', 'Transactions',
+                    $id_root_tab) > 0 ? true : false;
+            $ret &= $this->installTab('AdminIDcutStatus', 'Status', $id_root_tab)
+                > 0 ? true : false;
         }
 
         return $ret;
@@ -141,30 +146,31 @@ class IDcut extends PaymentModule
 
     public function installTab($class_name, $tab_name, $parent = 0)
     {
-        $tab = new Tab();
-        $tab->active = 1;
-        $tab->class_name = $class_name;
-        $tab->name = array();
+        $tab                         = new Tab();
+        $tab->active                 = 1;
+        $tab->class_name             = $class_name;
+        $tab->name                   = array();
         foreach (Language::getLanguages(true) as $lang)
             $tab->name[$lang['id_lang']] = $tab_name;
-        $tab->id_parent = $parent;
-        $tab->module = $this->name;
+        $tab->id_parent              = $parent;
+        $tab->module                 = $this->name;
         $tab->add();
         return (int) $tab->id;
     }
 
-    protected function uninstallDB(){
+    protected function uninstallDB()
+    {
         return Db::getInstance()->Execute(
-                'DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'idcut_transaction`;
-                DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'idcut_deal_definition`;
-                DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'idcut_deal`;
-                DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'idcut_range`;'
-            );
+                'DROP TABLE IF EXISTS `'._DB_PREFIX_.'idcut_transaction`;
+                DROP TABLE IF EXISTS `'._DB_PREFIX_.'idcut_deal_definition`;
+                DROP TABLE IF EXISTS `'._DB_PREFIX_.'idcut_deal`;
+                DROP TABLE IF EXISTS `'._DB_PREFIX_.'idcut_range`;'
+        );
     }
 
     public function uninstallTabs()
     {
-        $ret = true;
+        $ret  = true;
         $tabs = TabCore::getCollectionFromModule($this->name);
         foreach ($tabs->getAll()->getResults() as $tab) {
             $ret &= $tab->delete();
@@ -178,7 +184,7 @@ class IDcut extends PaymentModule
     public function createOrderState()
     {
         if (!Configuration::get('PS_OS_IDCUT')) {
-            $order_state = new OrderState();
+            $order_state       = new OrderState();
             $order_state->name = array();
 
             foreach (Language::getLanguages() as $language) {
@@ -186,15 +192,15 @@ class IDcut extends PaymentModule
             }
 
             $order_state->send_email = false;
-            $order_state->color = '#4169E1';
-            $order_state->hidden = false;
-            $order_state->delivery = false;
-            $order_state->logable = true;
-            $order_state->invoice = false;
+            $order_state->color      = '#4169E1';
+            $order_state->hidden     = false;
+            $order_state->delivery   = false;
+            $order_state->logable    = true;
+            $order_state->invoice    = false;
 
             if ($order_state->add()) {
-                $source = dirname(__FILE__) . '/logo.gif';
-                $destination = dirname(__FILE__) . '/../../img/os/' . (int) $order_state->id . '.gif';
+                $source      = dirname(__FILE__).'/logo.gif';
+                $destination = dirname(__FILE__).'/../../img/os/'.(int) $order_state->id.'.gif';
                 copy($source, $destination);
             } else {
                 return false;
@@ -202,7 +208,7 @@ class IDcut extends PaymentModule
             Configuration::updateValue('PS_OS_IDCUT', (int) $order_state->id);
         }
         if (!Configuration::get('PS_OS_IDCUT_PENDING')) {
-            $order_state = new OrderState();
+            $order_state       = new OrderState();
             $order_state->name = array();
 
             foreach (Language::getLanguages() as $language) {
@@ -210,20 +216,21 @@ class IDcut extends PaymentModule
             }
 
             $order_state->send_email = false;
-            $order_state->color = '#DDEEFF';
-            $order_state->hidden = false;
-            $order_state->delivery = false;
-            $order_state->logable = true;
-            $order_state->invoice = false;
+            $order_state->color      = '#DDEEFF';
+            $order_state->hidden     = false;
+            $order_state->delivery   = false;
+            $order_state->logable    = true;
+            $order_state->invoice    = false;
 
             if ($order_state->add()) {
-                $source = dirname(__FILE__) . '/logo.gif';
-                $destination = dirname(__FILE__) . '/../../img/os/' . (int) $order_state->id . '.gif';
+                $source      = dirname(__FILE__).'/logo.gif';
+                $destination = dirname(__FILE__).'/../../img/os/'.(int) $order_state->id.'.gif';
                 copy($source, $destination);
             } else {
                 return false;
             }
-            Configuration::updateValue('PS_OS_IDCUT_PENDING', (int) $order_state->id);
+            Configuration::updateValue('PS_OS_IDCUT_PENDING',
+                (int) $order_state->id);
         }
         return true;
     }
@@ -243,14 +250,15 @@ class IDcut extends PaymentModule
             /* Update Client Secret */
             $clientSecret = trim(Tools::getValue('PS_IDCUT_CLIENT_SECRET'));
             if (!empty($clientSecret)) {
-                $this->core->config()->setEncrypted("PS_IDCUT_CLIENT_SECRET", $clientSecret);
-             
+                $this->core->config()->setEncrypted("PS_IDCUT_CLIENT_SECRET",
+                    $clientSecret);
             }
 
             /* Update redirect URL */
             $redirectUrl = Tools::getValue('PS_IDCUT_REDIRECT_URL');
             if (isset($redirectUrl)) {
-                $this->core->config()->update("PS_IDCUT_REDIRECT_URL", $redirectUrl);
+                $this->core->config()->update("PS_IDCUT_REDIRECT_URL",
+                    $redirectUrl);
             }
 
             $html .= $this->displayConfirmation($this->l('Info updated!'));
@@ -296,19 +304,21 @@ class IDcut extends PaymentModule
             )
         );
 
-        $helper = new HelperForm();
-        $helper->show_toolbar = false;
-        $helper->table = $this->table;
-        $lang = new Language((int) Configuration::get('PS_LANG_DEFAULT'));
-        $helper->default_form_language = $lang->id;
-        $helper->allow_employee_form_lang = Configuration::get('PS_BO_ALLOW_EMPLOYEE_FORM_LANG') ? Configuration::get('PS_BO_ALLOW_EMPLOYEE_FORM_LANG') : 0;
-        $this->fields_form = array();
+        $helper                           = new HelperForm();
+        $helper->show_toolbar             = false;
+        $helper->table                    = $this->table;
+        $lang                             = new Language((int) Configuration::get('PS_LANG_DEFAULT'));
+        $helper->default_form_language    = $lang->id;
+        $helper->allow_employee_form_lang = Configuration::get('PS_BO_ALLOW_EMPLOYEE_FORM_LANG')
+                ? Configuration::get('PS_BO_ALLOW_EMPLOYEE_FORM_LANG') : 0;
+        $this->fields_form                = array();
 
-        $helper->identifier = $this->identifier;
+        $helper->identifier    = $this->identifier;
         $helper->submit_action = 'submitModule';
-        $helper->currentIndex = $this->context->link->getAdminLink('AdminModules', false) . '&configure=' . $this->name . '&tab_module=' . $this->tab . '&module_name=' . $this->name;
-        $helper->token = Tools::getAdminTokenLite('AdminModules');
-        $helper->tpl_vars = array(
+        $helper->currentIndex  = $this->context->link->getAdminLink('AdminModules',
+                false).'&configure='.$this->name.'&tab_module='.$this->tab.'&module_name='.$this->name;
+        $helper->token         = Tools::getAdminTokenLite('AdminModules');
+        $helper->tpl_vars      = array(
             'fields_value' => $this->getConfigFieldsValues(),
             'languages' => $this->context->controller->getLanguages(),
             'id_language' => $this->context->language->id
@@ -320,64 +330,64 @@ class IDcut extends PaymentModule
 
         $provider = $this->getProvider();
 
-        $view = $this->core->getView();
+        $view                   = $this->core->getView();
         $view->setTemplateFile("connectButton.php");
-        $view->connected = (bool)$this->core->config()->getEncrypted("PS_IDCUT_API_TOKEN");
+        $view->connected        = (bool) $this->core->config()->getEncrypted("PS_IDCUT_API_TOKEN");
         $view->authorizationUrl = $provider->getAuthorizationUrl();
 
-        $this->core->config()->setEncrypted("PS_IDCUT_OAUTH_STATE", $provider->state);
+        $this->core->config()->setEncrypted("PS_IDCUT_OAUTH_STATE",
+            $provider->state);
 
         $html .= $view->render();
-        
+
         return $html;
     }
 
     public function hookPayment($params)
     {
-        if (!$this->active)
-            return;
-        if (!$this->checkCurrency($params['cart']))
-            return;
+        if (!$this->active) return;
+        if (!$this->checkCurrency($params['cart'])) return;
 
         $this->smarty->assign(array(
             'this_path' => $this->_path,
             'this_path_idcut' => $this->_path,
-            'this_path_ssl' => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/'
+            'this_path_ssl' => Tools::getShopDomainSsl(true, true).__PS_BASE_URI__.'modules/'.$this->name.'/'
         ));
         return $this->display(__FILE__, 'payment.tpl');
     }
 
     public function hookDisplayPaymentEU($params)
     {
-        if (!$this->active)
-            return;
-        if (!$this->checkCurrency($params['cart']))
-            return;
+        if (!$this->active) return;
+        if (!$this->checkCurrency($params['cart'])) return;
 
         return array(
             'cta_text' => $this->l('Pay by IDcut'),
             'logo' => null,
-            'action' => $this->context->link->getModuleLink($this->name, 'validation', array(), true)
+            'action' => $this->context->link->getModuleLink($this->name,
+                'validation', array(), true)
         );
     }
 
     public function hookPaymentReturn($params)
     {
-        if (!$this->active)
-            return;
+        if (!$this->active) return;
 
         $state = $params['objOrder']->getCurrentState();
-        if (in_array($state, array(Configuration::get('PS_OS_IDCUT'), Configuration::get('PS_OS_IDCUT_PENDING'), Configuration::get('PS_OS_OUTOFSTOCK'),
-                    Configuration::get('PS_OS_OUTOFSTOCK_UNPAID'), Configuration::get('PS_OS_PAYMENT')))) {
+        if (in_array($state,
+                array(Configuration::get('PS_OS_IDCUT'), Configuration::get('PS_OS_IDCUT_PENDING'),
+                Configuration::get('PS_OS_OUTOFSTOCK'),
+                Configuration::get('PS_OS_OUTOFSTOCK_UNPAID'), Configuration::get('PS_OS_PAYMENT')))) {
             $this->smarty->assign(array(
                 'total_to_pay' => Tools::displayPrice(
-                        $params['total_to_pay'], $params['currencyObj'], false
+                    $params['total_to_pay'], $params['currencyObj'], false
                 ),
                 'status' => 'ok',
                 'id_order' => $params['objOrder']->id
             ));
             if (isset($params['objOrder']->reference) && !empty($params['objOrder']->reference))
-                $this->smarty->assign('reference', $params['objOrder']->reference);
+                    $this->smarty->assign('reference',
+                    $params['objOrder']->reference);
         } else {
             $transaction = IDcutTransaction::getByOrderId($params['objOrder']->id);
             $this->smarty->assign(array(
@@ -390,46 +400,52 @@ class IDcut extends PaymentModule
 
     public function checkCurrency($cart)
     {
-        $currency_order = new Currency((int) ($cart->id_currency));
+        $currency_order    = new Currency((int) ($cart->id_currency));
         $currencies_module = $this->getCurrency((int) $cart->id_currency);
 
         if (is_array($currencies_module))
-            foreach ($currencies_module as $currency_module)
+                foreach ($currencies_module as $currency_module)
                 if ($currency_order->id == $currency_module['id_currency'])
-                    return true;
+                        return true;
         return false;
     }
 
-    public function checkCartValue($cart, IDcut\Jash\Object\DealDefinition\DealDefinition $deal_definition = null)
+    public function checkCartValue($cart,
+                                   IDcut\Jash\Object\DealDefinition\DealDefinition $deal_definition
+    = null)
     {
         $currency = $this->context->currency;
-        
-        $total = $cart->getOrderTotal(true, Cart::BOTH);
-        if($currency->iso_code !== 'EUR' && $eur_id = CurrencyCore::getIdByIsoCode('EUR') && $currency_eur = CurrencyCore::getCurrency($eur_id)){
-            $total = ToolsCore::convertPrice($total, $currency_eur, true, $this->context);
+
+        $total        = $cart->getOrderTotal(true, Cart::BOTH);
+        if ($currency->iso_code !== 'EUR' && $eur_id       = CurrencyCore::getIdByIsoCode('EUR')
+            && $currency_eur = CurrencyCore::getCurrency($eur_id)) {
+            $total    = ToolsCore::convertPrice($total, $currency_eur, true,
+                    $this->context);
             $currency = $currency_eur;
         }
 
-        $total_cents = (int)(($total*100));
+        $total_cents = (int) (($total * 100));
 
-        return (bool)($total_cents >= (int)$deal_definition->getMin_order_value());
+        return (bool) ($total_cents >= (int) $deal_definition->getMin_order_value());
     }
-    
-    public function checkDealConditions($cart, IDcut\Jash\Object\DealDefinition\DealDefinition &$deal_definition = null, &$deal = null)
+
+    public function checkDealConditions($cart,
+                                        IDcut\Jash\Object\DealDefinition\DealDefinition &$deal_definition
+    = null, &$deal = null)
     {
-        if($deal === null){
+        if ($deal === null) {
             try {
                 $dealCreateResponse = $this->core->getApiClient()->post('/deals');
             } catch (\Exception $e) {
                 return false;
             }
 
-            if((int)$dealCreateResponse->getStatusCode() !== 201 || !$dealCreateResponse->hasHeader('location')){
+            if ((int) $dealCreateResponse->getStatusCode() !== 201 || !$dealCreateResponse->hasHeader('location')) {
                 return false;
             }
 
             try {
-                $location = $dealCreateResponse->getHeader('location');
+                $location     = $dealCreateResponse->getHeader('location');
                 $dealResponse = $this->core->getApiClient()->get($location.'?expand=deal_definition');
             } catch (\Exception $e) {
                 return false;
@@ -440,34 +456,37 @@ class IDcut extends PaymentModule
             }
 
             $dealJson = $dealResponse->json();
-            if(!isset($dealJson['deal_definition']['id'])){
+            if (!isset($dealJson['deal_definition']['id'])) {
                 return false;
             }
 
-            $deal = $dealJson;
-            $dealJson['deal_definition']['ranges'] = isset($dealJson['deal_definition']['ranges'])?$dealJson['deal_definition']['ranges']:array();
-            $deal_definition = IDcut\Jash\Object\DealDefinition\DealDefinition::build($dealJson['deal_definition']);
-        }elseif($deal['state'] == 'closed'){
-            return false;
-        }
-        
-        if(
-            $deal['ended'] ||
-            (int)$deal['counts']['paid_deal_participants_count'] >= (int)$deal_definition->getUser_max() ||
-            !$this->checkCartValue($cart,$deal_definition)
-            )
-        {
+            $deal                                  = $dealJson;
+            $dealJson['deal_definition']['ranges'] = isset($dealJson['deal_definition']['ranges'])
+                    ? $dealJson['deal_definition']['ranges'] : array();
+            $deal_definition                       = IDcut\Jash\Object\DealDefinition\DealDefinition::build($dealJson['deal_definition']);
+        } elseif ($deal['state'] == 'closed') {
             return false;
         }
 
-        $IDcutTransaction = IDcutTransaction::getByCartId($cart->id);
+        if (
+            $deal['ended'] ||
+            (int) $deal['counts']['paid_deal_participants_count'] >= (int) $deal_definition->getUser_max()
+            ||
+            !$this->checkCartValue($cart, $deal_definition)
+        ) {
+            return false;
+        }
+
+        $IDcutTransaction          = IDcutTransaction::getByCartId($cart->id);
         $IDcutTransaction->id_cart = $cart->id;
         $IDcutTransaction->deal_id = $deal['id'];
 
         $IDcutTransaction->setStatus('init');
-        $IDcutTransaction->amount = Tools::displayPrice($cart->getOrderTotal(true, Cart::BOTH));
+        $IDcutTransaction->amount = Tools::displayPrice($cart->getOrderTotal(true,
+                    Cart::BOTH));
 
-        $IDcutTransaction->setAmount_cents_AND_currency($cart->getOrderTotal(true, Cart::BOTH), $this->context->currency);
+        $IDcutTransaction->setAmount_cents_AND_currency($cart->getOrderTotal(true,
+                Cart::BOTH), $this->context->currency);
 
         $IDcutTransaction->save();
 
@@ -482,6 +501,7 @@ class IDcut extends PaymentModule
             'PS_IDCUT_REDIRECT_URL' => $this->core->config()->get("PS_IDCUT_REDIRECT_URL")
         );
     }
+
     public function getMyControllersUrls()
     {
         return array(
@@ -489,8 +509,8 @@ class IDcut extends PaymentModule
             'transaction' => $this->context->link->getPageLink('index').'?fc=module&module='.$this->name.'&controller=transaction', // Payment return
             'status_update' => $this->context->link->getPageLink('index').'?fc=module&module='.$this->name.'&controller=status_update', // update status of order
             'join_deal_url' => $this->context->link->getPageLink('index').'?fc=module&module='.$this->name.'&controller=deal_with_it', // save deal hash in session
-            'ModuleConfiguration' => $this->context->link->getAdminLink('AdminModules', false) . '&configure=' . $this->name . '&tab_module=' . $this->tab . '&module_name=' . $this->name, // IDcut module configuration link
+            'ModuleConfiguration' => $this->context->link->getAdminLink('AdminModules',
+                false).'&configure='.$this->name.'&tab_module='.$this->tab.'&module_name='.$this->name, // IDcut module configuration link
         );
     }
-
 }

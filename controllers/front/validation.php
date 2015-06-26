@@ -2,7 +2,7 @@
 
 class IDcutValidationModuleFrontController extends ModuleFrontController
 {
-    
+
     protected function createTransaction(IDcutTransaction $transaction)
     {
         $transaction_body = new \IDcut\Jash\Object\Transaction\Transaction();
@@ -11,20 +11,21 @@ class IDcutValidationModuleFrontController extends ModuleFrontController
         $transaction_body->setAmount_currency($transaction->amount_currency);
         $transaction_body->setTitle($transaction->title);
         $transaction_body->setDeal_id($transaction->deal_id);
-        
+
 
         try {
-            $transactionCreateResponse = $this->module->core->getApiClient()->post('/transactions', $transaction_body->__toStringForCreate());
+            $transactionCreateResponse = $this->module->core->getApiClient()->post('/transactions',
+                $transaction_body->__toStringForCreate());
         } catch (\Exception $e) {
             $error_messages[] = Tools::displayError('Error when trying to Create Transaction');
         }
 
-        if((int)$transactionCreateResponse->getStatusCode() !== 201 || !$transactionCreateResponse->hasHeader('location')){
+        if ((int) $transactionCreateResponse->getStatusCode() !== 201 || !$transactionCreateResponse->hasHeader('location')) {
             return false;
         }
 
         try {
-            $location = $transactionCreateResponse->getHeader('location');
+            $location            = $transactionCreateResponse->getHeader('location');
             $transactionResponse = $this->module->core->getApiClient()->get($location);
         } catch (\Exception $e) {
             return false;
@@ -35,7 +36,7 @@ class IDcutValidationModuleFrontController extends ModuleFrontController
         }
 
         $transactionJson = $transactionResponse->json();
-        if(!isset($transactionJson['id'])){
+        if (!isset($transactionJson['id'])) {
             return false;
         }
 
@@ -86,28 +87,27 @@ class IDcutValidationModuleFrontController extends ModuleFrontController
             false, $customer->secure_key);
 
         $transaction->id_order = $this->module->currentOrder;
-        $transaction->title = $this->module->l('Order:').' '.OrderCore::getUniqReferenceOf($this->module->currentOrder);
+        $transaction->title    = $this->module->l('Order:').' '.OrderCore::getUniqReferenceOf($this->module->currentOrder);
 
         $transactionApi = $this->createTransaction($transaction);
 
-        if($transactionApi !== false){
+        if ($transactionApi !== false) {
             $transaction->transaction_id = $transactionApi->getId();
 
-            $Date = strtotime($transactionApi->getCreated_at());
+            $Date      = strtotime($transactionApi->getCreated_at());
             $converted = date("Y-m-d H:i:s", $Date);
 
-            $transaction->created_at = $converted;
-            $transaction->date_edit = $converted;
-            $transaction->title = $transactionApi->getTitle();
+            $transaction->created_at      = $converted;
+            $transaction->date_edit       = $converted;
+            $transaction->title           = $transactionApi->getTitle();
             $transaction->setStatus($transactionApi->getStatus());
-            $transaction->amount = $transactionApi->getAmount();
-            $transaction->amount_cents = $transactionApi->getAmount_cents();
+            $transaction->amount          = $transactionApi->getAmount();
+            $transaction->amount_cents    = $transactionApi->getAmount_cents();
             $transaction->amount_currency = $transactionApi->getAmount_currency();
             $transaction->save();
-            
+
             $this->redirectTransaction($transactionApi);
-        }
-        else{
+        } else {
             d(Tools::displayError('Error when trying to Create Transaction'));
         }
     }

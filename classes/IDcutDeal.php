@@ -4,32 +4,38 @@ class IDcutDeal extends ObjectModel
 {
     /** @var integer */
     public $id;
+
     /** @var string xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx */
     public $deal_id;
 
     /** @var date 2015-02-04T00:00:00.000Z */
     public $created_at;
+
     /** @var date 2015-02-04T00:00:00.000Z */
     public $updated_at;
 
     /** @var string */
     public $state;
+
     /** @var boolean */
     public $ended;
 
     /** @var date 2015-02-04T00:00:00.000Z */
     public $end_date;
+
     /** @var string xxxxxx-xxxxxx */
     public $hash_id;
+
     /** @var integer */
     public $deal_definition_id;
+
     /** @var string url constructed with $deal_id */
     protected $link;
 
     /**
      * @see ObjectModel::$definition
      */
-    public static $definition = array(
+    public static $definition       = array(
         'table' => 'idcut_deal',
         'primary' => 'id_idcut_deal',
         'multilang' => false,
@@ -53,7 +59,7 @@ class IDcutDeal extends ObjectModel
         ),
     );
     protected $webserviceParameters = array(
-            'objectsNodeName' => 'idcut_deals',
+        'objectsNodeName' => 'idcut_deals',
     );
 
     public function __construct($id = null, $id_lang = null, $id_shop = null)
@@ -83,14 +89,13 @@ class IDcutDeal extends ObjectModel
     public static function getDealsByIDcutDealDefinition($deal_definition_id)
     {
         $ret_array = array();
-        if(Validate::isReference($deal_definition_id)){
-            $result = Db::getInstance()->ExecuteS('SELECT `id_idcut_deal` as id FROM `'._DB_PREFIX_.'idcut_deal` WHERE deal_definition_id="'. $deal_definition_id.'" ORDER BY created_at DESC');
-            foreach($result as $r){
-                $ret_array[]= new IDcutDeal((int)$r['id']);
+        if (Validate::isReference($deal_definition_id)) {
+            $result = Db::getInstance()->ExecuteS('SELECT `id_idcut_deal` as id FROM `'._DB_PREFIX_.'idcut_deal` WHERE deal_definition_id="'.$deal_definition_id.'" ORDER BY created_at DESC');
+            foreach ($result as $r) {
+                $ret_array[] = new IDcutDeal((int) $r['id']);
             }
         }
-        
+
         return $ret_array;
     }
-
 }
