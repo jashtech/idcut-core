@@ -62,7 +62,7 @@
         <p class="radio-inline">
             <label>
                     <input type="radio" name="deal_join" id="deal_join" value="1"{if isset($smarty.post.deal_join) && $smarty.post.deal_join == 1} checked="checked"{/if} />
-                    <input type="text" name="deal_token" placeholder="{l s='Join to existing deal' mod='idcut'}" value="{if isset($smarty.post.deal_token)}{$smarty.post.deal_token}{/if}">
+                    <input type="text" name="deal_token" placeholder="{l s='Join to existing deal' mod='idcut'}" value="{if isset($deal_token)}{$deal_token}{/if}">
             </label>
         </p>
         <p>

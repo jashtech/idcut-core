@@ -13,14 +13,21 @@ class IDcutStatus_UpdateModuleFrontController extends ModuleFrontController
     // this calls proper action
     public function postProcess()
     {
-        $transaction_id = $this->getTransactionId();
-        $IDcutTransaction = IDcutTransaction::getByTransactionId($transaction_id);
-        if(!Validate::isLoadedObject($IDcutTransaction)){
-                echo 'Transaction id is invalid';
-                exit;
-        }
-        if (is_callable($this->processUpdate($IDcutTransaction))){
-            $this->processUpdate($IDcutTransaction);
+        if(isset($_SERVER['CONTENT_TYPE']) && $_SERVER['CONTENT_TYPE'] === 'application/json'){
+            $data = json_decode(file_get_contents('php://input'), true);
+            if(!is_array($data) || !isset($data['params']['transaction']['id']) || !Validate::isReference($data['params']['transaction']['id'])){
+                    echo 'bad request';
+                    exit;
+            }
+            $transaction_id = $data['params']['transaction']['id'];
+            $IDcutTransaction = IDcutTransaction::getByTransactionId($transaction_id);
+            if(!Validate::isLoadedObject($IDcutTransaction)){
+                    echo 'Transaction id is invalid';
+                    exit;
+            }
+            if (is_callable($this->processUpdate($IDcutTransaction))){
+                $this->processUpdate($IDcutTransaction);
+            }
         }
 
     }
@@ -28,9 +35,12 @@ class IDcutStatus_UpdateModuleFrontController extends ModuleFrontController
     public function processUpdate(IDcutTransaction $IDcutTransaction)
     {
         $customer = new Customer((int)$IDcutTransaction->order->id_customer);
-        $status = $this->getStatusForUpdate();
-
-        switch($status){
+        $transaction = $this->getApiTransaction($IDcutTransaction);
+        if($transaction == false){
+            echo 'Can not access transaction';
+            exit;
+        }
+        switch($transaction->getStatus()){
             case 'completed':
                 $orderStatusUpdate = $this->setOrderStatus(Configuration::get('PS_OS_PAYMENT'), $IDcutTransaction->order, null);
                 break;
@@ -56,28 +66,32 @@ class IDcutStatus_UpdateModuleFrontController extends ModuleFrontController
                 $orderStatusUpdate = $this->setOrderStatus(Configuration::get('PS_OS_IDCUT_PENDING'), $IDcutTransaction->order, null);
                 break;
         }
-        $IDcutTransaction->setStatus($status);
-        $IDcutTransaction->error_code = $this->getErrorCodeForUpdate();
-        $IDcutTransaction->message = $this->getMessageForUpdate();
+        $IDcutTransaction->setStatus($transaction->getStatus());
+        
         $IDcutTransaction->date_edit = date('Y-m-d H:i:s');
         $IDcutTransaction->save();
         echo 'transaction updated';
         exit;
     }
 
-    protected function getStatusForUpdate()
+    protected function getApiTransaction(IDcutTransaction $IDcutTransaction)
     {
-        return Tools::getValue('status', 'pending');
-    }
+        try {
+            $transactionResponse = $this->module->core->getApiClient()->get('/transactions/'.$IDcutTransaction->transaction_id);
+        } catch (\Exception $e) {
+            return false;
+        }
 
-    protected function getErrorCodeForUpdate()
-    {
-        return Tools::getValue('error_code', null);
-    }
+        if (!$transactionResponse) {
+            return false;
+        }
 
-    protected function getMessageForUpdate()
-    {
-        return Tools::getValue('message', null);
+        $transactionJson = $transactionResponse->json();
+        if(!isset($transactionJson['id'])){
+            return false;
+        }
+
+        return IDcut\Jash\Object\Transaction\Transaction::build($transactionJson);
     }
 
     /* now this is not used - it will be moved */
@@ -132,10 +146,5 @@ class IDcutStatus_UpdateModuleFrontController extends ModuleFrontController
 
                 return false;
         }
-    }
-
-    protected function getTransactionId()
-    {
-        return Tools::getValue('transaction_id');
     }
 }

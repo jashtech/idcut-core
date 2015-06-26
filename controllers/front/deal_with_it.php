@@ -12,7 +12,10 @@ class IDcutDeal_With_ItModuleFrontController extends ModuleFrontController
     // this calls proper action
     public function postProcess()
     {
-        echo 'I want to deal with You';
+        $deal_hash = Tools::getValue('deal_hash');
+        if(Validate::isReference($deal_hash) && !empty($deal_hash)){
+            $this->context->cookie->__set('deal_hash',$deal_hash);
+        }
     }
 
 }

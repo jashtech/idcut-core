@@ -20,6 +20,7 @@ class IDcutPaymentModuleFrontController extends ModuleFrontController
                     $deal = null;
                     $dealDefinition = null;
                 }elseif($deal_token = Tools::getValue('deal_token',false)){
+                    $this->context->cookie->__unset('deal_hash');
                     try {
                         $dealResponse = $this->module->core->getApiClient()->get('/deals/by_hash/'.$deal_token.'?expand=deal_definition');
                     } catch (\Exception $e) {
@@ -57,6 +58,7 @@ class IDcutPaymentModuleFrontController extends ModuleFrontController
             'cust_currency' => $cart->id_currency,
             'currencies' => $this->module->getCurrency((int) $cart->id_currency),
             'total' => $cart->getOrderTotal(true, Cart::BOTH),
+            'deal_token' => Tools::getValue('deal_token', $this->context->cookie->deal_hash),
             'isoCode' => $this->context->language->iso_code,
             'this_path' => $this->module->getPathUri(),
             'this_path_idcut' => $this->module->getPathUri(),
