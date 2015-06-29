@@ -45,6 +45,10 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
     public function initPageHeaderToolbar()
     {
         parent::initPageHeaderToolbar();
+        $this->toolbar_btn['import'] = array(
+            'href' => self::$currentIndex.'&action=reloadFromApi&token='.$this->token,
+            'desc' => $this->l('Reload Deal Definitions')
+        );
     }
 
     public function renderView()
@@ -90,7 +94,74 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
 
     public function initProcess(){
         parent::initProcess();
+        if(Tools::getIsset('reloadedFromApi')){
+            $this->confirmations[] = $this->l('Successful Reload from Api');
+        }
         $this->id_object = 0;
+    }
+
+    public function processReloadFromApi(){
+        try {
+            $ddResponse = $this->module->core->getApiClient()->get('/deal_definitions');
+        } catch (\Exception $e) {
+            return false;
+        }
+        if (!$ddResponse) {
+            return false;
+        }
+        $ddJson = $ddResponse->json();
+        if (!isset($ddJson['deal_definitions']) || !is_array($ddJson['deal_definitions'])) {
+            return false;
+        }
+
+        foreach($ddJson['deal_definitions'] as $dd){
+            $obj = IDcutDealDefinition::getByDealDefinitionId($dd['id']);
+            $dd_build = IDcut\Jash\Object\DealDefinition\DealDefinition::build($dd);
+
+            if(!isset($obj->id)){
+                $obj->deal_definition_id = $dd_build->getId();
+
+                foreach($dd_build->getRanges() as $range){
+                    $r = new IDcutRange();
+                    $r->deal_definition_id = $obj->deal_definition_id;
+                    $r->min_participants_number = $range->getMin_participants_number();
+                    $r->discount_size = $range->getDiscount_size();
+                    $r->save();
+                }
+            }else{
+                $r_array = array();
+                foreach($dd['ranges'] as $r){
+                    $r_array[(int)$r['min_participants_number']] = (int)$r['discount_size'];
+                }
+
+                foreach($obj->ranges as $range){
+                    if(isset($r_array[$range->min_participants_number])){
+                        $range->discount_size = $r_array[$range->min_participants_number];
+                        $range->save();
+                        unset($r_array[$range->min_participants_number]);
+                    }else{
+                        $range->delete();
+                    }
+                }
+                foreach($r_array as $mpn => $discount){
+                    $r = new IDcutRange();
+                    $r->deal_definition_id = $obj->deal_definition_id;
+                    $r->min_participants_number = $mpn;
+                    $r->discount_size = $discount;
+                    $r->save();
+                }
+            }
+
+            $obj->active = $dd_build->getActive();
+            $obj->ttl = $dd_build->getTtl();
+            $obj->locktime = $dd_build->getLocktime();
+            $obj->user_max = $dd_build->getUser_max();
+            $obj->min_order_value = $dd_build->getMin_order_value();
+            $obj->range_type = $dd_build->getRange_type()=='amount'?true:false;
+            $obj->save();
+        }
+
+        ToolsCore::redirectAdmin(self::$currentIndex.'&reloadedFromApi&token='.$this->token);
     }
 
     protected function beforeAdd($object)

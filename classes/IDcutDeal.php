@@ -79,11 +79,22 @@ class IDcutDeal extends ObjectModel
     protected function setLink()
     {
         if (Validate::isReference($this->deal_id)) {
-            $this->link = 'https://api.kickass.jash.fr/deals/'.$this->deal_id;
+            $this->link = '/deals/'.$this->deal_id;
         } else {
             $this->link = null;
         }
         return $this;
+    }
+
+    public static function getByDealDefinitionId($deal_id)
+    {
+        if (Validate::isReference($deal_id)) {
+            $id = Db::getInstance()->getValue('SELECT `id_idcut_deal` as id FROM `'._DB_PREFIX_.'idcut_deal` WHERE deal_id="'.$deal_id.'"');
+        } else {
+            $id = null;
+        }
+
+        return new IDcutDeal($id);
     }
 
     public static function getDealsByIDcutDealDefinition($deal_definition_id)

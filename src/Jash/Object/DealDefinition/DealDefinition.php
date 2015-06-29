@@ -10,6 +10,7 @@ class DealDefinition implements JSONObjectInterface
     private $id;
     /* private $start_date; */
     /* private $end_date; */
+    private $active;
     private $ttl;
     private $locktime;
     private $user_max;
@@ -20,6 +21,11 @@ class DealDefinition implements JSONObjectInterface
     public function getId()
     {
         return $this->id;
+    }
+    
+    public function getActive()
+    {
+        return $this->active;
     }
 
     public function getTtl()
@@ -57,6 +63,11 @@ class DealDefinition implements JSONObjectInterface
         $this->id = $id;
     }
 
+    public function setActive($active)
+    {
+        $this->active = $active;
+    }
+
     public function setTtl($ttl)
     {
         $this->ttl = $ttl;
@@ -90,6 +101,7 @@ class DealDefinition implements JSONObjectInterface
     public function __toString()
     {
         $dealDefinition                    = array();
+        $dealDefinition['active']             = $this->getActive();
         $dealDefinition['ttl']             = $this->getTtl();
         $dealDefinition['locktime']        = $this->getLocktime();
         $dealDefinition['user_max']        = $this->getUser_max();
@@ -129,6 +141,7 @@ class DealDefinition implements JSONObjectInterface
     {
         $dealDefinition = new DealDefinition();
         $dealDefinition->setId($input['id']);
+        $dealDefinition->setActive($input['active']);
         $dealDefinition->setTtl($input['ttl']);
         $dealDefinition->setLocktime($input['locktime']);
         $dealDefinition->setUser_max($input['user_max']);

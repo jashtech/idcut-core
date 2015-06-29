@@ -92,7 +92,7 @@ class IDcutDealDefinition extends ObjectModel
     protected function setLink()
     {
         if (Validate::isReference($this->deal_definition_id)) {
-            $this->link = 'https://api.kickass.jash.fr/deal_definitions/'.$this->deal_definition_id;
+            $this->link = '/deal_definitions/'.$this->deal_definition_id;
         } else {
             $this->link = null;
         }
