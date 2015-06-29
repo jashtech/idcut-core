@@ -88,33 +88,70 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
         }
     }
 
-    public function postProcess()
+    public function initProcess(){
+        parent::initProcess();
+        $this->id_object = 0;
+    }
+
+    protected function beforeAdd($object)
     {
-        parent::postProcess();
-        if (Tools::isSubmit('submitAdd'.$this->table) || Tools::isSubmit('submitAdd'.$this->table.'AndStay')
-            || Tools::isSubmit('submitAdd'.$this->table.'AndPreview') || Tools::isSubmit('submitAdd'.$this->table.'AndBackToParent')) {
-            $ranges      = Tools::getValue('ranges');
-            $rangesArray = json_decode($ranges, true);
-            if (is_array($rangesArray)) {
-                $rangesToSave = array();
-                foreach ($rangesArray as $rge) {
-                    $rge                   = explode('-', $rge);
-                    $rangesToSave[$rge[0]] = $rge[0];
-                }
-            }
-            $obj = $this->loadObject();
-            if (!$obj->deal_definition_id) {
-                //request to API to create and save deal_definition_id
-            }
+        
 
-            if ($this->id_object) {
-                // update current object
-            } else {
-                // add new object
-            }
+        $dd_body = new IDcut\Jash\Object\DealDefinition\DealDefinition();
 
-            // here should be saving ranges part
+        $dd_body->setTtl($object->ttl);
+        $dd_body->setLocktime($object->locktime);
+        $dd_body->setUser_max($object->user_max);
+        $dd_body->setMin_order_value($object->min_order_value);
+        $dd_body->setRange_type((bool)$object->range_type===false?'percent':'amount');
+
+        $rangesArray = json_decode($object->ranges, true);
+        if (is_array($rangesArray)) {
+            foreach ($rangesArray as $rge) {
+                $rge                   = explode('-', $rge);
+                $dd_body->addRange(new IDcut\Jash\Object\Range\Range($rge[0], $rge[1]));
+            }
         }
+
+        try {
+            $ddCreateResponse = $this->module->core->getApiClient()->post('/deal_definitions', $dd_body->__toStringForCreate());
+        } catch (\Exception $e) {
+            return false;
+        }
+
+        if ((int) $ddCreateResponse->getStatusCode() !== 201 || !$ddCreateResponse->hasHeader('location')) {
+            return false;
+        }
+
+        try {
+            $location            = $ddCreateResponse->getHeader('location');
+            $dealDefinitionResponse = $this->module->core->getApiClient()->get($location);
+        } catch (\Exception $e) {
+            return false;
+        }
+
+        if (!$dealDefinitionResponse) {
+            return false;
+        }
+
+        $dealDefinitionJson = $dealDefinitionResponse->json();
+        if (!isset($dealDefinitionJson['id'])) {
+            return false;
+        }
+        $object->deal_definition_id = $dealDefinitionJson['id'];
+        $object->active = 1;
+
+        foreach($dd_body->getRanges() as $range){
+            $r = new IDcutRange();
+            $r->deal_definition_id = $object->deal_definition_id;
+            $r->min_participants_number = $range->getMin_participants_number();
+            $r->discount_size = $range->getDiscount_size();
+            if(!$r->save()){
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public function renderForm()

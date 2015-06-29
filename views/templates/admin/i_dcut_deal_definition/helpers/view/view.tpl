@@ -30,7 +30,7 @@
             <div class="form-horizontal">
                 <div class="form-group">
                         <label class="col-lg-3 control-label">{l s='Access id:'  mod='idcut'}</label>
-                        <div class="col-lg-9"><p class="form-control-static">{$deal_definition->uuid}</p></div>
+                        <div class="col-lg-9"><p class="form-control-static">{$deal_definition->deal_definition_id}</p></div>
                 </div>
                 <div class="form-group">
                         <label class="col-lg-3 control-label">{l s='Time to join:'  mod='idcut'}</label>

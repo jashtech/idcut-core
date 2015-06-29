@@ -62,7 +62,7 @@ class IDcutDealDefinition extends ObjectModel
         parent::__construct($id, $id_lang, $id_shop);
 
         if (Validate::isLoadedObject($this)) {
-            $this->ranges = IDcutRange::getRangesByIDcutDealDefinition($this->id);
+            $this->ranges = IDcutRange::getRangesByIDcutDealDefinition($this->deal_definition_id);
             $this->setLink();
         }
     }

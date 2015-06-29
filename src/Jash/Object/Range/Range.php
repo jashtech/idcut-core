@@ -9,7 +9,7 @@ class Range
 
     public function __construct($min_participants_number, $discount_size)
     {
-        $this->discount_size = $min_participants_number;
+        $this->min_participants_number = $min_participants_number;
         $this->discount_size = $discount_size;
     }
 

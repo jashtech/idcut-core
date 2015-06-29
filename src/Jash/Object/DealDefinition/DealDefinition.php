@@ -17,7 +17,6 @@ class DealDefinition implements JSONObjectInterface
     private $range_type;
     private $ranges = [];
 
-
     public function getId()
     {
         return $this->id;
@@ -90,16 +89,40 @@ class DealDefinition implements JSONObjectInterface
 
     public function __toString()
     {
-        $dealDefinition = array();
-        $dealDefinition['ttl'] = $this->getTtl();
-        $dealDefinition['locktime'] = $this->getLocktime();
-        $dealDefinition['user_max'] = $this->getUser_max();
+        $dealDefinition                    = array();
+        $dealDefinition['ttl']             = $this->getTtl();
+        $dealDefinition['locktime']        = $this->getLocktime();
+        $dealDefinition['user_max']        = $this->getUser_max();
         $dealDefinition['min_order_value'] = $this->getMin_order_value();
-        $dealDefinition['range_type'] = $this->getRange_type();
-        $dealDefinition['ranges'] = $this->getRanges();
+        $dealDefinition['range_type']      = $this->getRange_type();
+        $dealDefinition['ranges']          = $this->getRanges();
 
         $dealDefinition = array_filter($dealDefinition);
-        return json_encode(array("deal_definition"=>$dealDefinition) , JSON_UNESCAPED_SLASHES );
+        return json_encode(array("deal_definition" => $dealDefinition),
+            JSON_UNESCAPED_SLASHES);
+    }
+
+    public function __toStringForCreate()
+    {
+        $deal_definition = array();
+
+        $deal_definition['user_max']    = $this->getUser_max();
+        $deal_definition['ttl'] = $this->getTtl();
+        $deal_definition['locktime']           = $this->getLocktime();
+        $deal_definition['range_type']         = $this->getRange_type();
+        $deal_definition['min_order_value']         = $this->getMin_order_value();
+        $ranges = $this->getRanges();
+
+        $deal_definition['deal_definition_ranges_attributes']         = array();
+        
+        foreach($ranges as $range){
+            $deal_definition['deal_definition_ranges_attributes'][] = array('min_participants_number' => $range->getMin_participants_number(),
+                'discount_size' =>  $range->getDiscount_size());
+        }
+
+        $deal_definition = array_filter($deal_definition);
+        return json_encode(array("deal_definition" => $deal_definition),
+            JSON_UNESCAPED_SLASHES);
     }
 
     public static function build(Array $input)
@@ -112,8 +135,9 @@ class DealDefinition implements JSONObjectInterface
         $dealDefinition->setMin_order_value($input['min_order_value']);
         $dealDefinition->setRange_type($input['range_type']);
 
-        foreach((array)$input['ranges'] as $range){
-            $dealDefinition->addRange(new Range($range['min_participants_number'] , $range['discount_size']));
+        foreach ((array) $input['ranges'] as $range) {
+            $dealDefinition->addRange(new Range($range['min_participants_number'],
+                $range['discount_size']));
         }
 
         return $dealDefinition;
