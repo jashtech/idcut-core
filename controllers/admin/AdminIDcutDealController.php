@@ -58,42 +58,62 @@ class AdminIDcutDealController extends ModuleAdminController
 
     public function processReloadFromApi()
     {
-        try {
-            $ddResponse = $this->module->core->getApiClient()->get('/deals?expand=deal_definition');
-        } catch (\Exception $e) {
-            return false;
-        }
-        if (!$ddResponse) {
-            return false;
-        }
-        $ddJson = $ddResponse->json();
-        if (!isset($ddJson['deals']) || !is_array($ddJson['deals'])) {
-            return false;
-        }
-
-        foreach ($ddJson['deals'] as $dd) {
-            $obj      = IDcutDeal::getByDealId($dd['id']);
-            $dd_build = IDcut\Jash\Object\Deal\Deal::build($dd);
-
-            if (!isset($obj->id)) {
-                $obj->deal_id = $dd_build->getId();
+        $next = '/deals?expand=deal_definition';
+        while ($next != false){
+            try {
+                $ddResponse = $this->module->core->getApiClient()->get($next);
+            } catch (\Exception $e) {
+                break;
+            }
+            if (!$ddResponse) {
+                break;
+            }
+            $ddJson = $ddResponse->json();
+            if (!isset($ddJson['deals']) || !is_array($ddJson['deals'])) {
+                break;
             }
 
-            $obj->created_at         = $dd_build->getCreated_at();
-            $obj->updated_at         = $dd_build->getUpdated_at();
-            $obj->state              = $dd_build->getState();
-            $obj->ended              = $dd_build->getEnded();
-            $obj->end_date           = $dd_build->getEnd_date();
-            $obj->hash_id            = $dd_build->getHash_id();
-            $obj->deal_definition_id = $dd['deal_definition']['id'];
+            foreach ($ddJson['deals'] as $dd) {
+                $obj      = IDcutDeal::getByDealId($dd['id']);
+                $dd_build = IDcut\Jash\Object\Deal\Deal::build($dd);
 
-            $obj->save();
-        }
+                if (!isset($obj->id)) {
+                    $obj->deal_id = $dd_build->getId();
+                }
 
-        if ($ddResponse->hasHeader('link') && $link = $dealCreateResponse->getHeader('link')
-            && $link->hasLink('next')) {
-            $next_link = $link->getLink('next');
-            d($next_link);
+                $Date      = strtotime($dd_build->getCreated_at());
+                $converted = date("Y-m-d H:i:s", $Date);
+
+                $obj->created_at         = $converted;
+
+                $Date      = strtotime($dd_build->getUpdated_at());
+                $converted = date("Y-m-d H:i:s", $Date);
+
+                $obj->updated_at         = $converted;
+                $obj->state              = $dd_build->getState();
+                $obj->ended              = $dd_build->getEnded();
+
+                $Date      = strtotime($dd_build->getEnd_date());
+                $converted = date("Y-m-d H:i:s", $Date);
+
+                $obj->end_date           = $converted;
+                $obj->hash_id            = $dd_build->getHash_id();
+                $obj->deal_definition_id = $dd['deal_definition']['id'];
+
+                $obj->save();
+            }
+            $next = false;
+
+            if ($ddResponse->hasHeader('link')) {
+                $parsed = \GuzzleHttp\Message\Request::parseHeader($ddResponse, 'Link');
+                foreach($parsed as $link){
+                    if(isset($link['rel']) && $link['rel']=='next'){
+                        $next = trim($link[0],'<>');
+                        break;
+                    }
+                }
+            }
+            
         }
         ToolsCore::redirectAdmin(self::$currentIndex.'&reloadedFromApi&token='.$this->token);
     }

@@ -86,7 +86,7 @@ class IDcutDeal extends ObjectModel
         return $this;
     }
 
-    public static function getByDealDefinitionId($deal_id)
+    public static function getByDealId($deal_id)
     {
         if (Validate::isReference($deal_id)) {
             $id = Db::getInstance()->getValue('SELECT `id_idcut_deal` as id FROM `'._DB_PREFIX_.'idcut_deal` WHERE deal_id="'.$deal_id.'"');
