@@ -30,10 +30,35 @@ class IDcutPaymentModuleFrontController extends ModuleFrontController
                     $dealJson = $dealResponse->json();
 
                     if (isset($dealJson['deal_definition']['id'])) {
-                        $deal                                  = $dealJson;
+                        $deal                                  = \IDcut\Jash\Object\Deal\Deal::build($dealJson);
                         $dealJson['deal_definition']['ranges'] = isset($dealJson['deal_definition']['ranges'])
                                 ? $dealJson['deal_definition']['ranges'] : array();
                         $dealDefinition                        = IDcut\Jash\Object\DealDefinition\DealDefinition::build($dealJson['deal_definition']);
+
+                        $IDcutDeal = IDcutDeal::getByDealId($deal->getId());
+                        if(empty($IDcutDeal->deal_id)){
+                            $IDcutDeal->deal_id = $deal->getId();
+                            $IDcutDeal->deal_definition_id = $deal_definition->getId();
+                        }
+                        $Date      = strtotime($deal->getCreated_at());
+                        $converted = date("Y-m-d H:i:s", $Date);
+                        $IDcutDeal->created_at         = $converted;
+
+                        $Date      = strtotime($deal->getUpdated_at());
+                        $converted = date("Y-m-d H:i:s", $Date);
+                        $IDcutDeal->updated_at         = $converted;
+
+                        $IDcutDeal->state              = $deal->getState();
+                        $IDcutDeal->ended              = $deal->getEnded();
+
+                        $Date      = strtotime($deal->getEnd_date());
+                        $converted = date("Y-m-d H:i:s", $Date);
+                        $IDcutDeal->end_date           = $converted;
+
+                        $IDcutDeal->hash_id            = $deal->getHash_id();
+
+                        $IDcutDeal->save();
+
                     } else {
                         $error_messages[] = Tools::displayError('There is no Deal Definition id');
                     }

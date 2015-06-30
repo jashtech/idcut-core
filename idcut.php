@@ -431,7 +431,7 @@ class IDcut extends PaymentModule
 
     public function checkDealConditions($cart,
                                         IDcut\Jash\Object\DealDefinition\DealDefinition &$deal_definition
-    = null, &$deal = null)
+    = null, \IDcut\Jash\Object\Deal\Deal &$deal = null)
     {
         if ($deal === null) {
             try {
@@ -460,17 +460,41 @@ class IDcut extends PaymentModule
                 return false;
             }
 
-            $deal                                  = $dealJson;
+            $deal                                  = IDcut\Jash\Object\Deal\Deal::build($dealJson);
             $dealJson['deal_definition']['ranges'] = isset($dealJson['deal_definition']['ranges'])
                     ? $dealJson['deal_definition']['ranges'] : array();
             $deal_definition                       = IDcut\Jash\Object\DealDefinition\DealDefinition::build($dealJson['deal_definition']);
-        } elseif ($deal['state'] == 'closed') {
+
+            $IDcutDeal = IDcutDeal::getByDealId($deal->getId());
+            $IDcutDeal->deal_definition_id = $deal_definition->getId();
+            $IDcutDeal->deal_id = $deal->getId();
+
+            $Date      = strtotime($deal->getCreated_at());
+            $converted = date("Y-m-d H:i:s", $Date);
+            $IDcutDeal->created_at         = $converted;
+
+            $Date      = strtotime($deal->getUpdated_at());
+            $converted = date("Y-m-d H:i:s", $Date);
+            $IDcutDeal->updated_at         = $converted;
+
+            $IDcutDeal->state              = $deal->getState();
+            $IDcutDeal->ended              = $deal->getEnded();
+
+            $Date      = strtotime($deal->getEnd_date());
+            $converted = date("Y-m-d H:i:s", $Date);
+            $IDcutDeal->end_date           = $converted;
+
+            $IDcutDeal->hash_id            = $deal->getHash_id();
+
+            $IDcutDeal->save();
+
+        } elseif ($deal->getState() == 'closed') {
             return false;
         }
 
         if (
-            $deal['ended'] ||
-            (int) $deal['counts']['paid_deal_participants_count'] >= (int) $deal_definition->getUser_max()
+            $deal->getEnded() ||
+            (int) $dealJson['counts']['paid_deal_participants_count'] >= (int) $deal_definition->getUser_max()
             ||
             !$this->checkCartValue($cart, $deal_definition)
         ) {
@@ -479,7 +503,7 @@ class IDcut extends PaymentModule
 
         $IDcutTransaction          = IDcutTransaction::getByCartId($cart->id);
         $IDcutTransaction->id_cart = $cart->id;
-        $IDcutTransaction->deal_id = $deal['id'];
+        $IDcutTransaction->deal_id = $deal->getId();
 
         $IDcutTransaction->setStatus('init');
         $IDcutTransaction->amount = Tools::displayPrice($cart->getOrderTotal(true,

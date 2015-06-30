@@ -76,7 +76,6 @@ class IDcutTransactionModuleFrontController extends ModuleFrontController
         /* Example
          * for '492131f6-7556-4735-a5c3-89e5c115cbf4'
          */
-        return Tools::getValue('transaction_id',
-                '492131f6-7556-4735-a5c3-89e5c115cbf4');
+        return Tools::getValue('transaction_id');
     }
 }
