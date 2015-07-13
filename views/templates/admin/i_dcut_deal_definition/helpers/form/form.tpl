@@ -25,21 +25,21 @@
                 $('input#new_min_participants_number').change(function($e){
                     var $mpn = $(this).val();
                     if(isUint32($mpn)){
-                        if($(this).hasClass('unvalid')){
-                            $(this).removeClass('unvalid');
+                        if($(this).hasClass('invalid')){
+                            $(this).removeClass('invalid');
                         }
-                    }else if(!($(this).hasClass('unvalid'))){
-                        $(this).addClass('unvalid');
+                    }else if(!($(this).hasClass('invalid'))){
+                        $(this).addClass('invalid');
                     }
                 });
                 $('input#new_discount_size').change(function($e){
                     var $mpn = $(this).val();
                     if(isUint32($mpn)){
-                        if($(this).hasClass('unvalid')){
-                            $(this).removeClass('unvalid');
+                        if($(this).hasClass('invalid')){
+                            $(this).removeClass('invalid');
                         }
-                    }else if(!($(this).hasClass('unvalid'))){
-                        $(this).addClass('unvalid');
+                    }else if(!($(this).hasClass('invalid'))){
+                        $(this).addClass('invalid');
                     }
                 });
                 $("#current_ranges").on('click', 'a',function() {
@@ -72,14 +72,29 @@
                                 }
                             }
                             rebuildJsonValue('{/literal}{$input.name}{literal}');
+                        }else{
+                            $mpn = $('input#new_min_participants_number');
+                            if(isUint32($mpn.val())){
+                                if($mpn.hasClass('invalid')){
+                                    $mpn.removeClass('invalid');
+                                }
+                            }else if(!($mpn.hasClass('invalid'))){
+                                $mpn.addClass('invalid');
+                            }
+                            
+                            $nds = $('input#new_discount_size');
+                            if(isUint32($nds.val())){
+                                if($nds.hasClass('invalid')){
+                                    $nds.removeClass('invalid');
+                                }
+                            }else if(!($nds.hasClass('invalid'))){
+                                $nds.addClass('invalid');
+                            }
                         }
                         return false;
                 });
             });
-            function isUint32(n) {
-                var Pn = parseInt(n,10);
-                return +n === Pn && !(Pn % 1) && Pn < 0x100000000 && Pn >= 1;
-            }
+
             function rebuildJsonValue(name){
                 var arr_to_parse = [];
                 $('#current_ranges').children().each(function(){
@@ -99,11 +114,9 @@
         </script>
         <div id="{$input.name}_ranges">
             <div class="row" id="ranges_new">
-                <div class="col-lg-3">{l s='Minimum users:'} </div>
-                <div class="col-lg-2"><input id="new_min_participants_number" name="new_min_participants_number" value="" /></div>
-                <div class="col-lg-3">{l s='Return value:'} </div>
-                <div class="col-lg-2"><input id="new_discount_size" name="new_discount_size" value="" /></div>
-                <div class="col-lg-2"><a id="ranges_add" class="list-toolbar-btn" href="#ranges_add" title="{l s='Add'}"><i class="process-icon-new"></i></a></div>
+                <div class="col-lg-5">{l s='Minimum users:'}<br /><input id="new_min_participants_number" name="new_min_participants_number" value="" /></div>
+                <div class="col-lg-5">{l s='Return value:'}<br /><input id="new_discount_size" name="new_discount_size" value="" /></div>
+                <div class="col-lg-2"><br /><a id="ranges_add" class="list-toolbar-btn" href="#ranges_add" title="{l s='Add'}"><i class="process-icon-new"></i></a></div>
             </div>
             <div id="current_ranges">
                 {foreach $input.current_ranges as $r}
@@ -114,6 +127,13 @@
                 </div>
                 {/foreach}
             </div>
+        </div>
+    {elseif $input.type == 'friendly_seconds'}
+        <div id="{$input.name}_friendly_seconds" class="friendly_seconds">
+            <input type="hidden" name="{$input.name}" id="{$input.name}" class="friendly_real_value" value='{(int)$fields_value[$input.name]}' />
+            {assign var='days_value' value=floor(((int)$fields_value[$input.name])/(3600*24))}
+            {assign var='hours_value' value=floor((((int)$fields_value[$input.name])-$days_value*3600*24)/3600)}
+            <input id="{$input.name}_days" name="{$input.name}_days" class="friendly_onchange days" value="{$days_value}" /> <span>{l s='days'}</span> <input id="{$input.name}_hours" name="{$input.name}_hours" class="friendly_onchange hours" value="{$hours_value}" /> <span>{l s='hours'}</span>
         </div>
     {else}
             {$smarty.block.parent}

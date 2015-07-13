@@ -34,7 +34,9 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
 
     public function setMedia()
     {
-        return parent::setMedia();
+        parent::setMedia();
+        $this->addCss(_MODULE_DIR_.$this->module->name.'/css/admin/idcut.css');
+        $this->addJs(_MODULE_DIR_.$this->module->name.'/js/admin/idcut.js');
     }
 
     public function initToolBarTitle()
@@ -166,7 +168,9 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
 
     protected function beforeAdd($object)
     {
-        
+
+//        $object->ttl = 200;
+//        $object->locktime = 200;
 
         $dd_body = new IDcut\Jash\Object\DealDefinition\DealDefinition();
 
@@ -240,13 +244,13 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
             ),
             'input' => array(
                 array(
-                    'type' => 'text',
+                    'type' => 'friendly_seconds',
                     'label' => $this->l('Time to join'),
                     'name' => 'ttl',
                     'required' => true
                 ),
                 array(
-                    'type' => 'text',
+                    'type' => 'friendly_seconds',
                     'label' => $this->l('Time to return money'),
                     'name' => 'locktime',
                     'required' => true

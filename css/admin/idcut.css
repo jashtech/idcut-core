@@ -1,0 +1,17 @@
+input.invalid{
+    border: 1px solid #f13340;
+    color: #f13340;
+    background: #fff1f2;
+}
+.friendly_seconds{
+    padding-top: 3px;
+}
+.friendly_seconds span{
+    font-size: 13px;
+}
+input.friendly_onchange{
+    width: 37px;
+    margin-left: 15px;
+    text-align: right;
+    padding-right: 3px;
+}
