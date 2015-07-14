@@ -259,12 +259,16 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
                     'type' => 'text',
                     'label' => $this->l('Maximum users'),
                     'name' => 'user_max',
+                    'class' => 'col-lg-3',
+                    'suffix' => 'participants',
                     'required' => true
                 ),
                 array(
-                    'type' => 'text',
+                    'type' => 'cents_value',
                     'label' => $this->l('Minimum order value'),
                     'name' => 'min_order_value',
+                    'suffix' => $this->context->currency->sign,
+                    'class' => 'col-lg-3',
                     'required' => true
                 ),
                 array(

@@ -135,6 +135,30 @@
             {assign var='hours_value' value=floor((((int)$fields_value[$input.name])-$days_value*3600*24)/3600)}
             <input id="{$input.name}_days" name="{$input.name}_days" class="friendly_onchange days" value="{$days_value}" /> <span>{l s='days'}</span> <input id="{$input.name}_hours" name="{$input.name}_hours" class="friendly_onchange hours" value="{$hours_value}" /> <span>{l s='hours'}</span>
         </div>
+    {elseif $input.type == 'cents_value'}
+        <div class="cents_value">
+            <input type="hidden" name="{$input.name}" id="{$input.name}" class="cents_value_to_save" value='{(int)$fields_value[$input.name]}' />
+            {assign var='currency_value' value=round($fields_value[$input.name]/100, 2)}
+            {if isset($input.prefix) || isset($input.suffix)}
+            <div class="input-group{if isset($input.class)} {$input.class}{/if}">
+            {/if}
+                {if isset($input.prefix)}
+                <span class="input-group-addon">
+                  {$input.prefix}
+                </span>
+                {/if}
+                
+                <input type="text" id="{$input.name}_currency" name="{$input.name}_currency" class="currency_value" value="{$currency_value}" /> 
+                
+                {if isset($input.suffix)}
+                <span class="input-group-addon">
+                  {$input.suffix}
+                </span>
+                {/if}
+            {if isset($input.maxchar) || isset($input.prefix) || isset($input.suffix)}
+            </div>
+            {/if}
+        </div>
     {else}
             {$smarty.block.parent}
     {/if}

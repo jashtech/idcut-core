@@ -15,8 +15,12 @@ $(document).ready( function() {
             container.find('input.friendly_real_value').val(to_update);
         });
     });
-    
-
+    $('.cents_value').each(function(){
+        var container = $(this);
+        container.find('input.currency_value').change(function($e){
+            container.find('input.cents_value_to_save').val(parseInt(parseFloat($(this).val().replace(",", "."))*100));
+        });
+    });
 });
 
 function isUint32(n) {
