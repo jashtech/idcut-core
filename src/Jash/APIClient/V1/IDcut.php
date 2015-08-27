@@ -56,13 +56,13 @@ class IDcut extends IDcutAbstract implements IDcutInterface
         return $response = $this->get('/ping');
     }
 
-    public function setHttpClient(HttpClientInterface $httpClient)
+    public function setHttpClient(HttpClientInterface $httpClient, $lang = 'en; q=1.0')
     {
         $this->httpClient = $httpClient;
         $this->httpClient->setDefaultOption('headers',
             array(
             'Accept' => 'application/vnd.kickass.'.$this->version,
-            'Accept-Language' => 'en',
+            'Accept-Language' => $lang,
             'Authorization' => 'Bearer '.$this->accessToken
         ));
     }

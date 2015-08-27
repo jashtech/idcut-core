@@ -505,6 +505,10 @@ class IDcut extends PaymentModule
         $IDcutTransaction->id_cart = $cart->id;
         $IDcutTransaction->deal_id = $deal->getId();
 
+        $converted = date("Y-m-d H:i:s");
+        $IDcutTransaction->created_at      = $converted;
+        $IDcutTransaction->date_edit       = $converted;
+
         $IDcutTransaction->setStatus('init');
         $IDcutTransaction->amount = Tools::displayPrice($cart->getOrderTotal(true,
                     Cart::BOTH));
