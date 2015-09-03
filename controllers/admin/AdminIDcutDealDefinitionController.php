@@ -65,8 +65,12 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
 
     public function validateRules($class_name = false)
     {
-        if (($error                  = $this->validateRanges(Tools::getValue('ranges')))
-            !== true) $this->errors['ranges'] = $error;
+        if (($error = $this->validateRanges(Tools::getValue('ranges'))) !== true) {
+            $this->errors['ranges'] = $error;
+        }
+        if ( Tools::getValue('ranges') !== 0 ) {
+            $this->errors['ranges'] = $this->module->l('Only percent range type is currently allowed');
+        }
 
         parent::validateRules($class_name);
     }
@@ -244,6 +248,11 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
             ),
             'input' => array(
                 array(
+                    'type' => 'hidden',
+                    'name' => 'range_type',
+                    'value' => 0
+                ),
+                array(
                     'type' => 'friendly_seconds',
                     'label' => $this->l('Time to join'),
                     'name' => 'ttl',
@@ -271,25 +280,25 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
                     'class' => 'col-lg-3',
                     'required' => true
                 ),
-                array(
-                    'type' => 'range_type',
-                    'label' => $this->l('Range type'),
-                    'name' => 'range_type',
-                    'required' => true,
-                    'is_bool' => true,
-                    'values' => array(
-                        array(
-                            'id' => 'range_type_on',
-                            'value' => 1,
-                            'label' => $this->l('Amount')
-                        ),
-                        array(
-                            'id' => 'range_type_off',
-                            'value' => 0,
-                            'label' => $this->l('Percent')
-                        )
-                    ),
-                ),
+//                array(
+//                    'type' => 'range_type',
+//                    'label' => $this->l('Range type'),
+//                    'name' => 'range_type',
+//                    'required' => true,
+//                    'is_bool' => true,
+//                    'values' => array(
+//                        array(
+//                            'id' => 'range_type_on',
+//                            'value' => 1,
+//                            'label' => $this->l('Amount')
+//                        ),
+//                        array(
+//                            'id' => 'range_type_off',
+//                            'value' => 0,
+//                            'label' => $this->l('Percent')
+//                        )
+//                    ),
+//                ),
                 array(
                     'type' => 'ranges',
                     'label' => $this->l('Ranges'),

@@ -115,7 +115,7 @@
         <div id="{$input.name}_ranges">
             <div class="row" id="ranges_new">
                 <div class="col-lg-5">{l s='Minimum users:'}<br /><input id="new_min_participants_number" name="new_min_participants_number" value="" /></div>
-                <div class="col-lg-5">{l s='Return value:'}<br /><input id="new_discount_size" name="new_discount_size" value="" /></div>
+                <div class="col-lg-5">{l s='Return value (percent):'}<br /><input id="new_discount_size" name="new_discount_size" value="" /></div>
                 <div class="col-lg-2"><br /><a id="ranges_add" class="list-toolbar-btn" href="#ranges_add" title="{l s='Add'}"><i class="process-icon-new"></i></a></div>
             </div>
             <div id="current_ranges">
