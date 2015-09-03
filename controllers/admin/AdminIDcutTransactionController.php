@@ -11,7 +11,7 @@ class AdminIDcutTransactionController extends ModuleAdminController
         $this->lang       = false;
         $this->addRowAction('view');
         $this->context    = Context::getContext();
-        $this->meta_title = $this->l('Your IDcut Transaction');
+        $this->meta_title = $this->l('Your IdealCutter Transaction');
 
         $this->_orderBy  = 'date_edit';
         $this->_orderWay = 'DESC';
@@ -38,7 +38,7 @@ class AdminIDcutTransactionController extends ModuleAdminController
 
     public function initToolBarTitle()
     {
-        $this->toolbar_title[] = $this->l('IDcut Transactions');
+        $this->toolbar_title[] = $this->l('IdealCutter Transactions');
     }
 
     public function initPageHeaderToolbar()

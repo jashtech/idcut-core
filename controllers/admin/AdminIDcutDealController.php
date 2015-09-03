@@ -10,7 +10,7 @@ class AdminIDcutDealController extends ModuleAdminController
         $this->className  = 'IDcutDeal';
         $this->lang       = false;
         $this->context    = Context::getContext();
-        $this->meta_title = $this->l('Your IDcut Deals');
+        $this->meta_title = $this->l('Your IdealCutter Deals');
 
         $this->_orderBy  = 'created_at';
         $this->_orderWay = 'DESC';
@@ -35,7 +35,7 @@ class AdminIDcutDealController extends ModuleAdminController
 
     public function initToolBarTitle()
     {
-        $this->toolbar_title[] = $this->l('IDcut Deals');
+        $this->toolbar_title[] = $this->l('IdealCutter Deals');
     }
 
     public function initPageHeaderToolbar()

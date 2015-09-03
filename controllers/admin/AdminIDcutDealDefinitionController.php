@@ -13,7 +13,7 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
         $this->addRowAction('view');
         $this->addRowAction('edit');
         $this->context    = Context::getContext();
-        $this->meta_title = $this->l('Your IDcut Deal Definition');
+        $this->meta_title = $this->l('Your IdealCutter Deal Definition');
 
         $this->_orderWay = 'DESC';
 
@@ -41,7 +41,7 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
 
     public function initToolBarTitle()
     {
-        $this->toolbar_title[] = $this->l('IDcut Deal Definition');
+        $this->toolbar_title[] = $this->l('IdealCutter Deal Definition');
     }
 
     public function initPageHeaderToolbar()

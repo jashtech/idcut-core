@@ -25,8 +25,8 @@ class IDcut extends PaymentModule
         $this->bootstrap = true;
         parent::__construct();
 
-        $this->displayName            = $this->l('IDcut');
-        $this->description            = $this->l('Prestashop - idcut module.');
+        $this->displayName            = $this->l('IdealCutter');
+        $this->description            = $this->l('Prestashop - IdealCutter module.');
         $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
 
         $this->core = require 'bootstrap/prestashop.php';
@@ -128,7 +128,7 @@ class IDcut extends PaymentModule
 
     public function installTabs()
     {
-        $id_root_tab = $this->installTab('AdminIDcutDealDefinition', 'IDcut', 0);
+        $id_root_tab = $this->installTab('AdminIDcutDealDefinition', 'IdealCutter', 0);
         $ret         = (int) $id_root_tab > 0 ? true : false;
         if ($ret) {
             $ret &= $this->installTab('AdminIDcutDealDefinition',
@@ -188,7 +188,7 @@ class IDcut extends PaymentModule
             $order_state->name = array();
 
             foreach (Language::getLanguages() as $language) {
-                $order_state->name[$language['id_lang']] = 'Waiting for payment IDcut';
+                $order_state->name[$language['id_lang']] = 'Waiting for payment by IdealCutter';
             }
 
             $order_state->send_email = false;
@@ -212,7 +212,7 @@ class IDcut extends PaymentModule
             $order_state->name = array();
 
             foreach (Language::getLanguages() as $language) {
-                $order_state->name[$language['id_lang']] = 'Processing IDcut payment';
+                $order_state->name[$language['id_lang']] = 'Processing IdealCutter payment';
             }
 
             $order_state->send_email = false;
@@ -362,7 +362,7 @@ class IDcut extends PaymentModule
         if (!$this->checkCurrency($params['cart'])) return;
 
         return array(
-            'cta_text' => $this->l('Pay by IDcut'),
+            'cta_text' => $this->l('Pay by IdealCutter'),
             'logo' => null,
             'action' => $this->context->link->getModuleLink($this->name,
                 'validation', array(), true)

@@ -1,5 +1,5 @@
 {capture name=path}
-    <a href="{$link->getPageLink('order', true, NULL, "step=3")|escape:'html':'UTF-8'}" title="{l s='Go back to the Checkout' mod='idcut'}">{l s='Checkout' mod='idcut'}</a><span class="navigation-pipe">{$navigationPipe}</span>{l s='IDcut payment' mod='idcut'}
+    <a href="{$link->getPageLink('order', true, NULL, "step=3")|escape:'html':'UTF-8'}" title="{l s='Go back to the Checkout' mod='idcut'}">{l s='Checkout' mod='idcut'}</a><span class="navigation-pipe">{$navigationPipe}</span>{l s='IdealCutter payment' mod='idealcutter'}
     {/capture}
 
 {include file="$tpl_dir./breadcrumb.tpl"}
@@ -18,10 +18,10 @@
         {/foreach}
     {/if}
     
-    <h3>{l s='IDcut payment' mod='idcut'}</h3>
+    <h3>{l s='IdealCutter payment' mod='idcut'}</h3>
     <form action="{$link->getModuleLink('idcut', 'payment', [], true)|escape:'html'}" method="post">
         <p>
-            {l s='You have chosen to pay by idcut.' mod='idcut'}
+            {l s='You have chosen to pay by idealcutter.' mod='idcut'}
             <br/><br />
             {l s='Here is a short summary of your order:' mod='idcut'}
         </p>
@@ -35,7 +35,7 @@
         <p>
             -
             {if isset($currencies) && $currencies|@count > 1}
-                {l s='We accept several currencies to receive payments by idcut.' mod='idcut'}
+                {l s='We accept several currencies to receive payments by idealcutter.' mod='idcut'}
                 <br /><br />
                 {l s='Choose one of the following:' mod='idcut'}
                 <select id="currency_payement" name="currency_payement" onchange="setCurrency($('#currency_payement').val());">
@@ -44,7 +44,7 @@
                     {/foreach}
                 </select>
             {else}
-                {l s='We allow the following currencies to be sent by idcut:' mod='idcut'}&nbsp;<b>{$currencies.0.name}</b>
+                {l s='We allow the following currencies to be sent by idealcutter:' mod='idcut'}&nbsp;<b>{$currencies.0.name}</b>
                 <input type="hidden" name="currency_payement" value="{$currencies.0.id_currency}" />
             {/if}
         </p>

@@ -8,7 +8,7 @@ class AdminIDcutStatusController extends ModuleAdminController
         $this->bootstrap = true;
         $this->display   = 'view';
 
-        $this->meta_title = $this->l('Your IDcut Status');
+        $this->meta_title = $this->l('Your IdealCutter Status');
         parent::__construct();
         if (!$this->module->active)
                 Tools::redirectAdmin($this->context->link->getAdminLink('AdminHome'));
@@ -21,7 +21,7 @@ class AdminIDcutStatusController extends ModuleAdminController
 
     public function initToolBarTitle()
     {
-        $this->toolbar_title[] = $this->l('IDcut Status');
+        $this->toolbar_title[] = $this->l('IdealCutter Status');
     }
 
     public function renderView()
