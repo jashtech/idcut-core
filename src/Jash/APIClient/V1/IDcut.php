@@ -9,7 +9,7 @@ use GuzzleHttp\ClientInterface as HttpClientInterface;
 class IDcut extends IDcutAbstract implements IDcutInterface
 {
     protected $version    = 1;
-    protected $serviceUrl = "http://api.dev.idealcutter.com";
+    protected $serviceUrl = "https://api.dev.idealcutter.com";
 
     public function get($query)
     {
