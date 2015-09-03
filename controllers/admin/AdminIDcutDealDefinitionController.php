@@ -2,6 +2,7 @@
 
 class AdminIDcutDealDefinitionController extends ModuleAdminController
 {
+    protected $_helper_list;
 
     public function __construct()
     {
@@ -25,6 +26,8 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
             'user_max' => array('title' => $this->l('User limit')),
             'min_order_value' => array('title' => $this->l('Minimum order value')),
             'range_type' => array('title' => $this->l('Return Type'), 'callback' => 'printRangeType'),
+            'active' => array('title' => $this->l('Current'), 'callback' => 'printCurrent',
+                'orderby' => false, 'filter' => false, 'search' => false, 'filter_key' => 'active'),
         );
 
         parent::__construct();
@@ -53,6 +56,18 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
         );
     }
 
+    public function initContent()
+    {
+        $this->token_for_list = Tools::getAdminTokenLite('AdminIDcutDealDefinition');
+        $this->_helper_list = new HelperList();
+        $this->_helper_list->currentIndex = 'index.php?controller=AdminIDcutDealDefinition';
+        $this->_helper_list->identifier = 'id_idcut_deal_definition';
+        $this->_helper_list->table = $this->table;
+        $this->_helper_list->module = $this->module;
+        $this->_helper_list->override_folder = 'i_dcut_deal_definition/';
+        parent::initContent();
+    }
+
     public function renderView()
     {
         $this->loadObject(true);
@@ -68,7 +83,7 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
         if (($error = $this->validateRanges(Tools::getValue('ranges'))) !== true) {
             $this->errors['ranges'] = $error;
         }
-        if ( Tools::getValue('ranges') !== 0 ) {
+        if (Tools::getValue('ranges') !== 0) {
             $this->errors['ranges'] = $this->module->l('Only percent range type is currently allowed');
         }
 
@@ -98,15 +113,21 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
         }
     }
 
-    public function initProcess(){
+    public function initProcess()
+    {
         parent::initProcess();
-        if(Tools::getIsset('reloadedFromApi')){
+        if (Tools::getIsset('reloadedFromApi')) {
             $this->confirmations[] = $this->l('Successful Reload from Api');
         }
+        if (Tools::getIsset('currentidcut_deal_definition') && $this->id_object) {
+            $this->processCurrent();
+        }
+
         $this->id_object = 0;
     }
 
-    public function processReloadFromApi(){
+    public function processReloadFromApi()
+    {
         try {
             $ddResponse = $this->module->core->getApiClient()->get('/deal_definitions');
         } catch (\Exception $e) {
@@ -120,54 +141,62 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
             return false;
         }
 
-        foreach($ddJson['deal_definitions'] as $dd){
-            $obj = IDcutDealDefinition::getByDealDefinitionId($dd['id']);
+        foreach ($ddJson['deal_definitions'] as $dd) {
+            $obj      = IDcutDealDefinition::getByDealDefinitionId($dd['id']);
             $dd_build = IDcut\Jash\Object\DealDefinition\DealDefinition::build($dd);
 
-            if(!isset($obj->id)){
+            if (!isset($obj->id)) {
                 $obj->deal_definition_id = $dd_build->getId();
 
-                foreach($dd_build->getRanges() as $range){
-                    $r = new IDcutRange();
-                    $r->deal_definition_id = $obj->deal_definition_id;
+                foreach ($dd_build->getRanges() as $range) {
+                    $r                          = new IDcutRange();
+                    $r->deal_definition_id      = $obj->deal_definition_id;
                     $r->min_participants_number = $range->getMin_participants_number();
-                    $r->discount_size = $range->getDiscount_size();
+                    $r->discount_size           = $range->getDiscount_size();
                     $r->save();
                 }
-            }else{
+            } else {
                 $r_array = array();
-                foreach($dd['ranges'] as $r){
-                    $r_array[(int)$r['min_participants_number']] = (int)$r['discount_size'];
+                foreach ($dd['ranges'] as $r) {
+                    $r_array[(int) $r['min_participants_number']] = (int) $r['discount_size'];
                 }
 
-                foreach($obj->ranges as $range){
-                    if(isset($r_array[$range->min_participants_number])){
+                foreach ($obj->ranges as $range) {
+                    if (isset($r_array[$range->min_participants_number])) {
                         $range->discount_size = $r_array[$range->min_participants_number];
                         $range->save();
                         unset($r_array[$range->min_participants_number]);
-                    }else{
+                    } else {
                         $range->delete();
                     }
                 }
-                foreach($r_array as $mpn => $discount){
-                    $r = new IDcutRange();
-                    $r->deal_definition_id = $obj->deal_definition_id;
+                foreach ($r_array as $mpn => $discount) {
+                    $r                          = new IDcutRange();
+                    $r->deal_definition_id      = $obj->deal_definition_id;
                     $r->min_participants_number = $mpn;
-                    $r->discount_size = $discount;
+                    $r->discount_size           = $discount;
                     $r->save();
                 }
             }
 
-            $obj->active = $dd_build->getActive();
-            $obj->ttl = $dd_build->getTtl();
-            $obj->locktime = $dd_build->getLocktime();
-            $obj->user_max = $dd_build->getUser_max();
+            $obj->active          = $dd_build->getActive();
+            $obj->ttl             = $dd_build->getTtl();
+            $obj->locktime        = $dd_build->getLocktime();
+            $obj->user_max        = $dd_build->getUser_max();
             $obj->min_order_value = $dd_build->getMin_order_value();
-            $obj->range_type = $dd_build->getRange_type()=='amount'?true:false;
+            $obj->range_type      = $dd_build->getRange_type() == 'amount' ? true
+                    : false;
             $obj->save();
         }
 
         ToolsCore::redirectAdmin(self::$currentIndex.'&reloadedFromApi&token='.$this->token);
+    }
+
+    public function processCurrent()
+    {
+//        if (!($obj = $this->loadObject(true))) return;
+//
+//        IDcutDealDefinition::setUnactive($obj->id);
     }
 
     protected function beforeAdd($object)
@@ -179,18 +208,21 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
         $dd_body->setLocktime($object->locktime);
         $dd_body->setUser_max($object->user_max);
         $dd_body->setMin_order_value($object->min_order_value);
-        $dd_body->setRange_type((bool)$object->range_type===false?'percent':'amount');
+        $dd_body->setRange_type((bool) $object->range_type === false ? 'percent'
+                    : 'amount');
 
         $rangesArray = json_decode($object->ranges, true);
         if (is_array($rangesArray)) {
             foreach ($rangesArray as $rge) {
-                $rge                   = explode('-', $rge);
-                $dd_body->addRange(new IDcut\Jash\Object\Range\Range($rge[0], $rge[1]));
+                $rge = explode('-', $rge);
+                $dd_body->addRange(new IDcut\Jash\Object\Range\Range($rge[0],
+                    $rge[1]));
             }
         }
 
         try {
-            $ddCreateResponse = $this->module->core->getApiClient()->post('/deal_definitions', $dd_body->__toStringForCreate());
+            $ddCreateResponse = $this->module->core->getApiClient()->post('/deal_definitions',
+                $dd_body->__toStringForCreate());
         } catch (\Exception $e) {
             return false;
         }
@@ -200,7 +232,7 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
         }
 
         try {
-            $location            = $ddCreateResponse->getHeader('location');
+            $location               = $ddCreateResponse->getHeader('location');
             $dealDefinitionResponse = $this->module->core->getApiClient()->get($location);
         } catch (\Exception $e) {
             return false;
@@ -215,20 +247,20 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
             return false;
         }
         $object->deal_definition_id = $dealDefinitionJson['id'];
-        $object->active = 1;
+        $object->active             = 1;
 
-        foreach($dd_body->getRanges() as $range){
-            $r = new IDcutRange();
-            $r->deal_definition_id = $object->deal_definition_id;
+        foreach ($dd_body->getRanges() as $range) {
+            $r                          = new IDcutRange();
+            $r->deal_definition_id      = $object->deal_definition_id;
             $r->min_participants_number = $range->getMin_participants_number();
-            $r->discount_size = $range->getDiscount_size();
-            if(!$r->save()){
+            $r->discount_size           = $range->getDiscount_size();
+            if (!$r->save()) {
                 return false;
             }
         }
 
         $old_id = Tools::getValue('old_id');
-        if($old_id && !empty($old_id)){
+        if ($old_id && !empty($old_id)) {
             return IDcutDealDefinition::setUnactive($old_id);
         }
 
@@ -338,5 +370,10 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
         $diff   = $zero->diff($offset);
         return sprintf("%02dd %02dh %02dm %02ds", $diff->days, $diff->h,
             $diff->i, $diff->s);
+    }
+
+    public function printCurrent($value,$tr)
+    {
+        return $this->_helper_list->displayEnableLink($this->token_for_list, $tr[$this->_helper_list->identifier], $value, 'current');
     }
 }
