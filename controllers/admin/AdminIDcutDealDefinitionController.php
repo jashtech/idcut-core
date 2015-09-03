@@ -173,9 +173,6 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
     protected function beforeAdd($object)
     {
 
-//        $object->ttl = 200;
-//        $object->locktime = 200;
-
         $dd_body = new IDcut\Jash\Object\DealDefinition\DealDefinition();
 
         $dd_body->setTtl($object->ttl);
@@ -230,6 +227,11 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
             }
         }
 
+        $old_id = Tools::getValue('old_id');
+        if($old_id && !empty($old_id)){
+            return IDcutDealDefinition::setUnactive($old_id);
+        }
+
         return true;
     }
 
@@ -241,6 +243,8 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
         foreach ($obj->ranges as $r) {
             $ranges_array[(int) $r->min_participants_number] = (int) $r->discount_size;
         }
+        $old_id = $obj->id;
+
         $this->fields_form = array(
             'legend' => array(
                 'title' => $this->l('Deal Definition'),
@@ -251,6 +255,11 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
                     'type' => 'hidden',
                     'name' => 'range_type',
                     'value' => 0
+                ),
+                array(
+                    'type' => 'hidden',
+                    'name' => 'old_id',
+                    'value' => $old_id
                 ),
                 array(
                     'type' => 'friendly_seconds',

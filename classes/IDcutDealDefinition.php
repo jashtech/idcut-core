@@ -84,6 +84,14 @@ class IDcutDealDefinition extends ObjectModel
         return new IDcutDealDefinition($id);
     }
 
+    public static function setUnactive($id)
+    {
+        if(!Validate::isUnsignedInt($id)){
+            return false;
+        }
+        return Db::getInstance()->execute('UPDATE `'._DB_PREFIX_.'idcut_deal_definition` SET  active=0 WHERE `id_idcut_deal_definition`='.(int)$id);
+    }
+
     public function getLink()
     {
         return $this->link;
