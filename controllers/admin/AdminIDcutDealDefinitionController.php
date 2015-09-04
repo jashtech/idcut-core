@@ -319,7 +319,7 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
                     'type' => 'cents_value',
                     'label' => $this->l('Minimum order value'),
                     'name' => 'min_order_value',
-                    'suffix' => $this->context->currency->sign,
+                    'suffix' => $this->plnCurrency !== false? $this->plnCurrency->sign:'PLN',
                     'class' => 'col-lg-3',
                     'required' => true
                 ),
