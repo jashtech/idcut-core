@@ -57,7 +57,7 @@ class AdminIDcutStatusController extends ModuleAdminController
 
         try {
             $storeResponse = $this->module->core->getApiClient()->get('/store');
-        } catch (\Exception $e) {
+        } catch (\IDcut\Jash\Exception\Prestashop\Exception $e) {
             echo "Problem";
         }
 
@@ -69,9 +69,16 @@ class AdminIDcutStatusController extends ModuleAdminController
             $dump->storeJson  = $store->__toString();
         }
 
+        try {
+            $ddResponse = $this->module->core->getApiClient()->get('/deal_definitionsX');
+        } catch (\IDcut\Jash\Exception\Prestashop\Exception $e) {
+            echo '<script>alert("'.get_class($e).'")</script>';
+        }
 
-        $ddResponse = $this->module->core->getApiClient()->get('/deal_definitions');
-        $dump->dd   = var_export($ddResponse->json(), 1);
+        $dump->dd = '';
+        if ($ddResponse instanceof GuzzleHttp\Message\Response) {
+            $dump->dd = var_export($ddResponse->json(), 1);
+        }
 
 
         $view->dump = $dump;

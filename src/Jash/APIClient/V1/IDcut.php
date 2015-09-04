@@ -5,45 +5,45 @@ namespace IDcut\Jash\APIClient\V1;
 use IDcut\Jash\APIClient\IDcutAbstract as IDcutAbstract;
 use IDcut\Jash\APIClient\IDcutInterface as IDcutInterface;
 use GuzzleHttp\ClientInterface as HttpClientInterface;
+use GuzzleHttp\Exception\RequestException as RequestException;
+use GuzzleHttp\Exception\ConnectException as ConnectException;
+use GuzzleHttp\Exception\BadResponseException as BadResponseException;
+use GuzzleHttp\Exception\ClientException as ClientException;
+use GuzzleHttp\Exception\TransferException as TransferException;
+use GuzzleHttp\Message\Request as Request;
 
 class IDcut extends IDcutAbstract implements IDcutInterface
 {
     protected $version    = 1;
     protected $serviceUrl = "https://api.dev.idealcutter.com";
 
-    public function get($query)
+    public function get($url, Array $options = array())
     {
-        try {
-             return $this->httpClient->get($query);
-        } catch (\Exception $e) {
-            echo $e->getMessage();
-        }
+        $request = $this->httpClient->createRequest("GET", $url, $options);
+        return $this->send($request);
     }
 
-    public function put($query, $body = null)
+    public function put($url, $body = null)
     {
-        try {
-            return $request = $this->httpClient->put($query,
-                array(
-                'body' => $body,
-                'headers' => array('Content-type' => 'application/json')
-            ));
-        } catch (\Exception $e) {
-            echo $e->getMessage();
-        }
+
+        $request = $this->httpClient->createRequest("PUT", $url,
+            array(
+            'body' => $body,
+            'headers' => array('Content-type' => 'application/json')
+        ));
+        
+        return $this->send($request);
     }
-    
-    public function post($query, $body = null)
+
+    public function post($url, $body = null)
     {
-        try {
-            return $request = $this->httpClient->post($query,
-                array(
-                'body' => $body,
-                'headers' => array('Content-type' => 'application/json')
-            ));
-        } catch (\Exception $e) {
-            echo $e->getMessage();
-        }
+        $request = $this->httpClient->createRequest("PUT", $url,
+            array(
+            'body' => $body,
+            'headers' => array('Content-type' => 'application/json')
+        ));
+
+        return $this->send($request);
     }
 
     public function getTokenInfo()
@@ -56,7 +56,8 @@ class IDcut extends IDcutAbstract implements IDcutInterface
         return $response = $this->get('/ping');
     }
 
-    public function setHttpClient(HttpClientInterface $httpClient, $lang = 'en; q=1.0')
+    public function setHttpClient(HttpClientInterface $httpClient,
+                                  $lang = 'en; q=1.0')
     {
         $this->httpClient = $httpClient;
         $this->httpClient->setDefaultOption('headers',
