@@ -24,7 +24,7 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
             'ttl' => array('title' => $this->l('Time to join'), 'callback' => 'printTimeForHuman'),
             'locktime' => array('title' => $this->l('Time to return money'), 'callback' => 'printTimeForHuman'),
             'user_max' => array('title' => $this->l('User limit')),
-            'min_order_value' => array('title' => $this->l('Minimum order value')),
+            'min_order_value' => array('title' => $this->l('Minimum order value'), 'callback' => 'printMinOrderValue', 'align' => 'text-right'),
             'range_type' => array('title' => $this->l('Return Type'), 'callback' => 'printRangeType'),
             'active' => array('title' => $this->l('Current'), 'callback' => 'printCurrent',
                 'orderby' => false, 'filter' => false, 'search' => false, 'filter_key' => 'active'),
@@ -65,12 +65,14 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
         $this->_helper_list->table = $this->table;
         $this->_helper_list->module = $this->module;
         $this->_helper_list->override_folder = 'i_dcut_deal_definition/';
+        $this->plnCurrency = $this->module->getCurrency();
         parent::initContent();
     }
 
     public function renderView()
     {
         $this->loadObject(true);
+        $this->object->min_order_value = $this->printMinOrderValue($this->object->min_order_value);
         $this->tpl_view_vars = array(
             'deal_definition' => $this->object
         );
@@ -375,5 +377,13 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
     public function printCurrent($value,$tr)
     {
         return $this->_helper_list->displayEnableLink($this->token_for_list, $tr[$this->_helper_list->identifier], $value, 'current');
+    }
+    public function printMinOrderValue($value,$tr = null)
+    {
+        if($this->plnCurrency !== false){
+            return ToolsCore::displayPrice($value/100, $this->plnCurrency);
+        }else{
+            return $value/100;
+        }
     }
 }

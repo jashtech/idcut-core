@@ -34,18 +34,23 @@
         </p>
         <p>
             -
-            {if isset($currencies) && $currencies|@count > 1}
-                {l s='We accept several currencies to receive payments by idealcutter.' mod='idcut'}
-                <br /><br />
-                {l s='Choose one of the following:' mod='idcut'}
-                <select id="currency_payement" name="currency_payement" onchange="setCurrency($('#currency_payement').val());">
-                    {foreach from=$currencies item=currency}
-                        <option value="{$currency.id_currency}" {if isset($currencies) && $currency.id_currency == $cust_currency}selected="selected"{/if}>{$currency.name}</option>
-                    {/foreach}
-                </select>
-            {else}
-                {l s='We allow the following currencies to be sent by idealcutter:' mod='idcut'}&nbsp;<b>{$currencies.0.name}</b>
-                <input type="hidden" name="currency_payement" value="{$currencies.0.id_currency}" />
+            {if isset($currencies)}
+                {if $currencies|@count > 1}
+                    {l s='We accept several currencies to receive payments by idealcutter.' mod='idcut'}
+                    <br /><br />
+                    {l s='Choose one of the following:' mod='idcut'}
+                    <select id="currency_payement" name="currency_payement" onchange="setCurrency($('#currency_payement').val());">
+                        {foreach from=$currencies item=currency}
+                            <option value="{$currency.id_currency}" {if isset($currencies) && $currency.id_currency == $cust_currency}selected="selected"{/if}>{$currency.name}</option>
+                        {/foreach}
+                    </select>
+                {elseif isset($currencies->id)}
+                    {l s='We allow the following currency to be sent by idealcutter:' mod='idcut'}&nbsp;<b>{$currencies->name}</b>
+                    <input type="hidden" name="currency_payement" value="{$currencies->id}" />
+                {else}
+                    {l s='We allow the following currencies to be sent by idealcutter:' mod='idcut'}&nbsp;<b>{$currencies.0.name}</b>
+                    <input type="hidden" name="currency_payement" value="{$currencies.0.id_currency}" />
+                {/if}
             {/if}
         </p>
         <p>

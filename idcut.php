@@ -20,7 +20,7 @@ class IDcut extends PaymentModule
         $this->is_eu_compatible = 1;
 
         $this->currencies      = true;
-        $this->currencies_mode = 'checkbox';
+        $this->currencies_mode = 'radio';
 
         $this->bootstrap = true;
         parent::__construct();
@@ -38,8 +38,26 @@ class IDcut extends PaymentModule
                 $this->warning .= '<br>'.$i++.'. '.$this->l('The client ID and Redirect url fields must be configured before using this module.');
         if ((!isset($c_tmp['PS_IDCUT_CLIENT_SECRET']) || empty($c_tmp['PS_IDCUT_CLIENT_SECRET'])))
                 $this->warning .= '<br>'.$i++.'. '.$this->l('You need to authorize your shop with API before using this module.');
-        if (!count(Currency::checkPaymentCurrencies($this->id)))
-                $this->warning .= '<br>'.$i++.'. '.$this->l('No currency has been set for this module.');
+
+        if($this->currencies_mode == 'radio'){
+            $currencies = Currency::getPaymentCurrenciesSpecial($this->id);
+            $currency = $currencies['id_currency'];
+            $pln_id = CurrencyCore::getIdByIsoCode('PLN');
+            if (!$pln_id>0){
+                $this->warning .= '<br>'.$i++.'. '.$this->l('Your shop need to have PLN currency for this module to work.');
+            }else{
+                $currencies = Currency::getPaymentCurrenciesSpecial($this->id);
+                $currency = $currencies['id_currency'];
+                if (!$currency>0 OR $currency != $pln_id){
+                    $this->warning .= '<br>'.$i++.'. '.$this->l('This module is available only for PLN currency.');
+                }
+            }
+        }else{
+            if (!count(Currency::checkPaymentCurrencies($this->id)))
+                    $this->warning .= '<br>'.$i++.'. '.$this->l('No currency has been set for this module.');
+        }
+
+
     }
 
     public function install()
@@ -398,15 +416,32 @@ class IDcut extends PaymentModule
         return $this->display(__FILE__, 'payment_return.tpl');
     }
 
+    public function getCurrency($cart_currency = null)
+    {
+        $pln_id = CurrencyCore::getIdByIsoCode('PLN');
+        if($pln_id>0 && ($cart_currency === null || $cart_currency == $pln_id))
+        {
+            return new Currency($pln_id);
+        }else{
+            $this->context->controller->error[] = $this->l('This payment method alows only PLN currency');
+            return false;
+        }
+    }
+
     public function checkCurrency($cart)
     {
         $currency_order    = new Currency((int) ($cart->id_currency));
         $currencies_module = $this->getCurrency((int) $cart->id_currency);
 
-        if (is_array($currencies_module))
-                foreach ($currencies_module as $currency_module)
-                if ($currency_order->id == $currency_module['id_currency'])
+        if ($currencies_module instanceof CurrencyCore && (int)$cart->id_currency == (int)$currencies_module->id){
+                return true;
+        }elseif (is_array($currencies_module)){
+            foreach ($currencies_module as $currency_module){
+                if ($currency_order->id == $currency_module['id_currency']){
                         return true;
+                }
+            }
+        }
         return false;
     }
 
@@ -417,11 +452,16 @@ class IDcut extends PaymentModule
         $currency = $this->context->currency;
 
         $total        = $cart->getOrderTotal(true, Cart::BOTH);
-        if ($currency->iso_code !== 'EUR' && $eur_id       = CurrencyCore::getIdByIsoCode('EUR')
-            && $currency_eur = CurrencyCore::getCurrency($eur_id)) {
-            $total    = ToolsCore::convertPrice($total, $currency_eur, true,
-                    $this->context);
-            $currency = $currency_eur;
+        if ($currency->iso_code !== 'PLN'){
+            if($pln_id       = CurrencyCore::getIdByIsoCode('PLN')
+            && $currency_pln = CurrencyCore::getCurrency($pln_id)) {
+                $total    = ToolsCore::convertPrice($total, $currency_pln, true,
+                        $this->context);
+                $currency = $currency_pln;
+            }else{
+                $this->context->controller->error[] = $this->l('This payment method alows only PLN currency');
+                return false;
+            }
         }
 
         $total_cents = (int) (($total * 100));
