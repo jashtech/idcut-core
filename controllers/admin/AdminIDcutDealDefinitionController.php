@@ -2,7 +2,7 @@
 
 class AdminIDcutDealDefinitionController extends ModuleAdminController
 {
-    protected $_helper_list;
+    protected $helper_for_list;
 
     public function __construct()
     {
@@ -29,7 +29,7 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
             'active' => array('title' => $this->l('Current'), 'callback' => 'printCurrent',
                 'orderby' => false, 'filter' => false, 'search' => false, 'filter_key' => 'active'),
         );
-
+        $this->display = 'list';
         parent::__construct();
         if (!$this->module->active)
                 Tools::redirectAdmin($this->context->link->getAdminLink('AdminHome'));
@@ -56,17 +56,29 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
         );
     }
 
-    public function initContent()
+//    public function initToolbar()
+//    {
+//
+//        if($this->display == 'list'){
+//            $this->toolbar_btn['import'] = array(
+//                'href' => self::$currentIndex.'&action=reloadFromApi&token='.$this->token,
+//                'desc' => $this->l('Reload Deal Definitions')
+//            );
+//        }
+//        parent::initToolbar();
+//    }
+
+    public function init()
     {
         $this->token_for_list = Tools::getAdminTokenLite('AdminIDcutDealDefinition');
-        $this->_helper_list = new HelperList();
-        $this->_helper_list->currentIndex = 'index.php?controller=AdminIDcutDealDefinition';
-        $this->_helper_list->identifier = 'id_idcut_deal_definition';
-        $this->_helper_list->table = $this->table;
-        $this->_helper_list->module = $this->module;
-        $this->_helper_list->override_folder = 'i_dcut_deal_definition/';
+        $this->helper_for_list = new HelperList();
+        $this->helper_for_list->currentIndex = 'index.php?controller=AdminIDcutDealDefinition';
+        $this->helper_for_list->identifier = 'id_idcut_deal_definition';
+        $this->helper_for_list->table = $this->table;
+        $this->helper_for_list->module = $this->module;
+        $this->helper_for_list->override_folder = 'i_dcut_deal_definition/';
         $this->plnCurrency = $this->module->getCurrency();
-        parent::initContent();
+        parent::init();
     }
 
     public function renderView()
@@ -82,36 +94,46 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
 
     public function validateRules($class_name = false)
     {
+        $tmp = $this->errors;
+        $this->errors = array();
         if (($error = $this->validateRanges(Tools::getValue('ranges'))) !== true) {
-            $this->errors['ranges'] = $error;
+            $this->errors[] = $error;
         }
-        if (Tools::getValue('ranges') !== 0) {
-            $this->errors['ranges'] = $this->module->l('Only percent range type is currently allowed');
+        if (Tools::getValue('range_type') != 0) {
+            $this->errors[] = $this->l('Only percent range type is currently allowed');
         }
 
         parent::validateRules($class_name);
+        foreach ($this->errors as $err){
+            $tmp[] = $err;
+        }
+        $this->errors = $tmp;
+
     }
 
     public function validateRanges($rangesJson)
     {
         if ($rangesJson === false) {
-            return $this->module->l('Empty Ranges');
+            return $this->l('Empty Ranges');
         }
         $rangesArray = json_decode($rangesJson, true);
+        if (empty($rangesArray)) {
+            return $this->l('Empty Ranges');
+        }
         if (is_array($rangesArray)) {
             $rge_max = 0;
             foreach ($rangesArray as $rge) {
                 $rge = explode('-', $rge);
                 if (count($rge) != 2 || !Validate::isUnsignedInt($rge[0]) || !Validate::isUnsignedInt($rge[1])) {
-                    return $this->module->l('Ranges are not setted properly');
+                    return $this->l('Ranges are not setted properly');
                 } elseif ($rge[1] < $rge_max) {
-                    return $this->module->l('Ranges field: more people can not have less reduction');
+                    return $this->l('Ranges field: more people can not have less reduction');
                 }
                 $rge_max = $rge[1];
             }
             return true;
         } else {
-            return $this->module->l('Ranges are not setted properly');
+            return $this->l('Ranges are not setted properly');
         }
     }
 
@@ -194,6 +216,11 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
         Tools::redirectAdmin(self::$currentIndex.'&reloadedFromApi&token='.$this->token);
     }
 
+    public function processUpdate()
+    {
+        return $this->processAdd();
+    }
+
     public function processCurrent()
     {
 //        if (!($obj = $this->loadObject(true))) return;
@@ -229,7 +256,7 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
             return false;
         }
 
-        if ((int) $ddCreateResponse->getStatusCode() !== 201 || !$ddCreateResponse->hasHeader('location')) {
+        if (!$ddCreateResponse || (int) $ddCreateResponse->getStatusCode() !== 201 || !$ddCreateResponse->hasHeader('location')) {
             return false;
         }
 
@@ -261,7 +288,7 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
             }
         }
 
-        $old_id = Tools::getValue('old_id');
+        $old_id = Tools::getValue($this->helper_for_list->identifier, 0);
         if ($old_id && !empty($old_id)) {
             return IDcutDealDefinition::setUnactive($old_id);
         }
@@ -275,7 +302,7 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
 
         $ranges_array = array();
         foreach ($obj->ranges as $r) {
-            $ranges_array[(int) $r->min_participants_number] = (int) $r->discount_size;
+            $ranges_array[] = (int) $r->min_participants_number .'-'. (int) $r->discount_size;
         }
         $old_id = $obj->id;
 
@@ -376,7 +403,7 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
 
     public function printCurrent($value,$tr)
     {
-        return $this->_helper_list->displayEnableLink($this->token_for_list, $tr[$this->_helper_list->identifier], $value, 'current');
+        return $this->helper_for_list->displayEnableLink($this->token_for_list, $tr[$this->helper_for_list->identifier], $value, 'current');
     }
     public function printMinOrderValue($value,$tr = null)
     {
