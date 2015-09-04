@@ -42,7 +42,7 @@ class IDcut extends PaymentModule
         if($this->currencies_mode == 'radio'){
             $currencies = Currency::getPaymentCurrenciesSpecial($this->id);
             $currency = $currencies['id_currency'];
-            $pln_id = CurrencyCore::getIdByIsoCode('PLN');
+            $pln_id = Currency::getIdByIsoCode('PLN');
             if (!$pln_id>0){
                 $this->warning .= '<br>'.$i++.'. '.$this->l('Your shop need to have PLN currency for this module to work.');
             }else{
@@ -189,7 +189,7 @@ class IDcut extends PaymentModule
     public function uninstallTabs()
     {
         $ret  = true;
-        $tabs = TabCore::getCollectionFromModule($this->name);
+        $tabs = Tab::getCollectionFromModule($this->name);
         foreach ($tabs->getAll()->getResults() as $tab) {
             $ret &= $tab->delete();
         }
@@ -418,7 +418,7 @@ class IDcut extends PaymentModule
 
     public function getCurrency($cart_currency = null)
     {
-        $pln_id = CurrencyCore::getIdByIsoCode('PLN');
+        $pln_id = Currency::getIdByIsoCode('PLN');
         if($pln_id>0 && ($cart_currency === null || $cart_currency == $pln_id))
         {
             return new Currency($pln_id);
@@ -433,7 +433,7 @@ class IDcut extends PaymentModule
         $currency_order    = new Currency((int) ($cart->id_currency));
         $currencies_module = $this->getCurrency((int) $cart->id_currency);
 
-        if ($currencies_module instanceof CurrencyCore && (int)$cart->id_currency == (int)$currencies_module->id){
+        if ($currencies_module instanceof Currency && (int)$cart->id_currency == (int)$currencies_module->id){
                 return true;
         }elseif (is_array($currencies_module)){
             foreach ($currencies_module as $currency_module){
@@ -453,9 +453,9 @@ class IDcut extends PaymentModule
 
         $total        = $cart->getOrderTotal(true, Cart::BOTH);
         if ($currency->iso_code !== 'PLN'){
-            if($pln_id       = CurrencyCore::getIdByIsoCode('PLN')
-            && $currency_pln = CurrencyCore::getCurrency($pln_id)) {
-                $total    = ToolsCore::convertPrice($total, $currency_pln, true,
+            if($pln_id       = Currency::getIdByIsoCode('PLN')
+            && $currency_pln = Currency::getCurrency($pln_id)) {
+                $total    = Tools::convertPrice($total, $currency_pln, true,
                         $this->context);
                 $currency = $currency_pln;
             }else{

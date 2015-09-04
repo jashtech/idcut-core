@@ -191,7 +191,7 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
             $obj->save();
         }
 
-        ToolsCore::redirectAdmin(self::$currentIndex.'&reloadedFromApi&token='.$this->token);
+        Tools::redirectAdmin(self::$currentIndex.'&reloadedFromApi&token='.$this->token);
     }
 
     public function processCurrent()
@@ -381,7 +381,7 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
     public function printMinOrderValue($value,$tr = null)
     {
         if($this->plnCurrency !== false){
-            return ToolsCore::displayPrice($value/100, $this->plnCurrency);
+            return Tools::displayPrice($value/100, $this->plnCurrency);
         }else{
             return $value/100 . ' PLN';
         }

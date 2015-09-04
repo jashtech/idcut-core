@@ -115,6 +115,6 @@ class AdminIDcutDealController extends ModuleAdminController
             }
             
         }
-        ToolsCore::redirectAdmin(self::$currentIndex.'&reloadedFromApi&token='.$this->token);
+        Tools::redirectAdmin(self::$currentIndex.'&reloadedFromApi&token='.$this->token);
     }
 }

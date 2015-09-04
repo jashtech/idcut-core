@@ -87,7 +87,7 @@ class IDcutValidationModuleFrontController extends ModuleFrontController
             false, $customer->secure_key);
 
         $transaction->id_order = $this->module->currentOrder;
-        $transaction->title    = $this->module->l('Order:').' '.OrderCore::getUniqReferenceOf($this->module->currentOrder);
+        $transaction->title    = $this->module->l('Order:').' '.Order::getUniqReferenceOf($this->module->currentOrder);
 
         $transactionApi = $this->createTransaction($transaction);
 
