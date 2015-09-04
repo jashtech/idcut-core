@@ -383,7 +383,7 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
         if($this->plnCurrency !== false){
             return ToolsCore::displayPrice($value/100, $this->plnCurrency);
         }else{
-            return $value/100;
+            return $value/100 . ' PLN';
         }
     }
 }
