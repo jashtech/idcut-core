@@ -114,4 +114,14 @@ class Store implements JSONObjectInterface
         return json_encode(array("store"=>$store) , JSON_UNESCAPED_SLASHES );
     }
 
+    public function __toStringUpdateUrls(){
+        $store = array();
+        $store['payment_return_url']  = $this->getPayment_return_url();
+        $store['hook_url']  = $this->getHook_url();
+        $store['join_deal_url'] = $this->getJoin_deal_url();
+
+        $store = array_filter($store);
+        return json_encode(array("store"=>$store) , JSON_UNESCAPED_SLASHES );
+    }
+
 }

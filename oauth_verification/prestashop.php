@@ -38,7 +38,7 @@ if (!$code) {
             $store->setHook_url(Context::getContext()->link->getPageLink('index').'?fc=module&module='.$moduleName.'&controller=status_update');
             $store->setJoin_deal_url(Context::getContext()->link->getPageLink('index').'fc=module&module='.$moduleName.'&controller=deal_with_it&deal_hash=%s');
 
-            $res = $core->getApiClient()->put('/store', $store);
+            $res = $core->getApiClient()->put('/store', $store->__toStringUpdateUrls());
 
 
             //$tokenInfo = var_export($core->getApiClient()->setAccessToken($token)->getTokenInfo()->json(), 1);
