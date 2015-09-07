@@ -9,6 +9,7 @@ class AdminIDcutDealController extends ModuleAdminController
         $this->table      = 'idcut_deal';
         $this->className  = 'IDcutDeal';
         $this->lang       = false;
+        $this->addRowAction('view');
         $this->context    = Context::getContext();
         $this->meta_title = $this->l('Your IdealCutter Deals');
 
@@ -119,5 +120,15 @@ class AdminIDcutDealController extends ModuleAdminController
         if(!count($this->errors)){
             Tools::redirectAdmin(self::$currentIndex.'&reloadedFromApi&token='.$this->token);
         }
+    }
+
+    public function renderView()
+    {
+        $this->loadObject(true);
+        $this->tpl_view_vars = array(
+            'deal' => $this->object
+        );
+
+        return parent::renderView();
     }
 }
