@@ -43,7 +43,7 @@ if (!$code) {
 
             //$tokenInfo = var_export($core->getApiClient()->setAccessToken($token)->getTokenInfo()->json(), 1);
         }
-    } catch (Exception $e) {
+    } catch (\IDcut\Jash\Exception\Prestashop\Exception $e) {
         echo $e->getMessage();
     }
 }
