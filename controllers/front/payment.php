@@ -23,48 +23,49 @@ class IDcutPaymentModuleFrontController extends ModuleFrontController
                 $this->context->cookie->__unset('deal_hash');
                 try {
                     $dealResponse = $this->module->core->getApiClient()->get('/deals/by_hash/'.$deal_token.'?expand=deal_definition');
-                } catch (\Exception $e) {
+                    if ($dealResponse instanceof GuzzleHttp\Message\Response) {
+                        $dealJson = $dealResponse->json();
+
+                        if (isset($dealJson['deal_definition']['id'])) {
+                            $deal                                  = \IDcut\Jash\Object\Deal\Deal::build($dealJson);
+                            $dealJson['deal_definition']['ranges'] = isset($dealJson['deal_definition']['ranges'])
+                                    ? $dealJson['deal_definition']['ranges'] : array();
+                            $dealDefinition                        = IDcut\Jash\Object\DealDefinition\DealDefinition::build($dealJson['deal_definition']);
+
+                            $IDcutDeal = IDcutDeal::getByDealId($deal->getId());
+                            if(empty($IDcutDeal->deal_id)){
+                                $IDcutDeal->deal_id = $deal->getId();
+                                $IDcutDeal->deal_definition_id = $deal_definition->getId();
+                            }
+                            $Date      = strtotime($deal->getCreated_at());
+                            $converted = date("Y-m-d H:i:s", $Date);
+                            $IDcutDeal->created_at         = $converted;
+
+                            $Date      = strtotime($deal->getUpdated_at());
+                            $converted = date("Y-m-d H:i:s", $Date);
+                            $IDcutDeal->updated_at         = $converted;
+
+                            $IDcutDeal->state              = $deal->getState();
+                            $IDcutDeal->ended              = $deal->getEnded();
+
+                            $Date      = strtotime($deal->getEnd_date());
+                            $converted = date("Y-m-d H:i:s", $Date);
+                            $IDcutDeal->end_date           = $converted;
+
+                            $IDcutDeal->hash_id            = $deal->getHash_id();
+
+                            $IDcutDeal->save();
+
+                        } else {
+                            $error_messages[] = Tools::displayError('There is no Deal Definition id');
+                        }
+                    } else {
+                        $error_messages[] = Tools::displayError('Empty Deal Definition response');
+                    }
+                } catch (\IDcut\Jash\Exception\Prestashop\Exception $e) {
                     $error_messages[] = Tools::displayError('Error when trying to get Deal Definition');
                 }
-                if ($dealResponse) {
-                    $dealJson = $dealResponse->json();
-
-                    if (isset($dealJson['deal_definition']['id'])) {
-                        $deal                                  = \IDcut\Jash\Object\Deal\Deal::build($dealJson);
-                        $dealJson['deal_definition']['ranges'] = isset($dealJson['deal_definition']['ranges'])
-                                ? $dealJson['deal_definition']['ranges'] : array();
-                        $dealDefinition                        = IDcut\Jash\Object\DealDefinition\DealDefinition::build($dealJson['deal_definition']);
-
-                        $IDcutDeal = IDcutDeal::getByDealId($deal->getId());
-                        if(empty($IDcutDeal->deal_id)){
-                            $IDcutDeal->deal_id = $deal->getId();
-                            $IDcutDeal->deal_definition_id = $deal_definition->getId();
-                        }
-                        $Date      = strtotime($deal->getCreated_at());
-                        $converted = date("Y-m-d H:i:s", $Date);
-                        $IDcutDeal->created_at         = $converted;
-
-                        $Date      = strtotime($deal->getUpdated_at());
-                        $converted = date("Y-m-d H:i:s", $Date);
-                        $IDcutDeal->updated_at         = $converted;
-
-                        $IDcutDeal->state              = $deal->getState();
-                        $IDcutDeal->ended              = $deal->getEnded();
-
-                        $Date      = strtotime($deal->getEnd_date());
-                        $converted = date("Y-m-d H:i:s", $Date);
-                        $IDcutDeal->end_date           = $converted;
-
-                        $IDcutDeal->hash_id            = $deal->getHash_id();
-
-                        $IDcutDeal->save();
-
-                    } else {
-                        $error_messages[] = Tools::displayError('There is no Deal Definition id');
-                    }
-                } else {
-                    $error_messages[] = Tools::displayError('Empty Deal Definition response');
-                }
+                
             } else {
                 $error_messages[] = Tools::displayError('You must specify deal token');
             }

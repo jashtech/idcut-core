@@ -154,10 +154,11 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
     {
         try {
             $ddResponse = $this->module->core->getApiClient()->get('/deal_definitions');
-        } catch (\Exception $e) {
+        } catch (\IDcut\Jash\Exception\Prestashop\Exception $e) {
+            $this->errors[] = $this->l('Reload from Api crashes');
             return false;
         }
-        if (!$ddResponse) {
+        if (!$ddResponse instanceof GuzzleHttp\Message\Response) {
             return false;
         }
         $ddJson = $ddResponse->json();
@@ -252,22 +253,24 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
         try {
             $ddCreateResponse = $this->module->core->getApiClient()->post('/deal_definitions',
                 $dd_body->__toStringForCreate());
-        } catch (\Exception $e) {
+        } catch (\IDcut\Jash\Exception\Prestashop\Exception $e) {
+            $this->errors[] = sprintf($this->l('Create Deal Definition failed IdealCutter returned error: %s'), $e->getCode());
             return false;
         }
 
-        if (!$ddCreateResponse || (int) $ddCreateResponse->getStatusCode() !== 201 || !$ddCreateResponse->hasHeader('location')) {
+        if (!$ddCreateResponse instanceof GuzzleHttp\Message\Response || (int) $ddCreateResponse->getStatusCode() !== 201 || !$ddCreateResponse->hasHeader('location')) {
             return false;
         }
 
         try {
             $location               = $ddCreateResponse->getHeader('location');
             $dealDefinitionResponse = $this->module->core->getApiClient()->get($location);
-        } catch (\Exception $e) {
+        } catch (\IDcut\Jash\Exception\Prestashop\Exception $e) {
+            $this->errors[] = sprintf($this->l('Loading Deal Definition failed IdealCutter returned error: %s'), $e->getCode());
             return false;
         }
 
-        if (!$dealDefinitionResponse) {
+        if (!$dealDefinitionResponse instanceof GuzzleHttp\Message\Response) {
             return false;
         }
 
@@ -294,6 +297,15 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
         }
 
         return true;
+    }
+
+    protected function afterAdd($object)
+    {
+        if(empty($object->deal_definition_id)){
+            $object->delete();
+            $this->redirect_after = false;
+            $this->display = 'edit';
+        }
     }
 
     public function renderForm()

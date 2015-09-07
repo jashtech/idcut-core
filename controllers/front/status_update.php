@@ -85,11 +85,11 @@ class IDcutStatus_UpdateModuleFrontController extends ModuleFrontController
     {
         try {
             $transactionResponse = $this->module->core->getApiClient()->get('/transactions/'.$IDcutTransaction->transaction_id);
-        } catch (\Exception $e) {
+        } catch (\IDcut\Jash\Exception\Prestashop\Exception $e) {
             return false;
         }
 
-        if (!$transactionResponse) {
+        if (!$transactionResponse instanceof GuzzleHttp\Message\Response) {
             return false;
         }
 

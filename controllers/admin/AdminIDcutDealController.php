@@ -62,10 +62,11 @@ class AdminIDcutDealController extends ModuleAdminController
         while ($next != false){
             try {
                 $ddResponse = $this->module->core->getApiClient()->get($next);
-            } catch (\Exception $e) {
+            } catch (\IDcut\Jash\Exception\Prestashop\Exception $e) {
+                $this->errors[] = $this->l('Reload from Api crashes');
                 break;
             }
-            if (!$ddResponse) {
+            if (!$ddResponse instanceof GuzzleHttp\Message\Response) {
                 break;
             }
             $ddJson = $ddResponse->json();
@@ -115,6 +116,8 @@ class AdminIDcutDealController extends ModuleAdminController
             }
             
         }
-        Tools::redirectAdmin(self::$currentIndex.'&reloadedFromApi&token='.$this->token);
+        if(!count($this->errors)){
+            Tools::redirectAdmin(self::$currentIndex.'&reloadedFromApi&token='.$this->token);
+        }
     }
 }

@@ -16,22 +16,23 @@ class IDcutValidationModuleFrontController extends ModuleFrontController
         try {
             $transactionCreateResponse = $this->module->core->getApiClient()->post('/transactions',
                 $transaction_body->__toStringForCreate());
-        } catch (\Exception $e) {
-            $error_messages[] = Tools::displayError('Error when trying to Create Transaction');
+        } catch (\IDcut\Jash\Exception\Prestashop\Exception $e) {
+            $this->errors[] = Tools::displayError('Error when trying to Create Transaction');
         }
 
-        if ((int) $transactionCreateResponse->getStatusCode() !== 201 || !$transactionCreateResponse->hasHeader('location')) {
+        if (!$transactionCreateResponse instanceof GuzzleHttp\Message\Response || (int) $transactionCreateResponse->getStatusCode() !== 201 || !$transactionCreateResponse->hasHeader('location')) {
             return false;
         }
 
         try {
             $location            = $transactionCreateResponse->getHeader('location');
             $transactionResponse = $this->module->core->getApiClient()->get($location);
-        } catch (\Exception $e) {
+        } catch (\IDcut\Jash\Exception\Prestashop\Exception $e) {
+            $this->errors[] = Tools::displayError('Error with retriving created transaction data');
             return false;
         }
 
-        if (!$transactionResponse) {
+        if (!$transactionResponse instanceof GuzzleHttp\Message\Response) {
             return false;
         }
 
@@ -64,9 +65,11 @@ class IDcutValidationModuleFrontController extends ModuleFrontController
                 break;
             }
 
-        if (!$authorized)
-                die($this->module->l('This payment method is not available.',
-                    'validation'));
+        if (!$authorized){
+                $this->errors = $this->l('This payment method is currently not available for that adress.',
+                    'validation');
+                return false;
+        }
 
         $customer = new Customer($cart->id_customer);
 
@@ -108,7 +111,8 @@ class IDcutValidationModuleFrontController extends ModuleFrontController
 
             $this->redirectTransaction($transactionApi);
         } else {
-            d(Tools::displayError('Error when trying to Create Transaction'));
+            $this->errors[] = Tools::displayError('Error when trying to Create Transaction');
+            return false;
         }
     }
 }
