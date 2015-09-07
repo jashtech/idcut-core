@@ -13,7 +13,7 @@ class IDcut extends AbstractProvider {
 
     public function urlAuthorize()
     {
-        return 'https://dev.idealcutter.com/oauth/authorize';
+        return 'https://store.dev.idealcutter.com/oauth/authorize';
     }
 
     public function urlAccessToken()
