@@ -36,7 +36,7 @@ if (!$code) {
 
             $store->setPayment_return_url(Context::getContext()->link->getPageLink('index').'?fc=module&module='.$moduleName.'&controller=transaction');
             $store->setHook_url(Context::getContext()->link->getPageLink('index').'?fc=module&module='.$moduleName.'&controller=status_update');
-            $store->setJoin_deal_url(Context::getContext()->link->getPageLink('index').'fc=module&module='.$moduleName.'&controller=deal_with_it&deal_hash=%s');
+            $store->setJoin_deal_url(Context::getContext()->link->getPageLink('index').'?fc=module&module='.$moduleName.'&controller=deal_with_it&deal_hash=%s');
 
             $res = $core->getApiClient()->put('/store', $store->__toStringUpdateUrls());
 
