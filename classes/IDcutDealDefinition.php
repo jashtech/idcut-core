@@ -52,8 +52,7 @@ class IDcutDealDefinition extends ObjectModel
                 'required' => true),
             'min_order_value' => array('type' => self::TYPE_INT, 'validate' => 'isUnsignedInt',
                 'required' => true),
-            'range_type' => array('type' => self::TYPE_BOOL, 'validate' => 'isBool',
-                'required' => true),
+            'range_type' => array('type' => self::TYPE_BOOL, 'validate' => 'isBool'),
         ),
     );
 
