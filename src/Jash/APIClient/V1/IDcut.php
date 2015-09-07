@@ -37,7 +37,7 @@ class IDcut extends IDcutAbstract implements IDcutInterface
 
     public function post($url, $body = null)
     {
-        $request = $this->httpClient->createRequest("PUT", $url,
+        $request = $this->httpClient->createRequest("POST", $url,
             array(
             'body' => $body,
             'headers' => array('Content-type' => 'application/json')
