@@ -476,22 +476,22 @@ class IDcut extends PaymentModule
         if ($deal === null) {
             try {
                 $dealCreateResponse = $this->core->getApiClient()->post('/deals');
-            } catch (\Exception $e) {
+            } catch (\IDcut\Jash\Exception\Prestashop\Exception $e) {
                 return false;
             }
 
-            if ((int) $dealCreateResponse->getStatusCode() !== 201 || !$dealCreateResponse->hasHeader('location')) {
+            if (!$dealCreateResponse instanceof GuzzleHttp\Message\Response || (int) $dealCreateResponse->getStatusCode() !== 201 || !$dealCreateResponse->hasHeader('location')) {
                 return false;
             }
 
             try {
                 $location     = $dealCreateResponse->getHeader('location');
                 $dealResponse = $this->core->getApiClient()->get($location.'?expand=deal_definition');
-            } catch (\Exception $e) {
+            } catch (\IDcut\Jash\Exception\Prestashop\Exception $e) {
                 return false;
             }
 
-            if (!$dealResponse) {
+            if (!$dealResponse instanceof GuzzleHttp\Message\Response) {
                 return false;
             }
 
