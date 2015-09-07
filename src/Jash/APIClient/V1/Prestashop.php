@@ -18,15 +18,15 @@ class Prestashop extends IDCut
         try {
             return $this->httpClient->send($request, $params);
         } catch (RequestException $e) {
-            throw new \IDcut\Jash\Exception\Prestashop\Exception($e);
+            throw new \IDcut\Jash\Exception\Prestashop\Exception($e->getMessage(),$e->getCode(), $e);
         } catch (ConnectException $e) {
-            throw new \IDcut\Jash\Exception\Prestashop\Exception($e);
+            throw new \IDcut\Jash\Exception\Prestashop\Exception($e->getMessage(),$e->getCode(), $e);
         } catch (BadResponseException $e) {
-            throw new \IDcut\Jash\Exception\Prestashop\Exception($e);
+            throw new \IDcut\Jash\Exception\Prestashop\Exception($e->getMessage(),$e->getCode(), $e);
         } catch (ClientException $e) {
-            throw new \IDcut\Jash\Exception\Prestashop\Exception($e);
+            throw new \IDcut\Jash\Exception\Prestashop\Exception($e->getMessage(),$e->getCode(), $e);
         } catch (TransferException $e) {
-            throw new \IDcut\Jash\Exception\Prestashop\Exception($e);
+            throw new \IDcut\Jash\Exception\Prestashop\Exception($e->getMessage(),$e->getCode(), $e);
         }
     }
 }
