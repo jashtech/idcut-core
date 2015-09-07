@@ -15,7 +15,7 @@ class IDcut extends PaymentModule
         $this->name             = 'idcut';
         $this->author           = 'Tomasz Wesołowski <twesolowski@jash.pl>';
         $this->tab              = 'payments_gateways';
-        $this->version          = '1.0';
+        $this->version          = '1.0.2';
         $this->controllers      = array('auth', 'payment', 'validation');
         $this->is_eu_compatible = 1;
 
