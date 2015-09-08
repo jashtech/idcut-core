@@ -381,7 +381,12 @@ class IDcut extends PaymentModule
     {
         if (!$this->active) return;
         if (!$this->checkCurrency($params['cart'])) return;
-
+        
+        if (version_compare(_PS_VERSION_, '1.6', '<'))
+        {
+            $this->hookHeader();
+        }
+        
         $this->smarty->assign(array(
             'this_path' => $this->_path,
             'this_path_idcut' => $this->_path,
