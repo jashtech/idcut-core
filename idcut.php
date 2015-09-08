@@ -362,7 +362,15 @@ class IDcut extends PaymentModule
 
         return $html;
     }
-
+    
+    public function hookDisplayBackOfficeHeader()
+    {
+        if (!Module::isEnabled($this->name)) {
+            return false;
+        }
+        $this->context->controller->addCss(_MODULE_DIR_.$this->name.'/css/admin/idcut_menu.css');
+    }
+    
     public function hookHeader($params)
     {
         $this->context->controller->addCSS(_MODULE_DIR_.$this->name.'/css/front.css');

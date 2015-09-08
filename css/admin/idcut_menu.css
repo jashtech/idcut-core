@@ -1,0 +1,20 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 2015-09-08, 14:56:30
+    Author     : Piotr
+*/
+i.icon-AdminIDcutDealDefinition,
+#nav-sidebar ul.menu li.maintab>a.title i.icon-AdminIDcutDealDefinition{
+    
+}
+i.icon-AdminIDcutDealDefinition{
+    height: 19px;
+    background: transparent url("../../logo.gif") no-repeat;
+    display: inline-block;
+    line-height: 1px;
+    vertical-align: middle!important;
+}
