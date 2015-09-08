@@ -5,6 +5,12 @@ class IDcutPaymentModuleFrontController extends ModuleFrontController
     public $ssl                 = true;
     public $display_column_left = false;
 
+    public function setMedia()
+    {
+        $this->addCSS(_MODULE_DIR_.$this->module->name.'/css/front/payment.css');
+        return parent::setMedia();
+    }
+
     /**
      * @see FrontController::initContent()
      */

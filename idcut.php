@@ -16,7 +16,7 @@ class IDcut extends PaymentModule
         $this->author           = 'Tomasz Wesołowski <twesolowski@jash.pl>';
         $this->tab              = 'payments_gateways';
         $this->version          = '1.0.2';
-        $this->controllers      = array('auth', 'payment', 'validation');
+        $this->controllers      = array('deal_with_it', 'payment', 'validation', 'status_update', 'transaction');
         $this->is_eu_compatible = 1;
 
         $this->currencies      = true;
@@ -67,8 +67,10 @@ class IDcut extends PaymentModule
             !$this->installTabs() ||
             !$this->createOrderState() ||
             !$this->installDB() ||
-            !$this->registerHook('payment') || !$this->registerHook('displayPaymentEU')
-            || !$this->registerHook('paymentReturn')
+            !$this->registerHook('header') ||
+            !$this->registerHook('payment') || 
+            !$this->registerHook('displayPaymentEU') || 
+            !$this->registerHook('paymentReturn')
         ) {
             return false;
         }
@@ -361,6 +363,11 @@ class IDcut extends PaymentModule
         return $html;
     }
 
+    public function hookHeader($params)
+    {
+        $this->context->controller->addCSS(_MODULE_DIR_.$this->name.'/css/front.css');
+    }
+    
     public function hookPayment($params)
     {
         if (!$this->active) return;

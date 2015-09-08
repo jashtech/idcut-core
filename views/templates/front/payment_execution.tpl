@@ -2,8 +2,6 @@
     <a href="{$link->getPageLink('order', true, NULL, "step=3")|escape:'html':'UTF-8'}" title="{l s='Go back to the Checkout' mod='idcut'}">{l s='Checkout' mod='idcut'}</a><span class="navigation-pipe">{$navigationPipe}</span>{l s='IdealCutter payment' mod='idealcutter'}
     {/capture}
 
-{include file="$tpl_dir./breadcrumb.tpl"}
-
 <h2>{l s='Order summary' mod='idcut'}</h2>
 
 {assign var='current_step' value='payment'}
@@ -18,22 +16,21 @@
         {/foreach}
     {/if}
     
-    <h3>{l s='IdealCutter payment' mod='idcut'}</h3>
-    <form action="{$link->getModuleLink('idcut', 'payment', [], true)|escape:'html'}" method="post">
+    <h3><img class="idcut_payment_logo" src="{$this_path_idcut}img/idealcutter.png" alt="{l s='IdealCutter payment' mod='idcut'}" /></h3>
+    <form action="{$link->getModuleLink('idcut', 'payment', [], true)|escape:'html'}" id="idcut_payment_form" method="post">
         <p>
             {l s='You have chosen to pay by idealcutter.' mod='idcut'}
             <br/><br />
             {l s='Here is a short summary of your order:' mod='idcut'}
         </p>
         <p style="margin-top:20px;">
-            - {l s='The total amount of your order comes to:' mod='idcut'}
+            {l s='The total amount of your order comes to:' mod='idcut'}
             <span id="amount" class="price">{displayPrice price=$total}</span>
             {if $use_taxes == 1}
-                {l s='(tax incl.)' mod='idcut'}
+                <span class="tax_info">{l s='(tax incl.)' mod='idcut'}</span>
             {/if}
         </p>
         <p>
-            -
             {if isset($currencies)}
                 {if $currencies|@count > 1}
                     {l s='We accept several currencies to receive payments by IdealCutter.' mod='idcut'}
@@ -53,9 +50,9 @@
                 {/if}
             {/if}
         </p>
-        <p>
-            - {l s='Please choose wisely' mod='idcut'}
-        </p>
+        <h5>
+            {l s='Please choose wisely' mod='idcut'}
+        </h5>
 {*            {if $can_create_deal}*}
         <p class="radio-inline">
                 <label>
@@ -66,12 +63,16 @@
 {*            {/if}*}
         <p class="radio-inline">
             <label>
-                    <input type="radio" name="deal_join" id="deal_join" value="1"{if isset($smarty.post.deal_join) && $smarty.post.deal_join == 1} checked="checked"{/if} />
-                    <input type="text" name="deal_token" placeholder="{l s='Join to existing deal' mod='idcut'}" value="{if isset($deal_token)}{$deal_token}{/if}">
+                <input type="radio" name="deal_join" id="deal_join" value="1"{if isset($smarty.post.deal_join) && $smarty.post.deal_join == 1} checked="checked"{/if} />
+                {l s='Join to existing deal' mod='idcut'}
+            </label>
+            <label class="deal_token">
+                {l s='Deal hash code You want to join' mod='idcut'}<br />
+                <input type="text" name="deal_token" value="{if isset($deal_token)}{$deal_token}{/if}">
             </label>
         </p>
         <p>
-            <b>{l s='Please confirm your order by clicking \'I confirm my order\'.' mod='idcut'}</b>
+            {l s='Please confirm your order by clicking \'I confirm my order\'.' mod='idcut'}
         </p>
         {*<p class="cart_navigation" id="cart_navigation">
             <input type="submit" name="confirm_order" value="{l s='I confirm my order' mod='idcut'}" class="exclusive_large"/>
