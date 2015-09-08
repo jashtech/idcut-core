@@ -93,10 +93,13 @@ class IDcutValidationModuleFrontController extends ModuleFrontController
         $transaction = IDcutTransaction::getByCartId($cart->id);
         $transaction->setAmount_cents_AND_currency($total, $currency);
 
-        $this->module->validateOrder((int) $cart->id,
+        if(!$this->module->validateOrder((int) $cart->id,
             Configuration::get('PS_OS_IDCUT'), $total,
             $this->module->displayName, NULL, $mailVars, (int) $currency->id,
-            false, $customer->secure_key);
+            false, $customer->secure_key)){
+            $this->errors[] = Tools::displayError('Order is not valid');
+            return false;
+        }
 
         $transaction->id_order = $this->module->currentOrder;
         $transaction->title    = $this->module->l('Order:').' '.Order::getUniqReferenceOf($this->module->currentOrder);
@@ -120,7 +123,7 @@ class IDcutValidationModuleFrontController extends ModuleFrontController
 
             $this->redirectTransaction($transactionApi);
         } else {
-            $this->errors[] = Tools::displayError('Error when trying to Create Transaction');
+            $this->errors[] = Tools::displayError('Wrong API response');
             return false;
         }
     }
