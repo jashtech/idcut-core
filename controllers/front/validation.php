@@ -6,6 +6,12 @@ class IDcutValidationModuleFrontController extends ModuleFrontController
     public $display_column_left = false;
     public $display_column_right = false;
     
+    public function __construct()
+    {
+        $this->action = 'view';
+        parent::__construct();
+    }
+    
     protected function createTransaction(IDcutTransaction $transaction)
     {
         $transaction_body = new \IDcut\Jash\Object\Transaction\Transaction();
@@ -117,5 +123,16 @@ class IDcutValidationModuleFrontController extends ModuleFrontController
             $this->errors[] = Tools::displayError('Error when trying to Create Transaction');
             return false;
         }
+    }
+    
+    public function initContent()
+    {
+        parent::initContent();
+        
+        $this->context->smarty->assign(array(
+            'payment_errors' => $this->errors,
+        ));
+
+        $this->setTemplate('validation.tpl');
     }
 }
