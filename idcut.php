@@ -67,6 +67,7 @@ class IDcut extends PaymentModule
             !$this->installTabs() ||
             !$this->createOrderState() ||
             !$this->installDB() ||
+            !$this->registerHook('displayBackOfficeHeader') ||
             !$this->registerHook('header') ||
             !$this->registerHook('payment') || 
             !$this->registerHook('displayPaymentEU') || 
