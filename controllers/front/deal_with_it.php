@@ -2,7 +2,9 @@
 
 class IDcutDeal_With_ItModuleFrontController extends ModuleFrontController
 {
-
+    public $display_column_left = false;
+    public $display_column_right = false;
+    
     public function __construct()
     {
         $this->action = 'view';

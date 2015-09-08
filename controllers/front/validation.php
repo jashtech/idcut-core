@@ -2,7 +2,10 @@
 
 class IDcutValidationModuleFrontController extends ModuleFrontController
 {
-
+    public $ssl                 = true;
+    public $display_column_left = false;
+    public $display_column_right = false;
+    
     protected function createTransaction(IDcutTransaction $transaction)
     {
         $transaction_body = new \IDcut\Jash\Object\Transaction\Transaction();
