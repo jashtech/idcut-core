@@ -31,6 +31,7 @@ and open the template in the editor.
 .idealcutter_order_confirmation p label + label{
     margin-top:10px;
 }
+.idealcutter_order_confirmation p span.tax_info,
 .idealcutter_order_confirmation p span.order_num,
 .idealcutter_order_confirmation p span.price{
     font-size: 14px;
