@@ -7,9 +7,9 @@
         <br /><br />
         {l s='Value of Your order is:' mod='idcut'} <span class="price"><strong>{$total_to_pay}</strong></span>
         {if !isset($reference)}
-            {l s='If You want to contact about just placed order, please give us this order number: #%d' sprintf='<span class="order_num">'.$id_order.'</span>' mod='idcut'}
+            {l s='If You want to contact about just placed order, please give us this order number:' mod='idcut'} <span class="order_num">{$id_order}</span>
         {else}
-            {l s='If You want to contact about just placed order, please give us this order reference: %s.' sprintf='<span class="order_num">'.$reference.'</span>' mod='idcut'}
+            {l s='If You want to contact about just placed order, please give us this order reference:' mod='idcut'} <span class="order_num">{$reference}</span>
         {/if}<br /><br />
         {l s='An email has been sent to you with this order confirmation.' mod='idcut'}<br /><br />
         {l s='Your order will be sent as soon as we receive your payment.' mod='idcut'}<br /><br />
