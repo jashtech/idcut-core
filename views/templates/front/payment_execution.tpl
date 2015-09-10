@@ -82,12 +82,12 @@
         </p>*}
         <p class="cart_navigation clearfix" id="cart_navigation">
         	<a 
-            class="button-exclusive btn btn-default" 
+            class="button-exclusive btn btn-default button" 
             href="{$link->getPageLink('order', true, NULL, "step=3")|escape:'html':'UTF-8'}">
                 <i class="icon-chevron-left"></i>{l s='Other payment methods' mod='idcut'}
             </a>
             <button 
-            class="button btn btn-default button-medium" 
+            class="button btn btn-default button-medium exclusive" 
             type="submit"
             name="confirm_order" 
             value="confirm_order_val"
