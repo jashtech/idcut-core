@@ -13,7 +13,7 @@
         {/if}<br /><br />
         {l s='An email has been sent to you with this order confirmation.' mod='idcut'}<br /><br />
         {l s='Your order will be sent as soon as we receive your payment.' mod='idcut'}<br /><br />
-        {l s='For any questions or for further information, please contact our' mod='idcut'} <a href="{$link->getPageLink('contact', true, null array('id_order' => !isset($reference)?$id_order:$reference))|escape:'html'}">{l s='customer service department.' mod='idcut'}</a>.
+        {l s='For any questions or for further information, please contact our' mod='idcut'} <a href="{$link->getPageLink('contact', true, null, array('id_order' => !isset($reference)?$id_order:$reference))|escape:'html'}">{l s='customer service department.' mod='idcut'}</a>.
     </p>
 {else}
     {if isset($transaction->error_code) && !empty($transaction->error_code)}
