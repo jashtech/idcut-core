@@ -33,6 +33,8 @@ class IDcutDeal_With_ItModuleFrontController extends ModuleFrontController
         $this->context->smarty->assign(array(
             'deal_hash' => Tools::getValue('deal_hash',
                 $this->context->cookie->deal_hash),
+            'this_path' => $this->module->getPathUri(),
+            'this_path_idcut' => $this->module->getPathUri(),
         ));
 
         $this->setTemplate('deal_with_it.tpl');

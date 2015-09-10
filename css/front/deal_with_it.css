@@ -8,3 +8,39 @@ and open the template in the editor.
     Author     : Piotr
 */
 
+span.icon_minimum_order_value,
+i.icon_minimum_order_value{
+    width:26px;
+    height: 26px;
+    display: inline-block;
+    margin: 0 3px;
+    background: transparent url(../../img/icon_minimum_order_value.png) no-repeat center center;
+}
+
+#idealcutter_deal_with_it{
+    font-size: 14px;
+    font-family: 'PT Sans', sans-serif;
+    color: #000;
+    background: #FFF;
+}
+#idealcutter_deal_with_it h5{
+    font-size: 16px;
+    color: #a11622;
+    font-family: 'PT Sans', sans-serif;
+    font-weight: bold;
+}
+#idealcutter_deal_with_it h4{
+    font-size: 18px;
+    color: #a11622;
+    font-family: 'PT Sans', sans-serif;
+    font-weight: bold;
+}
+#idealcutter_deal_with_it p{
+    font-size: 14px;
+    color: #000;
+    font-family: 'PT Sans', sans-serif;
+}
+#idealcutter_deal_with_it p{
+    padding-bottom: 10px;
+    margin-top:10px;
+}
