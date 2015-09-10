@@ -23,7 +23,7 @@
             <br/><br />
             {l s='Here is a short summary of your order:' mod='idcut'}
         </p>
-        <p style="margin-top:20px;">
+        <p>
             {l s='The total amount of your order comes to:' mod='idcut'}
             <span id="amount" class="price">{displayPrice price=$total}</span>
             {if $use_taxes == 1}
