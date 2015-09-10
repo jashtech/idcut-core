@@ -431,10 +431,12 @@ class IDcut extends PaymentModule
             $transaction = IDcutTransaction::getByOrderId($params['objOrder']->id);
             $this->smarty->assign(array(
                 'status' => 'failed',
-                'this_path_idcut' => $this->_path,
                 'transaction' => $transaction
             ));
         }
+        $this->smarty->assign(array(
+                'this_path_idcut' => $this->_path,
+        ));
         return $this->display(__FILE__, 'payment_return.tpl');
     }
 
