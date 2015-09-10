@@ -16,12 +16,14 @@ and open the template in the editor.
 
 .idealcutter_order_confirmation {
     font-size: 14px;
+    line-height: 16px;
     font-family: 'PT Sans', sans-serif;
     color: #000;
     background: #FFF;
 }
 .idealcutter_order_confirmation h5{
     font-size: 16px;
+    line-height: 18px;
     color: #a11622;
     font-family: 'PT Sans', sans-serif;
     font-weight: bold;
@@ -39,7 +41,12 @@ and open the template in the editor.
 .idealcutter_order_confirmation p span.order_num,
 .idealcutter_order_confirmation p span.price{
     font-size: 14px;
+    line-height: 16px;
     color: #a11622;
     font-family: 'PT Sans', sans-serif;
     font-weight: bold;
+}
+
+.hide-right-column.hide-left-column #center_column.grid_5{
+    width:100%;
 }

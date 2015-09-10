@@ -9,12 +9,14 @@ and open the template in the editor.
 */
 #idcut_payment_form {
     font-size: 14px;
+    line-height: 16px;
     font-family: 'PT Sans', sans-serif;
     color: #000;
     background: #FFF;
 }
 #idcut_payment_form h5{
     font-size: 16px;
+    line-height: 18px;
     color: #a11622;
     font-family: 'PT Sans', sans-serif;
     font-weight: bold;
@@ -22,6 +24,7 @@ and open the template in the editor.
 #idcut_payment_form p span.tax_info,
 #idcut_payment_form p span.price{
     font-size: 14px;
+    line-height: 16px;
     color: #000;
     font-family: 'PT Sans', sans-serif;
     font-weight: bold;
@@ -38,6 +41,7 @@ and open the template in the editor.
 #idcut_payment_form .radio-inline,
 #idcut_payment_form .radio-inline label{
     font-size: 16px;
+    line-height: 18px;
     color: #a11622;
     font-family: 'PT Sans', sans-serif;
     display:block;

@@ -19,6 +19,7 @@ i.icon_minimum_order_value{
 
 #idealcutter_deal_with_it{
     font-size: 14px;
+    line-height: 16px;
     font-family: 'PT Sans', sans-serif;
     color: #000;
     background: #FFF;
@@ -26,18 +27,21 @@ i.icon_minimum_order_value{
 }
 #idealcutter_deal_with_it h5{
     font-size: 16px;
+    line-height: 18px;
     color: #a11622;
     font-family: 'PT Sans', sans-serif;
     font-weight: bold;
 }
 #idealcutter_deal_with_it h4{
     font-size: 18px;
+    line-height: 21px;
     color: #a11622;
     font-family: 'PT Sans', sans-serif;
     font-weight: bold;
 }
 #idealcutter_deal_with_it p{
     font-size: 14px;
+    line-height: 16px;
     color: #000;
     font-family: 'PT Sans', sans-serif;
 }
