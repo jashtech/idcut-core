@@ -5,7 +5,7 @@
     <p>
         {l s='Your order on %s is complete.' sprintf=$shop_name mod='idcut'}
         <br /><br />
-        {l s='Value of Your order is:' mod='idcut'} <span class="price"><strong>{$total_to_pay}</strong></span>
+        {l s='Value of Your order is:' mod='idcut'} <span class="price"><strong>{$total_to_pay}</strong></span><br /><br />
         {if !isset($reference)}
             {l s='If You want to contact about just placed order, please give us this order number:' mod='idcut'} <span class="order_num">{$id_order}</span>
         {else}
