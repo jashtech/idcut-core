@@ -29,6 +29,10 @@ and open the template in the editor.
     font-weight: bold;
 }
 #idcut_payment_form p,
+#idcut_payment_form p.radio-inline{
+    padding-bottom: 10px;
+}
+#idcut_payment_form p,
 #idcut_payment_form p.radio-inline,
 #idcut_payment_form p label + label{
     margin-top:10px;

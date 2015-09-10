@@ -67,7 +67,7 @@
                 {l s='Join to existing deal' mod='idcut'}
             </label>
             <label class="deal_token">
-                {l s='Deal hash code You want to join' mod='idcut'}<br />
+                {l s='Deal hash code You want to join' mod='idcut'}<br /><br />
                 <input type="text" name="deal_token" value="{if isset($deal_token)}{$deal_token}{/if}">
             </label>
         </p>

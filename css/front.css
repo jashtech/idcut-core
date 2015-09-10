@@ -27,6 +27,10 @@ and open the template in the editor.
     font-weight: bold;
 }
 .idealcutter_order_confirmation p,
+.idealcutter_order_confirmation p.radio-inline{
+    padding-bottom: 10px;
+}
+.idealcutter_order_confirmation p,
 .idealcutter_order_confirmation p.radio-inline,
 .idealcutter_order_confirmation p label + label{
     margin-top:10px;
