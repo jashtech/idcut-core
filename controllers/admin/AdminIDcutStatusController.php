@@ -29,60 +29,20 @@ class AdminIDcutStatusController extends ModuleAdminController
         $view = $this->module->core->getView();
         $view->setTemplateFile("adminStatus.php");
 
-        $dump = new stdClass();
-
-        $view->coreClass      = get_class($this->module->core);
-        $view->configClass    = get_class($this->module->core->getConfig());
-        $view->apiClientClass = get_class($this->module->core->getApiClient());
-        $view->cipherClass    = get_class($this->module->core->getCipher());
-        $view->authenticated  = "maybe";
-        $view->accessToken    = $this->module->core->config()->getEncrypted("PS_IDCUT_API_TOKEN");
-
-        $tokenInfo = $this->module->core->getApiClient()->getTokenInfo();
-        if ($tokenInfo instanceof GuzzleHttp\Message\Response) {
-            $view->accessTokenInfo = var_export($tokenInfo->json(), true);
-        }
-
-
-        $view->apiClientVersion = $this->module->core->getApiClient()->getVersion();
-        $view->serviceUrl       = $this->module->core->getApiClient()->getServiceUrl();
-        $view->cipherTest       = $this->module->core->getCipher()->test(md5(rand()))
-                ? "OK" : "FAIL";
-
-        $testResponse = $this->module->core->getApiClient()->test();
-        if ($testResponse instanceof GuzzleHttp\Message\Response) {
-            $view->testResponse = var_export($testResponse, true);
-        }
-
-
         try {
             $storeResponse = $this->module->core->getApiClient()->get('/store');
-        } catch (\IDcut\Jash\Exception\Prestashop\Exception $e) {
-            echo "Problem";
-        }
-
-        if ($storeResponse) {
             $storeJson = $storeResponse->json();
             $store     = IDcut\Jash\Object\Store\Store::build($storeJson);
             Configuration::updateValue('PS_IDCUT_SA', $store->getActive() === true);
-            $dump->storeBuild = $storeJson;
-            $dump->storeJson  = $store->__toString();
-        }
-
-        try {
-            $ddResponse = $this->module->core->getApiClient()->get('/deal_definitionsX');
+            $view->store_active = $store->getActive();
+            if((bool)$view->store_active){
+                $view->message = $this->l('Store is active and ready to work');
+            }else{
+                $view->message = $this->l('Store is not active You need to go the whole configuration process and notify admin of IdealCutter');
+            }
         } catch (\IDcut\Jash\Exception\Prestashop\Exception $e) {
-            echo '<script>alert("'.get_class($e).'")</script>';
+            $view->error = $this->l('Can\'t connect with api');
         }
-
-        $dump->dd = '';
-        if ($ddResponse instanceof GuzzleHttp\Message\Response) {
-            $dump->dd = var_export($ddResponse->json(), 1);
-        }
-
-
-        $view->dump = $dump;
-
 
         return $view->render();
     }
