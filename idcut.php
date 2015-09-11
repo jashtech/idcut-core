@@ -38,7 +38,15 @@ class IDcut extends PaymentModule
                 $this->warning .= '<br>'.$i++.'. '.$this->l('The client ID and Redirect url fields must be configured before using this module.');
         if ((!isset($c_tmp['PS_IDCUT_CLIENT_SECRET']) || empty($c_tmp['PS_IDCUT_CLIENT_SECRET'])))
                 $this->warning .= '<br>'.$i++.'. '.$this->l('You need to authorize your shop with API before using this module.');
-
+        
+        if(!isset($c_tmp['PS_IDCUT_CONNECTED']) || $c_tmp['PS_IDCUT_CONNECTED'] !== true){
+            $this->warning .= '<br>'. $i++.'. '.$this->l('Module is not connected to API');
+        }
+        
+        if(!isset($c_tmp['PS_IDCUT_SA']) || $c_tmp['PS_IDCUT_SA'] !== true){
+            $this->warning .= '<br>'. $i++.'. '.$this->l('Shop is not activated in IdealCutter');
+        }
+        
         if($this->currencies_mode == 'radio'){
             $currencies = Currency::getPaymentCurrenciesSpecial($this->id);
             $currency = $currencies['id_currency'];
@@ -63,6 +71,7 @@ class IDcut extends PaymentModule
     public function install()
     {
         if (!parent::install() ||
+            !Configuration::updateValue('PS_IDCUT_SA', false) ||
             !Configuration::updateValue('PS_IDCUT_SCOPES', 'id;name') ||
             !$this->installTabs() ||
             !$this->createOrderState() ||
@@ -86,6 +95,7 @@ class IDcut extends PaymentModule
             !Configuration::deleteByName('PS_IDCUT_CLIENT_SECRET') ||
             !Configuration::deleteByName('PS_IDCUT_REDIRECT_URL') ||
             !Configuration::deleteByName('PS_IDCUT_SCOPES') ||
+            !Configuration::deleteByName('PS_IDCUT_SA') ||
             !$this->uninstallTabs() ||
             !$this->uninstallDB()
         ) {
@@ -379,8 +389,7 @@ class IDcut extends PaymentModule
     
     public function hookPayment($params)
     {
-        if (!$this->active) return;
-        if (!$this->checkCurrency($params['cart'])) return;
+        if (!$this->checkModuleConfiguration($params['cart'])) return;
         
         if (version_compare(_PS_VERSION_, '1.6', '<'))
         {
@@ -397,8 +406,7 @@ class IDcut extends PaymentModule
 
     public function hookDisplayPaymentEU($params)
     {
-        if (!$this->active) return;
-        if (!$this->checkCurrency($params['cart'])) return;
+        if (!$this->checkModuleConfiguration($params['cart'])) return;
 
         return array(
             'cta_text' => $this->l('Pay by IdealCutter'),
@@ -452,8 +460,11 @@ class IDcut extends PaymentModule
         }
     }
 
-    public function checkCurrency($cart)
+    public function checkModuleConfiguration($cart)
     {
+        if(!$this->active || !Configuration::get('PS_IDCUT_SA')){
+            return false;
+        }
         $currency_order    = new Currency((int) ($cart->id_currency));
         $currencies_module = $this->getCurrency((int) $cart->id_currency);
 
@@ -590,7 +601,9 @@ class IDcut extends PaymentModule
         return array(
             'PS_IDCUT_CLIENT_ID' => $this->core->config()->get("PS_IDCUT_CLIENT_ID"),
             'PS_IDCUT_CLIENT_SECRET' => $this->core->config()->getEncrypted("PS_IDCUT_CLIENT_SECRET"),
-            'PS_IDCUT_REDIRECT_URL' => $this->core->config()->get("PS_IDCUT_REDIRECT_URL")
+            'PS_IDCUT_REDIRECT_URL' => $this->core->config()->get("PS_IDCUT_REDIRECT_URL"),
+            'PS_IDCUT_CONNECTED' => (bool) $this->core->config()->getEncrypted("PS_IDCUT_API_TOKEN"),
+            'PS_IDCUT_SA' => (bool) Configuration::get('PS_IDCUT_SA')
         );
     }
 
