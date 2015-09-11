@@ -344,7 +344,8 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
                     'type' => 'friendly_seconds',
                     'label' => $this->l('Time to return money'),
                     'name' => 'locktime',
-                    'required' => true
+                    'required' => false,
+                    'disabled' => true
                 ),
                 array(
                     'type' => 'text',

@@ -15,7 +15,7 @@ class IDcutDealDefinition extends ObjectModel
     public $ttl;
 
     /** @var int seconds */
-    public $locktime;
+    public $locktime = 1209600;
 
     /** @var int */
     public $user_max;
@@ -47,7 +47,7 @@ class IDcutDealDefinition extends ObjectModel
             'ttl' => array('type' => self::TYPE_INT, 'validate' => 'isUnsignedInt',
                 'required' => true),
             'locktime' => array('type' => self::TYPE_INT, 'validate' => 'isUnsignedInt',
-                'required' => true),
+                'required' => true, 'copy_post' => false),
             'user_max' => array('type' => self::TYPE_INT, 'validate' => 'isUnsignedInt',
                 'required' => true),
             'min_order_value' => array('type' => self::TYPE_INT, 'validate' => 'isUnsignedInt',

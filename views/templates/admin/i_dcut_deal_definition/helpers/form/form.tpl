@@ -130,10 +130,10 @@
         </div>
     {elseif $input.type == 'friendly_seconds'}
         <div id="{$input.name}_friendly_seconds" class="friendly_seconds">
-            <input type="hidden" name="{$input.name}" id="{$input.name}" class="friendly_real_value" value='{(int)$fields_value[$input.name]}' />
+            <input type="hidden" name="{$input.name}" id="{$input.name}" class="friendly_real_value" value='{(int)$fields_value[$input.name]}' {if isset($input.disabled) && $input.disabled} disabled="disabled"{/if} />
             {assign var='days_value' value=floor(((int)$fields_value[$input.name])/(3600*24))}
             {assign var='hours_value' value=floor((((int)$fields_value[$input.name])-$days_value*3600*24)/3600)}
-            <input id="{$input.name}_days" name="{$input.name}_days" class="friendly_onchange days" value="{$days_value}" /> <span>{l s='days'}</span> <input id="{$input.name}_hours" name="{$input.name}_hours" class="friendly_onchange hours" value="{$hours_value}" /> <span>{l s='hours'}</span>
+            <input id="{$input.name}_days" name="{$input.name}_days" class="friendly_onchange days" value="{$days_value}" {if isset($input.disabled) && $input.disabled} disabled="disabled"{/if} /> <span>{l s='days'}</span> <input id="{$input.name}_hours" name="{$input.name}_hours" class="friendly_onchange hours" value="{$hours_value}" {if isset($input.disabled) && $input.disabled} disabled="disabled"{/if} /> <span>{l s='hours'}</span>
         </div>
     {elseif $input.type == 'cents_value'}
         <div class="cents_value">
