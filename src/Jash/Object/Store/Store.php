@@ -6,6 +6,7 @@ use IDcut\Jash\Object\JSONObjectInterface as JSONObjectInterface;
 
 class Store implements JSONObjectInterface
 {
+    private $active             = null;
     private $created_at         = null;
     private $updated_at         = null;
     private $name               = null;
@@ -14,6 +15,11 @@ class Store implements JSONObjectInterface
     private $hook_url           = null;
     private $join_deal_url      = null;
 
+    public function getActive()
+    {
+        return $this->active;
+    }
+    
     public function getCreated_at()
     {
         return $this->created_at;
@@ -49,6 +55,11 @@ class Store implements JSONObjectInterface
         return $this->join_deal_url;
     }
 
+    public function setActive($active)
+    {
+        $this->active = $active;
+    }
+    
     public function setCreated_at($created_at)
     {
         $this->created_at = $created_at;
@@ -89,6 +100,7 @@ class Store implements JSONObjectInterface
         $store = new Store();
 
         if ($input) {
+            $store->setActive($input['active']);
             $store->setCreated_at($input['created_at']);
             $store->setUpdated_at($input['updated_at']);
             $store->setName($input['name']);
