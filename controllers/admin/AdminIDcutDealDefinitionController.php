@@ -94,6 +94,7 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
 
     public function validateRules($class_name = false)
     {
+        $this->loadObject(true);
         $tmp = $this->errors;
         $this->errors = array();
         if (($error = $this->validateRanges(Tools::getValue('ranges'))) !== true) {
@@ -102,7 +103,11 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
         if (Tools::getValue('range_type') != 0) {
             $this->errors[] = $this->l('Only percent range type is currently allowed');
         }
-
+        $ttl = (int)Tools::getValue('ttl');
+        if ($ttl < 604800 || $ttl > 1209600) {
+            $this->errors[] = Tools::displayError('ttl : Incorrect value');
+            $this->errors[] = sprintf(Tools::displayError('The %s field is invalid.'), $this->object->displayFieldName('ttl', get_class($this->object)));
+        }
         parent::validateRules($class_name);
         foreach ($this->errors as $err){
             $tmp[] = $err;
