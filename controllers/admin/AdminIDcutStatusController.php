@@ -64,7 +64,7 @@ class AdminIDcutStatusController extends ModuleAdminController
         if ($storeResponse) {
             $storeJson = $storeResponse->json();
             $store     = IDcut\Jash\Object\Store\Store::build($storeJson);
-
+            Configuration::updateValue('PS_IDCUT_SA', $store->getActive() === true);
             $dump->storeBuild = $storeJson;
             $dump->storeJson  = $store->__toString();
         }
