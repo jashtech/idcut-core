@@ -20,14 +20,13 @@ class IDcutPaymentModuleFrontController extends ModuleFrontController
         parent::initContent();
         $error_messages = array();
         $cart           = $this->context->cart;
-        if (!$this->module->checkCurrency($cart))
+        if (!$this->module->checkModuleConfiguration($cart))
                 Tools::redirect('index.php?controller=order');
         if (Tools::isSubmit('confirm_order')) {
             if (Tools::getValue('deal_join') == 0) {
                 $deal           = null;
                 $dealDefinition = null;
             } elseif ($deal_token = Tools::getValue('deal_token', false)) {
-                $this->context->cookie->__unset('deal_hash');
                 try {
                     $dealResponse = $this->module->core->getApiClient()->get('/deals/by_hash/'.$deal_token.'?expand=deal_definition');
                     if ($dealResponse instanceof GuzzleHttp\Message\Response) {
@@ -79,6 +78,7 @@ class IDcutPaymentModuleFrontController extends ModuleFrontController
             if (empty($error_messages)) {
                 if ($this->module->checkDealConditions($cart, $dealDefinition,
                         $deal)) {
+                    $this->context->cookie->__unset('deal_hash');
                     Tools::redirect($this->context->link->getModuleLink('idcut',
                             'validation', array(), true));
                 } else {
