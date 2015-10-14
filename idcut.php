@@ -421,10 +421,18 @@ class IDcut extends PaymentModule
         if (!$this->active) return;
 
         $state = $params['objOrder']->getCurrentState();
-        if (in_array($state,
-                array(Configuration::get('PS_OS_IDCUT'), Configuration::get('PS_OS_IDCUT_PENDING'),
-                Configuration::get('PS_OS_OUTOFSTOCK'),
-                Configuration::get('PS_OS_OUTOFSTOCK_UNPAID'), Configuration::get('PS_OS_PAYMENT')))) {
+        $transaction = IDcutTransaction::getByOrderId($params['objOrder']->id);
+
+        if (in_array(
+                $state,
+                array(
+                    Configuration::get('PS_OS_IDCUT_PENDING'),
+                    Configuration::get('PS_OS_OUTOFSTOCK'),
+                    Configuration::get('PS_OS_OUTOFSTOCK_UNPAID'), Configuration::get('PS_OS_PAYMENT')
+                )
+            ) ||
+            ($state == Configuration::get('PS_OS_IDCUT') && !in_array($transaction->getStatus(), array('cancelled_by_user','cancelled_by_payment_gateway','error')))
+        ) {
             $this->smarty->assign(array(
                 'total_to_pay' => Tools::displayPrice(
                     $params['total_to_pay'], $params['currencyObj'], false
@@ -436,7 +444,6 @@ class IDcut extends PaymentModule
                     $this->smarty->assign('reference',
                     $params['objOrder']->reference);
         } else {
-            $transaction = IDcutTransaction::getByOrderId($params['objOrder']->id);
             $this->smarty->assign(array(
                 'status' => 'failed',
                 'transaction' => $transaction

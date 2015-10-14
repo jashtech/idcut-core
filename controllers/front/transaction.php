@@ -24,6 +24,7 @@ class IDcutTransactionModuleFrontController extends ModuleFrontController
             $this->action                     = 'error';
             $this->action_function            = $this->availableActions[$this->action];
             $IDcutTransaction->transaction_id = $transaction_id;
+            $IDcutTransaction->setStatus('init');
         }
         if (is_callable($this->{$this->action_function}($IDcutTransaction))) {
             $this->{$this->action_function}($IDcutTransaction);
@@ -35,12 +36,13 @@ class IDcutTransactionModuleFrontController extends ModuleFrontController
     {
         $customer = new Customer((int) $IDcutTransaction->order->id_customer);
         $status   = $this->getStatus();
-
-        $IDcutTransaction->setStatus($status);
-        $IDcutTransaction->error_code = $this->getErrorCode();
-        $IDcutTransaction->message    = $this->getMessage();
-        $IDcutTransaction->date_edit  = date('Y-m-d H:i:s');
-        $IDcutTransaction->save();
+        if(empty($IDcutTransaction->status) || in_array($IDcutTransaction->getStatus(), array('init', 'created'))){
+            $IDcutTransaction->setStatus($status);
+            $IDcutTransaction->error_code = $this->getErrorCode();
+            $IDcutTransaction->message    = $this->getMessage();
+            $IDcutTransaction->date_edit  = date('Y-m-d H:i:s');
+            $IDcutTransaction->save();
+        }
 
         Tools::redirect('index.php?controller=order-confirmation&id_cart='.(int) $IDcutTransaction->order->id_cart.'&id_module='.(int) $this->module->id.'&id_order='.$IDcutTransaction->order->id.'&key='.$customer->secure_key);
     }
