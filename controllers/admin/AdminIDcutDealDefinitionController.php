@@ -357,7 +357,6 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
                     'label' => $this->l('Maximum users'),
                     'name' => 'user_max',
                     'class' => 'col-lg-3',
-                    'suffix' => 'participants',
                     'required' => true
                 ),
                 array(

@@ -8,9 +8,9 @@
                 {strip}
                 <label {if $value.value == 1} for="{$input.name}_on"{else} for="{$input.name}_off"{/if}>
                         {if $value.value == 1}
-                                {l s='Amount'}
+                                {l s='Amount' mod='idcut'}
                         {else}
-                                {l s='Percent'}
+                                {l s='Percent' mod='idcut'}
                         {/if}
                 </label>
                 {/strip}
@@ -114,9 +114,9 @@
         </script>
         <div id="{$input.name}_ranges">
             <div class="row" id="ranges_new">
-                <div class="col-lg-5">{l s='Minimum users:'}<br /><input id="new_min_participants_number" name="new_min_participants_number" value="" /></div>
-                <div class="col-lg-5">{l s='Return value (percent):'}<br /><input id="new_discount_size" name="new_discount_size" value="" /></div>
-                <div class="col-lg-2"><br /><a id="ranges_add" class="list-toolbar-btn" href="#ranges_add" title="{l s='Add'}"><i class="process-icon-new"></i></a></div>
+                <div class="col-lg-5">{l s='Minimum users:' mod='idcut'}<br /><input id="new_min_participants_number" name="new_min_participants_number" value="" /></div>
+                <div class="col-lg-5">{l s='Return value (percent):' mod='idcut'}<br /><input id="new_discount_size" name="new_discount_size" value="" /></div>
+                <div class="col-lg-2"><br /><a id="ranges_add" class="list-toolbar-btn" href="#ranges_add" title="{l s='Add' mod='idcut'}"><i class="process-icon-new"></i></a></div>
             </div>
             <div id="current_ranges">
                 {foreach $input.current_ranges as $r}
@@ -133,7 +133,7 @@
             <input type="hidden" name="{$input.name}" id="{$input.name}" class="friendly_real_value" value='{(int)$fields_value[$input.name]}' {if isset($input.disabled) && $input.disabled} disabled="disabled"{/if} />
             {assign var='days_value' value=floor(((int)$fields_value[$input.name])/(3600*24))}
             {assign var='hours_value' value=floor((((int)$fields_value[$input.name])-$days_value*3600*24)/3600)}
-            <input id="{$input.name}_days" name="{$input.name}_days" class="friendly_onchange days" value="{$days_value}" {if isset($input.disabled) && $input.disabled} disabled="disabled"{/if} /> <span>{l s='days'}</span> <input id="{$input.name}_hours" name="{$input.name}_hours" class="friendly_onchange hours" value="{$hours_value}" {if isset($input.disabled) && $input.disabled} disabled="disabled"{/if} /> <span>{l s='hours'}</span>
+            <input id="{$input.name}_days" name="{$input.name}_days" class="friendly_onchange days" value="{$days_value}" {if isset($input.disabled) && $input.disabled} disabled="disabled"{/if} /> <span>{l s='days' mod='idcut'}</span> <input id="{$input.name}_hours" name="{$input.name}_hours" class="friendly_onchange hours" value="{$hours_value}" {if isset($input.disabled) && $input.disabled} disabled="disabled"{/if} /> <span>{l s='hours' mod='idcut'}</span>
         </div>
     {elseif $input.type == 'cents_value'}
         <div class="cents_value">
