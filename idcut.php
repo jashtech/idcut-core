@@ -9,6 +9,7 @@ class IDcut extends PaymentModule
 {
     private $loader = null;
     public $core;
+    private static $php_minimum_version = '5.4.0';
 
     public function __construct()
     {
@@ -27,7 +28,7 @@ class IDcut extends PaymentModule
 
         $this->displayName            = $this->l('IdealCutter');
         $this->description            = $this->l('Prestashop - IdealCutter module.');
-        $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
+        $this->ps_versions_compliancy = array('min' => '1.5.4.1', 'max' => _PS_VERSION_);
 
         $this->core = require 'bootstrap/prestashop.php';
 
@@ -70,6 +71,10 @@ class IDcut extends PaymentModule
 
     public function install()
     {
+        if (!version_compare(PHP_VERSION, IDcut::$php_minimum_version) >= 0) {
+            $this->error[] = sprintf($this->l('Your server or hosting PHP_VERSION is below %s'), IDcut::$php_minimum_version);
+            return false;
+        }
         if (!parent::install() ||
             !Configuration::updateValue('PS_IDCUT_SA', false) ||
             !Configuration::updateValue('PS_IDCUT_SCOPES', 'id;name') ||
@@ -391,10 +396,10 @@ class IDcut extends PaymentModule
     {
         if (!$this->checkModuleConfiguration($params['cart'])) return;
         
-        if (version_compare(_PS_VERSION_, '1.6', '<'))
-        {
-            $this->hookHeader();
-        }
+//        if (version_compare(_PS_VERSION_, '1.6', '<'))
+//        {
+//            $this->hookHeader();
+//        }
         
         $this->smarty->assign(array(
             'this_path' => $this->_path,

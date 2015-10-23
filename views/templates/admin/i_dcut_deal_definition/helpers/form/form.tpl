@@ -64,7 +64,7 @@
                                         return;
                                     }
                                 });
-                                var $html_el = "<div class='row' id='ranges_"+mpn+"' data-min_participants_number='"+mpn+"'  data-discount_size='"+nds+"'><div class='col-lg-5 min_participants_number'>"+mpn+"</div><div class='col-lg-5 discount_size'>"+nds+"</div><div class='col-lg-2'><a class='list-toolbar-btn' href='#current_ranges'><i class='process-icon-cancel'></i></a></div></div>";
+                                var $html_el = "<div class='row' id='ranges_"+mpn+"' data-min_participants_number='"+mpn+"'  data-discount_size='"+nds+"'><div class='col-lg-5 min_participants_number'>"+mpn+"</div><div class='col-lg-5 discount_size'>"+nds+"</div><div class='col-lg-2'><a class='list-toolbar-btn' href='#current_ranges'><i class='process-icon-cancel'><span class='hidden'>x</span></i></a></div></div>";
                                 if(smaller===0){
                                     $("#current_ranges").append($html_el);
                                 }else{
@@ -116,7 +116,7 @@
             <div class="row" id="ranges_new">
                 <div class="col-lg-5">{l s='Minimum users:' mod='idcut'}<br /><input id="new_min_participants_number" name="new_min_participants_number" value="" /></div>
                 <div class="col-lg-5">{l s='Return value (percent):' mod='idcut'}<br /><input id="new_discount_size" name="new_discount_size" value="" /></div>
-                <div class="col-lg-2"><br /><a id="ranges_add" class="list-toolbar-btn" href="#ranges_add" title="{l s='Add' mod='idcut'}"><i class="process-icon-new"></i></a></div>
+                <div class="col-lg-2"><br /><a id="ranges_add" class="list-toolbar-btn" href="#ranges_add" title="{l s='Add' mod='idcut'}"><i class="process-icon-new"><span class="hidden">+</span></i></a></div>
             </div>
             <div id="current_ranges">
                 {foreach $input.current_ranges as $r}

@@ -47,6 +47,12 @@ class AdminIDcutTransactionController extends ModuleAdminController
         unset($this->toolbar_btn['new']);
     }
 
+//    public function initToolbar()
+//    {
+//        parent::initToolbar();
+//        unset($this->toolbar_btn['new']);
+//    }
+    
     public function renderView()
     {
         $this->loadObject(true);

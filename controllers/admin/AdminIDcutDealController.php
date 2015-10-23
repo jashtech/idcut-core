@@ -49,9 +49,22 @@ class AdminIDcutDealController extends ModuleAdminController
         );
     }
 
+//    public function initToolbar()
+//    {
+//        parent::initToolbar();
+//        unset($this->toolbar_btn['new']);
+//        $this->toolbar_btn['import'] = array(
+//            'href' => self::$currentIndex.'&action=reloadFromApi&token='.$this->token,
+//            'desc' => $this->l('Reload Deals')
+//        );
+//    }
+
     public function initProcess()
     {
         parent::initProcess();
+        if(Tools::getValue('action') == 'reloadFromApi'){
+            $this->processReloadFromApi();
+        }
         if (Tools::getIsset('reloadedFromApi')) {
             $this->confirmations[] = $this->l('Successful Reload from Api');
         }

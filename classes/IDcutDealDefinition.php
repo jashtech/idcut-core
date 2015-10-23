@@ -41,9 +41,8 @@ class IDcutDealDefinition extends ObjectModel
         'multilang' => false,
         'fields' => array(
             'deal_definition_id' => array('type' => self::TYPE_STRING, 'validate' => 'isReference',
-                'required' => true, 'size' => 254, 'copy_post' => false),
-            'active' => array('type' => self::TYPE_BOOL, 'validate' => 'isBool',
-                'required' => true),
+                'size' => 254, 'copy_post' => false),
+            'active' => array('type' => self::TYPE_BOOL, 'validate' => 'isBool'),
             'ttl' => array('type' => self::TYPE_INT, 'validate' => 'isUnsignedInt',
                 'required' => true),
             'locktime' => array('type' => self::TYPE_INT, 'validate' => 'isUnsignedInt',
@@ -63,6 +62,15 @@ class IDcutDealDefinition extends ObjectModel
         if (Validate::isLoadedObject($this)) {
             $this->ranges = IDcutRange::getRangesByIDcutDealDefinition($this->deal_definition_id);
             $this->setLink();
+        }
+    }
+    
+    public function add($autodate = true, $null_values = false)
+    {
+        if(!isset($this->deal_definition_id) || empty($this->deal_definition_id)){
+            return false;
+        }else{
+            return parent::add($autodate = true, $null_values = false);
         }
     }
 

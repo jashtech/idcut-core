@@ -39,6 +39,10 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
     {
         parent::setMedia();
         $this->addCss(_MODULE_DIR_.$this->module->name.'/css/admin/idcut.css');
+        if (version_compare(_PS_VERSION_, '1.6', '<'))
+        {
+            $this->addCss(_MODULE_DIR_.$this->module->name.'/css/admin/idcut_15.css');
+        }
         $this->addJs(_MODULE_DIR_.$this->module->name.'/js/admin/idcut.js');
     }
 
