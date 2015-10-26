@@ -8,6 +8,7 @@ require_once(dirname(__FILE__).'/classes/IDcutRange.php');
 class IDcut extends PaymentModule
 {
     private $loader = null;
+    public $ps_above_16;
     public $core;
     private static $php_minimum_version = '5.4.0';
 
@@ -19,6 +20,7 @@ class IDcut extends PaymentModule
         $this->version          = '1.0.2';
         $this->controllers      = array('deal_with_it', 'payment', 'validation', 'status_update', 'transaction');
         $this->is_eu_compatible = 1;
+        $this->ps_above_16 = version_compare(_PS_VERSION_, '1.6', '>=');
 
         $this->currencies      = true;
         $this->currencies_mode = 'radio';

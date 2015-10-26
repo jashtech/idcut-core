@@ -60,17 +60,16 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
         );
     }
 
-//    public function initToolbar()
-//    {
-//
-//        if($this->display == 'list'){
-//            $this->toolbar_btn['import'] = array(
-//                'href' => self::$currentIndex.'&action=reloadFromApi&token='.$this->token,
-//                'desc' => $this->l('Reload Deal Definitions')
-//            );
-//        }
-//        parent::initToolbar();
-//    }
+    public function initToolbar()
+    {
+        if($this->display == 'list'){
+            $this->toolbar_btn['import'] = array(
+                'href' => self::$currentIndex.'&action=reloadFromApi&token='.$this->token,
+                'desc' => $this->l('Reload Deal Definitions')
+            );
+        }
+        parent::initToolbar();
+    }
 
     public function init()
     {
@@ -149,6 +148,9 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
     public function initProcess()
     {
         parent::initProcess();
+        if(!$this->module->ps_above_16 && Tools::getValue('action') == 'reloadFromApi'){
+            $this->processReloadFromApi();
+        }
         if (Tools::getIsset('reloadedFromApi')) {
             $this->confirmations[] = $this->l('Successful Reload from Api');
         }

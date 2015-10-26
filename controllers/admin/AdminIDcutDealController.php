@@ -49,20 +49,22 @@ class AdminIDcutDealController extends ModuleAdminController
         );
     }
 
-//    public function initToolbar()
-//    {
-//        parent::initToolbar();
-//        unset($this->toolbar_btn['new']);
-//        $this->toolbar_btn['import'] = array(
-//            'href' => self::$currentIndex.'&action=reloadFromApi&token='.$this->token,
-//            'desc' => $this->l('Reload Deals')
-//        );
-//    }
+    public function initToolbar()
+    {
+        parent::initToolbar();
+        if(!$this->module->ps_above_16){
+            unset($this->toolbar_btn['new']);
+            $this->toolbar_btn['import'] = array(
+                'href' => self::$currentIndex.'&action=reloadFromApi&token='.$this->token,
+                'desc' => $this->l('Reload Deals')
+            );
+        }
+    }
 
     public function initProcess()
     {
         parent::initProcess();
-        if(Tools::getValue('action') == 'reloadFromApi'){
+        if(!$this->module->ps_above_16 && Tools::getValue('action') == 'reloadFromApi'){
             $this->processReloadFromApi();
         }
         if (Tools::getIsset('reloadedFromApi')) {
@@ -134,7 +136,7 @@ class AdminIDcutDealController extends ModuleAdminController
             Tools::redirectAdmin(self::$currentIndex.'&reloadedFromApi&token='.$this->token);
         }
     }
-
+    
     public function renderView()
     {
         $this->loadObject(true);
