@@ -73,10 +73,11 @@ class IDcut extends PaymentModule
 
     public function install()
     {
-        if (!version_compare(PHP_VERSION, IDcut::$php_minimum_version) >= 0) {
+        if (!(version_compare(PHP_VERSION, IDcut::$php_minimum_version) >= 0)) {
             $this->error[] = sprintf($this->l('Your server or hosting PHP_VERSION is below %s'), IDcut::$php_minimum_version);
             return false;
         }
+
         if (!parent::install() ||
             !Configuration::updateValue('PS_IDCUT_SA', false) ||
             !Configuration::updateValue('PS_IDCUT_SCOPES', 'id;name') ||

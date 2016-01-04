@@ -15,7 +15,7 @@ use GuzzleHttp\Message\Request as Request;
 class IDcut extends IDcutAbstract implements IDcutInterface
 {
     protected $version    = 1;
-    protected $serviceUrl = "https://api.dev.idealcutter.com";
+    protected $serviceUrl = "https://api.kickass.jash.fr";
 
     public function get($url, Array $options = array())
     {

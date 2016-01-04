@@ -9,16 +9,16 @@ class IDcut extends AbstractProvider {
 
     public $scopes = ['basic'];
     public $responseType = 'json';
-    static $tokenInfoUrl = 'https://dev.idealcutter.com/oauth/token/info';
+    static $tokenInfoUrl = 'https://kickass.jash.fr/oauth/token/info';
 
     public function urlAuthorize()
     {
-        return 'https://store.dev.idealcutter.com/oauth/authorize';
+        return 'https://store.kickass.jash.fr/oauth/token/info';
     }
 
     public function urlAccessToken()
     {
-        return 'https://dev.idealcutter.com/oauth/token';
+        return 'https://kickass.jash.fr/oauth/token/info';
     }
 
     public function urlUserDetails(\League\OAuth2\Client\Token\AccessToken $token)
