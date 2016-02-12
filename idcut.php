@@ -369,10 +369,12 @@ class IDcut extends PaymentModule
 
         $provider = $this->getProvider();
 
-        $view                   = $this->core->getView();
+        $view                         = $this->core->getView();
+        $view->connect_button_label   = $this->l('Connect');
+        $view->reconnect_button_label = $this->l('Reconnect');
         $view->setTemplateFile("connectButton.php");
-        $view->connected        = (bool) $this->core->config()->getEncrypted("PS_IDCUT_API_TOKEN");
-        $view->authorizationUrl = $provider->getAuthorizationUrl();
+        $view->connected              = (bool) $this->core->config()->getEncrypted("PS_IDCUT_API_TOKEN");
+        $view->authorizationUrl       = $provider->getAuthorizationUrl();
 
         $this->core->config()->setEncrypted("PS_IDCUT_OAUTH_STATE",
             $provider->state);
