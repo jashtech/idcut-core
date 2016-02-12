@@ -108,7 +108,7 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
         }
         $ttl = (int)Tools::getValue('ttl');
         if ($ttl < 604800 || $ttl > 1209600) {
-            $this->errors[] = Tools::displayError('ttl : Incorrect value');
+            $this->errors[] = Tools::displayError($this->l('ttl: Incorrect value'));
             $this->errors[] = sprintf(Tools::displayError('The %s field is invalid.'), $this->object->displayFieldName('ttl', get_class($this->object)));
         }
         parent::validateRules($class_name);
