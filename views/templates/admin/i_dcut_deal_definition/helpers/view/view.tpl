@@ -25,7 +25,7 @@
 {block name="override_tpl"}
 <div class="row">
     <div class="col-lg-12">
-        <div class="panel">
+        <div class="panel" id="deal_definition_view_panel">
             <h3><i class="icon-university"></i> {l s='Deal definition' mod='idcut'}</h3>
             <div class="form-horizontal">
                 <div class="form-group">
