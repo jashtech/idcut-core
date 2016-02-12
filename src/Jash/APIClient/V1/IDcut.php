@@ -57,7 +57,7 @@ class IDcut extends IDcutAbstract implements IDcutInterface
     }
 
     public function setHttpClient(HttpClientInterface $httpClient,
-                                  $lang = 'en; q=1.0')
+                                  $lang = 'en;q=1.0')
     {
         $this->httpClient = $httpClient;
         $this->httpClient->setDefaultOption('headers',
