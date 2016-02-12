@@ -28,6 +28,7 @@ class AdminIDcutStatusController extends ModuleAdminController
     {
         $view = $this->module->core->getView();
         $view->setTemplateFile("adminStatus.php");
+        $view->heading = $this->l('IdealCutter client status');
 
         try {
             $storeResponse = $this->module->core->getApiClient()->get('/store');
