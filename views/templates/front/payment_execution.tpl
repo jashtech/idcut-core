@@ -86,7 +86,7 @@
             href="{$link->getPageLink('order', true, NULL, "step=3")|escape:'html':'UTF-8'}">
                 <i class="icon-chevron-left"></i>{l s='Other payment methods' mod='idcut'}
             </a>
-            <input type="submit" name="confirm_order" value="{l s='I confirm my order' mod='idcut'}" class="button btn btn-default button-medium exclusive exclusive_large" />
+            <button type="submit" name="confirm_order" class="button btn btn-default button-medium exclusive exclusive_large">{l s='I confirm my order' mod='idcut'}</button>
             {*<button 
             class="button btn btn-default button-medium exclusive" 
             type="submit"

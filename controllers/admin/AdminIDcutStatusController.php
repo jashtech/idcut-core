@@ -42,6 +42,15 @@ class AdminIDcutStatusController extends ModuleAdminController
             }
         } catch (\IDcut\Jash\Exception\Prestashop\Exception $e) {
             $view->error = $this->l('Can\'t connect with api');
+
+            // 1.5 handles apostrophes incorrectly when calculating MD5
+            if (version_compare(_PS_VERSION_, '1.6', '<')) {
+                global $_MODULES;
+                $key = Tools::strtolower(
+                    '<{' . $this->module->name . '}prestashop>' . get_class() . '_' . md5($view->error)
+                );
+                $view->error = isset($_MODULES[$key]) ? $_MODULES[$key] : $view->error;
+            }
         }
 
         return $view->render();
