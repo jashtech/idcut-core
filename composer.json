@@ -57,13 +57,45 @@
                     "classmap": [""]
                 }
             }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "guzzlehttp/psr7",
+                "version": "dev-php5.3",
+                "source": {
+                    "url": "https://github.com/jashtech/psr7",
+                    "type": "git",
+                    "reference": "master"
+                },
+                "autoload": {
+                    "classmap": [""]
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "guzzlehttp/promises",
+                "version": "dev-php5.3",
+                "source": {
+                    "url": "https://github.com/jashtech/promises",
+                    "type": "git",
+                    "reference": "master"
+                },
+                "autoload": {
+                    "classmap": [""]
+                }
+            }
         }
     ],
     "require": {
         "php": ">=5.3.0",
         "guzzlehttp/guzzle": "dev-php5.3",
         "league/oauth2-client": "dev-php5.3@dev",
-        "phpseclib/phpseclib": "dev-php5.3@dev"
+        "phpseclib/phpseclib": "dev-php5.3@dev",
+        "guzzlehttp/psr7": "dev-php5.3@dev",
+        "guzzlehttp/promises": "dev-php5.3@dev"
     },
     "autoload": {
         "psr-4": {
