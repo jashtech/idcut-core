@@ -18,23 +18,56 @@
     ],
     "repositories": [
         {
-            "type": "git",
-            "url": "https://github.com/jashtech/guzzle"
+            "type": "package",
+            "package": {
+                "name": "guzzlehttp/guzzle",
+                "version": "dev-php5.4",
+                "source": {
+                    "url": "https://github.com/jashtech/guzzle",
+                    "type": "git",
+                    "reference": "5.3"
+                },
+                "autoload": {
+                    "classmap": [""]
+                }
+            }
         },
         {
-            "type": "git",
-            "url": "https://github.com/jashtech/oauth2-client"
+            "type": "package",
+            "package": {
+                "name": "league/oauth2-client",
+                "version": "dev-php5.4",
+                "source": {
+                    "url": "https://github.com/jashtech/oauth2-client",
+                    "type": "git",
+                    "reference": "master"
+                },
+                "autoload": {
+                    "classmap": [""]
+                }
+            }
         },
         {
-            "type": "git",
-            "url": "https://github.com/jashtech/phpseclib"
+            "type": "package",
+            "package": {
+                "name": "phpseclib/phpseclib",
+                "version": "dev-php5.4",
+                "source": {
+                    "url": "https://github.com/jashtech/phpseclib",
+                    "type": "git",
+                    "reference": "0.3.10"
+                },
+                "autoload": {
+                    "classmap": [""]
+                }
+            }
         }
     ],
     "require": {
         "php": ">=5.4.0",
-        "guzzlehttp/guzzle": "~5.0",
-        "league/oauth2-client": "0.7.*@dev",
-        "phpseclib/phpseclib": "0.3.*@dev"
+        "guzzlehttp/guzzle": "dev-php5.4",
+        "league/oauth2-client": "dev-php5.4@dev",
+        "phpseclib/phpseclib": "dev-php5.4@dev"
     },
     "autoload": {
         "psr-4": {
