@@ -61,13 +61,29 @@
                     "classmap": [""]
                 }
             }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "guzzlehttp/ringphp",
+                "version": "dev-php5.4",
+                "source": {
+                    "url": "https://github.com/jashtech/ringphp",
+                    "type": "git",
+                    "reference": "master"
+                },
+                "autoload": {
+                    "classmap": [""]
+                }
+            }
         }
     ],
     "require": {
         "php": ">=5.4.0",
         "guzzlehttp/guzzle": "dev-php5.4",
         "league/oauth2-client": "dev-php5.4@dev",
-        "phpseclib/phpseclib": "dev-php5.4@dev"
+        "phpseclib/phpseclib": "dev-php5.4@dev",
+        "guzzlehttp/ringphp": "dev-php5.4"
     },
     "autoload": {
         "psr-4": {
