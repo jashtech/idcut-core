@@ -12,6 +12,20 @@
             "email": "pjaworski@jash.pl"
         }
     ],
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/jashtech/guzzle"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/jashtech/oauth2-client"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/jashtech/phpseclib"
+        }
+    ],
     "require": {
         "php": ">=5.4.0",
         "guzzlehttp/guzzle": "~5.0",
