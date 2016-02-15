@@ -179,6 +179,12 @@ class IDcut extends PaymentModule
             $ret &= $this->installTab('AdminIDcutStatus', 'Status', $id_root_tab)
                 > 0 ? true : false;
         }
+        
+        // required for the translation tool
+        $this->l('Deal Definition');
+        $this->l('Deals');
+        $this->l('Transactions');
+        $this->l('Status');
 
         return $ret;
     }
@@ -189,8 +195,16 @@ class IDcut extends PaymentModule
         $tab->active                 = 1;
         $tab->class_name             = $class_name;
         $tab->name                   = array();
-        foreach (Language::getLanguages(true) as $lang)
-            $tab->name[$lang['id_lang']] = $tab_name;
+        foreach (Language::getLanguages(true) as $lang) {
+            global $_MODULE;
+            $old__module = $_MODULE;
+            include dirname(__FILE__) . '/translations/' . $lang['iso_code'] . '.php';
+            $key = '<{idcut}prestashop>idcut_' . md5($tab_name);
+                        
+            $tab->name[$lang['id_lang']] = (isset($_MODULE[$key]) ? $_MODULE[$key] : $tab_name);
+            
+            $_MODULE = $old__module;
+        }
         $tab->id_parent              = $parent;
         $tab->module                 = $this->name;
         $tab->add();
@@ -369,10 +383,12 @@ class IDcut extends PaymentModule
 
         $provider = $this->getProvider();
 
-        $view                   = $this->core->getView();
+        $view                         = $this->core->getView();
+        $view->connect_button_label   = $this->l('Connect');
+        $view->reconnect_button_label = $this->l('Reconnect');
         $view->setTemplateFile("connectButton.php");
-        $view->connected        = (bool) $this->core->config()->getEncrypted("PS_IDCUT_API_TOKEN");
-        $view->authorizationUrl = $provider->getAuthorizationUrl();
+        $view->connected              = (bool) $this->core->config()->getEncrypted("PS_IDCUT_API_TOKEN");
+        $view->authorizationUrl       = $provider->getAuthorizationUrl();
 
         $this->core->config()->setEncrypted("PS_IDCUT_OAUTH_STATE",
             $provider->state);

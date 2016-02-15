@@ -28,6 +28,7 @@ class AdminIDcutStatusController extends ModuleAdminController
     {
         $view = $this->module->core->getView();
         $view->setTemplateFile("adminStatus.php");
+        $view->heading = $this->l('IdealCutter client status');
 
         try {
             $storeResponse = $this->module->core->getApiClient()->get('/store');
@@ -44,7 +45,7 @@ class AdminIDcutStatusController extends ModuleAdminController
             $view->error = $this->l('Can\'t connect with api');
 
             // 1.5 handles apostrophes incorrectly when calculating MD5
-            if (version_compare(_PS_VERSION_, '1.6', '<')) {
+            if (!$this->module->ps_above_16) {
                 global $_MODULES;
                 $key = Tools::strtolower(
                     '<{' . $this->module->name . '}prestashop>' . get_class() . '_' . md5($view->error)

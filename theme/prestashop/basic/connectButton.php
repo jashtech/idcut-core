@@ -7,11 +7,20 @@
 
 <p>
     <?php if (!$connected && $authorizationUrl): ?>
-        <a onclick="return IDCutOauthWindowOpen(this.getAttribute('href'));" href="<?php echo $authorizationUrl; ?>" type="button" class="btn btn-primary btn-lg">Connect</a>
+        <button
+            onclick="return IDCutOauthWindowOpen(this.getAttribute('data-href'));"
+            data-href="<?php echo $authorizationUrl; ?>"
+            class="btn btn-primary btn-lg"
+        ><?php echo $connect_button_label; ?></button>
+            
     <?php endif; ?>
 
     <?php if ($authorizationUrl): ?>
-        <a onclick="return IDCutOauthWindowOpen(this.getAttribute('href'));" href="<?php echo $authorizationUrl; ?>" type="button" class="btn btn-info btn-lg">Reconnect</a>
+        <button
+            onclick="return IDCutOauthWindowOpen(this.getAttribute('data-href'));"
+            data-href="<?php echo $authorizationUrl; ?>"
+            class="btn btn-info btn-lg"
+        ><?php echo $reconnect_button_label; ?></button>
     <?php endif; ?>
 
     

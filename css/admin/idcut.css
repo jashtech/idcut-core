@@ -15,3 +15,6 @@ input.friendly_onchange{
     text-align: right;
     padding-right: 3px;
 }
+#deal_definition_view_panel .form-group{
+    clear: both;
+}
