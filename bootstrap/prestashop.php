@@ -21,11 +21,8 @@ $lang = $context->language->iso_code=='en'?'en;q=1.0':$context->language->iso_co
 $apiClient = new \IDcut\Jash\APIClient\V1\Prestashop();
 $apiClient->setAccessToken($config->getEncrypted("PS_IDCUT_API_TOKEN"));
 $apiClient->setHttpClient(new \IDcut\Jash\Http\Client(array(
-        'base_url' => $apiClient->getServiceUrl(),
-        'defaults' => array(
-            'verify' => false
-            )
-        )),$lang);
+    'base_uri' => $apiClient->getServiceUrl()
+)), $lang);
 
 $view = new \IDcut\Jash\Template\Basic();
 $view->setTemplateDir(dirname(__FILE__) . '/../theme/prestashop/basic');

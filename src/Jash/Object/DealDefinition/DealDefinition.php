@@ -16,7 +16,7 @@ class DealDefinition implements JSONObjectInterface
     private $user_max;
     private $min_order_value;
     private $range_type;
-    private $ranges = [];
+    private $ranges = array();
 
     public function getId()
     {

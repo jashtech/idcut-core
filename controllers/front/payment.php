@@ -29,8 +29,8 @@ class IDcutPaymentModuleFrontController extends ModuleFrontController
             } elseif ($deal_token = Tools::getValue('deal_token', false)) {
                 try {
                     $dealResponse = $this->module->core->getApiClient()->get('/deals/by_hash/'.$deal_token.'?expand=deal_definition');
-                    if ($dealResponse instanceof GuzzleHttp\Message\Response) {
-                        $dealJson = $dealResponse->json();
+                    if ($dealResponse instanceof GuzzleHttp\Psr7\Response) {
+                        $dealJson = Tools::jsonDecode($dealResponse->getBody(), true);
 
                         if (isset($dealJson['deal_definition']['id'])) {
                             $deal                                  = \IDcut\Jash\Object\Deal\Deal::build($dealJson);

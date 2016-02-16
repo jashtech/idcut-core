@@ -29,23 +29,24 @@ class IDcutValidationModuleFrontController extends ModuleFrontController
             $this->errors[] = Tools::displayError('Error when trying to Create Transaction');
         }
 
-        if (!$transactionCreateResponse instanceof GuzzleHttp\Message\Response || (int) $transactionCreateResponse->getStatusCode() !== 201 || !$transactionCreateResponse->hasHeader('location')) {
+        if (!$transactionCreateResponse instanceof GuzzleHttp\Psr7\Response || (int) $transactionCreateResponse->getStatusCode() !== 201 || !$transactionCreateResponse->hasHeader('location')) {
             return false;
         }
 
         try {
             $location            = $transactionCreateResponse->getHeader('location');
+            $location            = $location[0];
             $transactionResponse = $this->module->core->getApiClient()->get($location);
         } catch (\IDcut\Jash\Exception\Prestashop\Exception $e) {
             $this->errors[] = Tools::displayError('Error with retriving created transaction data');
             return false;
         }
 
-        if (!$transactionResponse instanceof GuzzleHttp\Message\Response) {
+        if (!$transactionResponse instanceof GuzzleHttp\Psr7\Response) {
             return false;
         }
 
-        $transactionJson = $transactionResponse->json();
+        $transactionJson = Tools::jsonDecode($transactionResponse->getBody(), true);
         if (!isset($transactionJson['id'])) {
             return false;
         }

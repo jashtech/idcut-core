@@ -32,7 +32,7 @@ class AdminIDcutStatusController extends ModuleAdminController
 
         try {
             $storeResponse = $this->module->core->getApiClient()->get('/store');
-            $storeJson = $storeResponse->json();
+            $storeJson = Tools::jsonDecode($storeResponse->getBody(), true);
             $store     = IDcut\Jash\Object\Store\Store::build($storeJson);
             Configuration::updateValue('PS_IDCUT_SA', $store->getActive() === true);
             $view->store_active = $store->getActive();

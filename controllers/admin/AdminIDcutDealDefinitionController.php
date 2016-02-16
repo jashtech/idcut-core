@@ -169,10 +169,10 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
             $this->errors[] = $this->l('Reload from Api crashes');
             return false;
         }
-        if (!$ddResponse instanceof GuzzleHttp\Message\Response) {
+        if (!$ddResponse instanceof GuzzleHttp\Psr7\Response) {
             return false;
         }
-        $ddJson = $ddResponse->json();
+        $ddJson = Tools::jsonDecode($ddResponse->getBody(), true);
         if (!isset($ddJson['deal_definitions']) || !is_array($ddJson['deal_definitions'])) {
             return false;
         }
@@ -269,23 +269,24 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
             return false;
         }
 
-        if (!$ddCreateResponse instanceof GuzzleHttp\Message\Response || (int) $ddCreateResponse->getStatusCode() !== 201 || !$ddCreateResponse->hasHeader('location')) {
+        if (!$ddCreateResponse instanceof GuzzleHttp\Psr7\Response || (int) $ddCreateResponse->getStatusCode() !== 201 || !$ddCreateResponse->hasHeader('location')) {
             return false;
         }
 
         try {
             $location               = $ddCreateResponse->getHeader('location');
+            $location               = $location[0];
             $dealDefinitionResponse = $this->module->core->getApiClient()->get($location);
         } catch (\IDcut\Jash\Exception\Prestashop\Exception $e) {
             $this->errors[] = sprintf($this->l('Loading Deal Definition failed IdealCutter returned error: %s'), $e->getCode());
             return false;
         }
 
-        if (!$dealDefinitionResponse instanceof GuzzleHttp\Message\Response) {
+        if (!$dealDefinitionResponse instanceof GuzzleHttp\Psr7\Response) {
             return false;
         }
 
-        $dealDefinitionJson = $dealDefinitionResponse->json();
+        $dealDefinitionJson = Tools::jsonDecode($dealDefinitionResponse->getBody(), true);
         if (!isset($dealDefinitionJson['id'])) {
             return false;
         }

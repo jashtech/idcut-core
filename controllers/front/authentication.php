@@ -48,7 +48,6 @@ class IDcutAuthenticationModuleFrontController extends ModuleFrontController
 
                     $res = $this->module->core->getApiClient()->put('/store', $store->__toStringUpdateUrls());
 
-
                     //$tokenInfo = var_export($this->module->core->getApiClient()->setAccessToken($token)->getTokenInfo()->json(), 1);
                 }
             } catch (\IDcut\Jash\Exception\Prestashop\Exception $e) {

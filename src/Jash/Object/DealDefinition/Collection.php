@@ -7,7 +7,7 @@ use DealDefinition;
 
 class Collection implements JSONObjectInterface
 {
-    private $dealDefinitions = [];
+    private $dealDefinitions = array();
 
     public function addDealDefinition(DealDefinition $dealDefinition)
     {

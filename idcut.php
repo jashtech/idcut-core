@@ -10,7 +10,7 @@ class IDcut extends PaymentModule
     private $loader = null;
     public $ps_above_16;
     public $core;
-    private static $php_minimum_version = '5.4.0';
+    private static $php_minimum_version = '5.3.0';
 
     public function __construct()
     {
@@ -546,22 +546,23 @@ class IDcut extends PaymentModule
                 return false;
             }
 
-            if (!$dealCreateResponse instanceof GuzzleHttp\Message\Response || (int) $dealCreateResponse->getStatusCode() !== 201 || !$dealCreateResponse->hasHeader('location')) {
+            if (!$dealCreateResponse instanceof GuzzleHttp\Psr7\Response || (int) $dealCreateResponse->getStatusCode() !== 201 || !$dealCreateResponse->hasHeader('location')) {
                 return false;
             }
 
             try {
                 $location     = $dealCreateResponse->getHeader('location');
+                $location     = $location[0];
                 $dealResponse = $this->core->getApiClient()->get($location.'?expand=deal_definition');
             } catch (\IDcut\Jash\Exception\Prestashop\Exception $e) {
                 return false;
             }
 
-            if (!$dealResponse instanceof GuzzleHttp\Message\Response) {
+            if (!$dealResponse instanceof GuzzleHttp\Psr7\Response) {
                 return false;
             }
 
-            $dealJson = $dealResponse->json();
+            $dealJson = Tools::jsonDecode($dealResponse->getBody(), true);
             if (!isset($dealJson['deal_definition']['id'])) {
                 return false;
             }

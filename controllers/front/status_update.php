@@ -89,11 +89,11 @@ class IDcutStatus_UpdateModuleFrontController extends ModuleFrontController
             return false;
         }
 
-        if (!$transactionResponse instanceof GuzzleHttp\Message\Response) {
+        if (!$transactionResponse instanceof GuzzleHttp\Psr7\Response) {
             return false;
         }
 
-        $transactionJson = $transactionResponse->json();
+        $transactionJson = Tools::jsonDecode($transactionResponse->getBody(), true);
         if (!isset($transactionJson['id'])) {
             return false;
         }

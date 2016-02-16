@@ -82,10 +82,10 @@ class AdminIDcutDealController extends ModuleAdminController
                 $this->errors[] = $this->l('Reload from Api crashes');
                 break;
             }
-            if (!$ddResponse instanceof GuzzleHttp\Message\Response) {
+            if (!$ddResponse instanceof GuzzleHttp\Psr7\Response) {
                 break;
             }
-            $ddJson = $ddResponse->json();
+            $ddJson = Tools::jsonDecode($ddResponse->getBody(), true);
             if (!isset($ddJson['deals']) || !is_array($ddJson['deals'])) {
                 break;
             }
@@ -121,9 +121,11 @@ class AdminIDcutDealController extends ModuleAdminController
             }
             $next = false;
 
+            
             if ($ddResponse->hasHeader('link')) {
-                $parsed = \GuzzleHttp\Message\Request::parseHeader($ddResponse, 'Link');
+                $parsed = \GuzzleHttp\Psr7\parse_header($ddResponse->getHeader('link'));
                 foreach($parsed as $link){
+
                     if(isset($link['rel']) && $link['rel']=='next'){
                         $next = trim($link[0],'<>');
                         break;
