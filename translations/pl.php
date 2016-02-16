@@ -12,6 +12,10 @@ $_MODULE['<{idcut}prestashop>idcut_4170a7483623d335598ac0ae674c1849'] = 'Transak
 $_MODULE['<{idcut}prestashop>idcut_172f447fe07ddb21003306edd61c4204'] = 'Ten moduł przetwarza płatności dokonywane jedynie w złotówkach ';
 $_MODULE['<{idcut}prestashop>idcut_a02758d758e8bec77a33d7f392eb3f8a'] = 'Nie ustalono waluty';
 $_MODULE['<{idcut}prestashop>idcut_8b3ee532396d33d3f1758660107fcfca'] = 'Twój serwer lub konto hostingowe ma wersję PHP poniżej %s';
+$_MODULE['<{idcut}prestashop>idcut_b48551bc52b064001a18db03cfefc544'] = 'Warunki dealu';
+$_MODULE['<{idcut}prestashop>idcut_d6ab0ea8f96d1a1f3cdc4f5110d2e45e'] = 'Deale';
+$_MODULE['<{idcut}prestashop>idcut_31112aca11d0e9e6eb7db96f317dda49'] = 'Transakcje';
+$_MODULE['<{idcut}prestashop>idcut_ec53a8c4f07baed5d8825072c89799be'] = 'Status';
 $_MODULE['<{idcut}prestashop>idcut_ea6dedf966f2b7912a03881c17a3c2af'] = 'Informacja zaktualizowana';
 $_MODULE['<{idcut}prestashop>idcut_f4f70727dc34561dfde1a3c529b6205c'] = 'Ustawienia';
 $_MODULE['<{idcut}prestashop>idcut_ca65c470f375b009d3326ff152094c90'] = 'Application Id';
@@ -42,6 +46,7 @@ $_MODULE['<{idcut}prestashop>adminidcutdealdefinitioncontroller_222a267cc5778206
 $_MODULE['<{idcut}prestashop>adminidcutdealdefinitioncontroller_47313efd54d7eaa554657a0eaf24b67b'] = 'Warunki dealu';
 $_MODULE['<{idcut}prestashop>adminidcutdealdefinitioncontroller_377c7549056da94968a4fda0bac2f1b3'] = 'Odśwież warunki dealu';
 $_MODULE['<{idcut}prestashop>adminidcutdealdefinitioncontroller_d61d69cb87ae2ddb748c989742aca1bf'] = 'Możliwe jest tworzenie jedynie rabatów procentowych';
+$_MODULE['<{idcut}prestashop>adminidcutdealdefinitioncontroller_cb203728e07c7ce3afdc48d537dd406b'] = 'Niepoprawna wartość';
 $_MODULE['<{idcut}prestashop>adminidcutdealdefinitioncontroller_26ca7d74395ee43a4935b97b91894da0'] = 'Puste zakresy';
 $_MODULE['<{idcut}prestashop>adminidcutdealdefinitioncontroller_eab653a0183756b6381ad114199f7260'] = 'Zakresy są niepoprawnie skonfigurowane';
 $_MODULE['<{idcut}prestashop>adminidcutdealdefinitioncontroller_f2a8367e26dcacf9d63d695cb522f2bb'] = 'Błąd zakresów: zwiększona liczba użytkowników nie może dostać mniejszej zniżki';
@@ -58,6 +63,7 @@ $_MODULE['<{idcut}prestashop>adminidcutdealdefinitioncontroller_92711ef5b0215a07
 $_MODULE['<{idcut}prestashop>adminidcutdealdefinitioncontroller_c9cc8cce247e49bae79f15173ce97354'] = 'Zapisz';
 $_MODULE['<{idcut}prestashop>adminidcutstatuscontroller_92e88913c3a1184a0738f0d4c4c4cc31'] = 'Status modułu IdealCutter';
 $_MODULE['<{idcut}prestashop>adminidcutstatuscontroller_c6efaacaf36c4fd8825084b9b2052f85'] = 'Status';
+$_MODULE['<{idcut}prestashop>adminidcutstatuscontroller_d0eea2a4e7155a6b71640564466510d4'] = 'Status połączenia z IdealCutter';
 $_MODULE['<{idcut}prestashop>adminidcutstatuscontroller_bf9d307d72473484cc2aa09467d3b057'] = 'Sklep został już aktywowany w sytemie IdealCutter, płatność jest gotowa do użycia.';
 $_MODULE['<{idcut}prestashop>adminidcutstatuscontroller_67a5075fb2d19732abffb7efd8fce7f9'] = 'Sklep jest nieaktywny w systemie IdealCutter, nalezy dokończyć wszystkie kroki konfiguracji, a następnie powiadomić administratora.';
 $_MODULE['<{idcut}prestashop>adminidcutstatuscontroller_d418ae876cfb577e8c5929033848f469'] = 'Brak połączenia z API IdealCutter';
