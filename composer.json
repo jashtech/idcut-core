@@ -14,88 +14,33 @@
     ],
     "repositories": [
         {
-            "type": "package",
-            "package": {
-                "name": "guzzlehttp/guzzle",
-                "version": "dev-php5.3",
-                "source": {
-                    "url": "https://github.com/jashtech/guzzle",
-                    "type": "git",
-                    "reference": "php5.3"
-                },
-                "autoload": {
-                    "classmap": [""]
-                }
-            }
+            "type": "vcs",
+            "url": "https://github.com/jashtech/guzzle",
+            "no-api": true
         },
         {
-            "type": "package",
-            "package": {
-                "name": "league/oauth2-client",
-                "version": "dev-php5.3",
-                "source": {
-                    "url": "https://github.com/jashtech/oauth2-client",
-                    "type": "git",
-                    "reference": "master"
-                },
-                "autoload": {
-                    "classmap": [""]
-                }
-            }
+            "type": "vcs",
+            "url": "https://github.com/jashtech/oauth2-client",
+            "no-api": true
         },
         {
-            "type": "package",
-            "package": {
-                "name": "phpseclib/phpseclib",
-                "version": "dev-php5.3",
-                "source": {
-                    "url": "https://github.com/jashtech/phpseclib",
-                    "type": "git",
-                    "reference": "0.3.10"
-                },
-                "autoload": {
-                    "classmap": [""]
-                }
-            }
+            "type": "vcs",
+            "url": "https://github.com/jashtech/psr7",
+            "no-api": true
         },
         {
-            "type": "package",
-            "package": {
-                "name": "guzzlehttp/psr7",
-                "version": "dev-php5.3",
-                "source": {
-                    "url": "https://github.com/jashtech/psr7",
-                    "type": "git",
-                    "reference": "master"
-                },
-                "autoload": {
-                    "classmap": [""]
-                }
-            }
-        },
-        {
-            "type": "package",
-            "package": {
-                "name": "guzzlehttp/promises",
-                "version": "dev-php5.3",
-                "source": {
-                    "url": "https://github.com/jashtech/promises",
-                    "type": "git",
-                    "reference": "master"
-                },
-                "autoload": {
-                    "classmap": [""]
-                }
-            }
+            "type": "vcs",
+            "url": "https://github.com/jashtech/promises",
+            "no-api": true
         }
     ],
     "require": {
         "php": ">=5.3.0",
         "guzzlehttp/guzzle": "dev-php5.3",
-        "league/oauth2-client": "dev-php5.3@dev",
-        "phpseclib/phpseclib": "dev-php5.3@dev",
-        "guzzlehttp/psr7": "dev-php5.3@dev",
-        "guzzlehttp/promises": "dev-php5.3@dev"
+        "league/oauth2-client": "dev-php5.3",
+        "phpseclib/phpseclib": "0.3.*@dev",
+        "guzzlehttp/psr7": "dev-php5.3",
+        "guzzlehttp/promises": "dev-php5.3"
     },
     "autoload": {
         "psr-4": {
