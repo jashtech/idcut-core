@@ -242,7 +242,6 @@ class AdminIDcutDealDefinitionController extends ModuleAdminController
 
     protected function beforeAdd($object)
     {
-
         $dd_body = new IDcut\Jash\Object\DealDefinition\DealDefinition();
 
         $dd_body->setTtl($object->ttl);
