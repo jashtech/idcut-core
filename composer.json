@@ -1,10 +1,10 @@
 {
-    "name": "tomek/idcut",
-    "description": "IDcut",
+    "name": "twesolowski/idcut-core",
+    "description": "IDcut Core",
     "license": "MIT",
     "authors": [
         {
-            "name": "Tomasz WesoA‚owski",
+            "name": "Tomasz Wesolowski",
             "email": "twesolowski@jash.pl"
         },
         {
