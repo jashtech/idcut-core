@@ -1,9 +1,9 @@
 {
-    "name": "twesolowski/idcut-core",
+    "name": "jashtech/idcut-core",
     "description": "IDcut Core",
     "license": "MIT",
     "dist": {
-        "url": "git@bitbucket.org:twesolowski/idcut-core.git",
+        "url": "git@github.com:jashtech/idcut-core.git",
         "type": "git"
     },
     "authors": [
