@@ -2,10 +2,6 @@
     "name": "jashtech/idcut-core",
     "description": "IDcut Core",
     "license": "MIT",
-    "dist": {
-        "url": "git@github.com:jashtech/idcut-core.git",
-        "type": "git"
-    },
     "authors": [
         {
             "name": "Tomasz Wesolowski",
