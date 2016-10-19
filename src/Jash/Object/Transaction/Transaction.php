@@ -151,8 +151,7 @@ class Transaction implements JSONObjectInterface
         $transaction['confirm_payment_link'] = $this->getConfirm_payment_link();
 
         $transaction = array_filter($transaction);
-        return json_encode(array("transaction" => $transaction),
-            JSON_UNESCAPED_SLASHES);
+        return json_encode(array("transaction" => $transaction));
     }
 
     public function __toStringForCreate()
@@ -172,7 +171,6 @@ class Transaction implements JSONObjectInterface
         }
 
         $transaction = array_filter($transaction);
-        return json_encode(array("transaction" => $transaction),
-            JSON_UNESCAPED_SLASHES);
+        return json_encode(array("transaction" => $transaction));
     }
 }

@@ -7,7 +7,7 @@ use Deal;
 
 class Collection implements JSONObjectInterface
 {
-    private $deals = [];
+    private $deals = array();
 
     public function addDeal(Deal $deal)
     {

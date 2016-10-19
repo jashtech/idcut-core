@@ -7,7 +7,7 @@ use League\OAuth2\Client\Entity\User;
 
 class IDcut extends AbstractProvider {
 
-    public $scopes = ['basic'];
+    public $scopes = array('basic');
     public $responseType = 'json';
     static $tokenInfoUrl = 'https://dev.idealcutter.com/oauth/token/info';
 

@@ -96,7 +96,7 @@ class Deal implements JSONObjectInterface
         $deal['hash_id']    = $this->getHash_id();
 
         $deal = array_filter($deal);
-        return json_encode(array("deal" => $deal), JSON_UNESCAPED_SLASHES);
+        return json_encode(array("deal" => $deal));
     }
 
     public function __toStringForCreate()
@@ -110,7 +110,7 @@ class Deal implements JSONObjectInterface
         $deal['min_order_value'] = $this->getMin_order_value();
 
         $deal = array_filter($deal);
-        return json_encode(array("deal" => $deal), JSON_UNESCAPED_SLASHES);
+        return json_encode(array("deal" => $deal));
     }
 
     public static function build(Array $input)

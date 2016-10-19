@@ -16,7 +16,7 @@ class DealDefinition implements JSONObjectInterface
     private $user_max;
     private $min_order_value;
     private $range_type;
-    private $ranges = [];
+    private $ranges = array();
 
     public function getId()
     {
@@ -110,8 +110,7 @@ class DealDefinition implements JSONObjectInterface
         $dealDefinition['ranges']          = $this->getRanges();
 
         $dealDefinition = array_filter($dealDefinition);
-        return json_encode(array("deal_definition" => $dealDefinition),
-            JSON_UNESCAPED_SLASHES);
+        return json_encode(array("deal_definition" => $dealDefinition));
     }
 
     public function __toStringForCreate()
@@ -133,8 +132,7 @@ class DealDefinition implements JSONObjectInterface
         }
 
         $deal_definition = array_filter($deal_definition);
-        return json_encode(array("deal_definition" => $deal_definition),
-            JSON_UNESCAPED_SLASHES);
+        return json_encode(array("deal_definition" => $deal_definition));
     }
 
     public static function build(Array $input)
